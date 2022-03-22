@@ -155,7 +155,14 @@ PS.touch = function( x, y ) {
 	if ( x == 14 && y == 14 ) {
 		PS.audioPlay ( "fx_boop" );
 		reset_map();
-	} else {
+	}
+	
+	if (PS.color(x, y) == 0xa1fdf5) {
+		PS.color( x, y, 0xa1fdf5 );
+		PS.audioPlay ( "fx_drip2" );
+	}
+
+	if (PS.color(x, y) == 0x3fe559) {
 		PS.color( x, y, 0xa1fdf5 );
 		PS.audioPlay ( "fx_coin3" );
 	}
@@ -304,3 +311,4 @@ PS.input = function( sensors, options ) {
 // Mod 13: Made it so reset button does not change color on click
 // Mod 14: Made it reset button adds 10 trash bags randomly on click
 // Mod 15: Made it so reset button clears existing trash bags before adding more
+// Mod 16: Added if statement to play "fx_drip2" when the water is clicked
