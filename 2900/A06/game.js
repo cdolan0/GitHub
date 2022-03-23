@@ -49,32 +49,19 @@ Any value returned is ignored.
 */
 
 PS.init = function( system, options ) {
-	// Uncomment the following code line
-	// to verify operation:
-
-	// PS.debug( "PS.init() called\n" );
-
-	// This function should normally begin
-	// with a call to PS.gridSize( x, y )
-	// where x and y are the desired initial
-	// dimensions of the grid.
-	// Call PS.gridSize() FIRST to avoid problems!
-	// The sample call below sets the grid to the
-	// default dimensions (8 x 8).
-	// Uncomment the following code line and change
-	// the x and y parameters as needed.
-
-	// PS.gridSize( 8, 8 );
-
-	// This is also a good place to display
-	// your game title or a welcome message
-	// in the status line above the grid.
-	// Uncomment the following code line and
-	// change the string parameter as needed.
-
-	// PS.statusText( "Game" );
+	var x;
+	PS.gridSize( 20, 21 );
+	PS.statusColor( PS.COLOR_WHITE );
+	PS.statusText( "Draw with Music!" );
 
 	// Add any other initialization code you need here.
+
+    PS.border( PS.ALL, PS.ALL, 0 );
+	for( x = 0; x < 20; x += 1 ){
+		PS.color( x, 20, PS.COLOR_BLACK );
+	}
+	PS.gridColor( PS.COLOR_BLACK );
+
 };
 
 /*
