@@ -76,7 +76,7 @@ var Game;
 			}
 			//If horizontal mirroring is not on and vertical mirroring is
 			else if (!horizMirror && vertMirror) {
-				//If in left half and not bottom row
+				//If in left half
 				if ( x >= 9 ) {
 					//Plays Note
 					this.playNote();
@@ -105,6 +105,11 @@ var Game;
 		selectNoteColor : function(x){
 
 		},
+
+		paint : function(){
+
+		},
+
 		playNote : function(){
 
 		}
@@ -169,11 +174,19 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
-
-	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch enters a bead.
+	if( y == 21 ){
+		//Vertical Mirror
+		if( x == 18){
+			PS.statusText("Mirror Along X Axis");
+		}
+		//Horizontal Mirror
+		if (x == 19){
+			PS.statusText("Mirror Along Y Axis");
+		}
+		if( x == 20){
+			PS.statusText("Remove");
+		}
+	}
 };
 
 /*
@@ -187,11 +200,9 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
-
-	// PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch exits a bead.
+	if( y == 21 ){
+		PS.statusText("Draw With Music!");
+	}
 };
 
 /*
