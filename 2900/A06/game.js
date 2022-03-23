@@ -48,13 +48,64 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 
+var Game;
+
 (function () {
 	var color;
 
-	var instrument;
+	var note;
+
+	var horizMirror = new Boolean(false);
+
+	var vertMirror = new Boolean(false);
 
 	Game = {
 		click : function ( x, y, data ) {
+			//If on bottom row
+			if ( y == 21 ){
+				this.selectNoteColor(x);
+			}
+			//If horizontal mirroring is on and not vertical mirroring
+			else if (horizMirror && !vertMirror) {
+				//If in top half
+				if (y >= 9) {
+					//Plays Note
+					this.playNote();
+					//Draw
+				}
+			}
+			//If horizontal mirroring is not on and vertical mirroring is
+			else if (!horizMirror && vertMirror) {
+				//If in left half and not bottom row
+				if ( x >= 9 ) {
+					//Plays Note
+					this.playNote();
+					//Draw
+				}
+			}
+			//If both are on
+			else if (horizMirror && vertMirror) {
+				//If in left half and top half
+				if (x >= 9 && y >= 9) {
+					//Plays Note
+					this.playNote();
+					//Draw
+				}
+			}
+			//If both off
+			else {
+				//Plays Note
+				this.playNote();
+				//Draw
+
+			}
+
+		},
+
+		selectNoteColor : function(x){
+
+		},
+		playNote : function(){
 
 		}
 	}
@@ -64,16 +115,13 @@ Any value returned is ignored.
 
 PS.init = function( system, options ) {
 	var x;
-	PS.gridSize( 20, 21 );
+	PS.gridSize( 21, 22 );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
 
 	// Add any other initialization code you need here.
 
     PS.border( PS.ALL, PS.ALL, 0 );
-	for( x = 0; x < 20; x += 1 ){
-		PS.color( x, 20, PS.COLOR_BLACK );
-	}
 	PS.gridColor( PS.COLOR_BLACK );
 
 };
