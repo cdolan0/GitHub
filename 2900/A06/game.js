@@ -324,6 +324,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	if( key == Game.FILL_KEY ) {
 		for (i = 0; i < lasty; i++) {
 			PS.color( PS.ALL, i, Game.getColor() );
+			Game.trueColor = Game.getColor();
 		}
 	}
 };
