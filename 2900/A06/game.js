@@ -63,9 +63,11 @@ const HEIGHT = 22;
 
 	Game = {
 		click : function ( x, y, data ) {
+			this.drag = true;
 			//If on bottom row
 			if ( y == 21 ){
 				this.selectNoteColor(x);
+				this.drag = false;
 			}
 			//If horizontal mirroring is on and not vertical mirroring
 			else if (horizMirror && !vertMirror) {
@@ -74,6 +76,8 @@ const HEIGHT = 22;
 					//Plays Note
 					this.playNote();
 					//Draw
+					PS.color(x, y, this.COLORS[color]);
+					PS.color(x, this.getInverse(y), this.COLORS[color]);
 				}
 			}
 			//If horizontal mirroring is not on and vertical mirroring is
@@ -84,6 +88,7 @@ const HEIGHT = 22;
 					this.playNote();
 					//Draw
 					PS.color(x, y, this.COLORS[color]);
+					PS.color(this.getInverse(x), y, this.COLORS[color]);
 
 				}
 			}
@@ -94,6 +99,8 @@ const HEIGHT = 22;
 					//Plays Note
 					this.playNote();
 					//Draw
+					PS.color(x, y, this.COLORS[color]);
+					PS.color(this.getInverse(x), this.getInverse(y), this.COLORS[color]);
 				}
 			}
 			//If both off
@@ -138,6 +145,7 @@ const HEIGHT = 22;
 			else if( x == 20 ){
 				for( var i = 0; i < 21; i+= 1 ){
 					PS.color(PS.ALL, i, PS.COLOR_WHITE);
+					this.drag = false;
 				}
 				this.trueColor = PS.COLOR_WHITE;
 			}
@@ -176,6 +184,7 @@ const HEIGHT = 22;
 
 		trueColor: PS.COLOR_WHITE,
 		FILL_KEY: 102,
+		drag: false,
 
 	}
 
@@ -251,6 +260,7 @@ PS.release = function( x, y, data, options ) {
 	// PS.debug( "PS.release() @ " + x + ", " + y + "\n" );
 
 	// Add code here for when the mouse button/touch is released over a bead.
+	Game.drag = false;
 };
 
 /*
@@ -282,6 +292,12 @@ PS.enter = function( x, y, data, options ) {
 		PS.statusText("Click to paint a pixel, press F to fill the canvas.")
 		Game.trueColor = PS.color( x, y );
 		PS.color( x, y, Game.getColor() );
+		if ( Game.drag )
+		{
+			Game.trueColor = Game.getColor();
+		}else{
+			Game.drag = false;
+		}
 	}
 };
 
