@@ -112,7 +112,18 @@ var Game;
 
 		playNote : function(){
 
+		},
+
+		getColor : function(){
+
 		}
+
+		COLORS: [
+			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
+			0x2be3c7, 0x2bbbe3, 0x2b50e3, 0x722be3, 0xbe2be3, 0xe32b78,
+			0xfa8282, 0xb87c37, 0xffffff, 0xadadad, 0x4a4a4a, 0x000000
+		],
+
 	}
 
 } () )
@@ -120,7 +131,9 @@ var Game;
 
 PS.init = function( system, options ) {
 	var x;
-	PS.gridSize( 21, 22 );
+	const WIDTH = 21
+	const HEIGHT = 22
+	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
 
@@ -129,6 +142,26 @@ PS.init = function( system, options ) {
     PS.border( PS.ALL, PS.ALL, 0 );
 	PS.gridColor( PS.COLOR_BLACK );
 
+	// set up reset button
+	PS.glyph( 20, 21, "X" );
+	PS.glyphColor( 19, 20, PS.COLOR_BLACK );
+
+	// set up horizontal symmetry button
+	PS.glyph( 18, 21, "▀" );
+
+	// set up vertical symmetry button
+	PS.glyph( 19, 21, "▐" );
+
+	var i;
+	var color = PS.COLOR_WHITE;
+	var lastx = WIDTH - 1;
+	var lasty = HEIGHT - 1;
+	for ( i = 0; i < lastx; i += 1 ) {
+		color = Game.COLORS[i];
+		PS.color(i, lasty, color); // set visible color
+		PS.data(i, lasty, color); // also store color as bead data
+		// PS.exec(i, lasty, Game.select); // call Game.select when clicked
+	}
 };
 
 /*
@@ -186,6 +219,8 @@ PS.enter = function( x, y, data, options ) {
 		if( x == 20){
 			PS.statusText("Remove");
 		}
+	}else{
+		PS.color( x, y, Game.getColor() );
 	}
 };
 
