@@ -81,6 +81,8 @@ var Game;
 					//Plays Note
 					this.playNote();
 					//Draw
+					PS.color(x, y, this.COLORS[color]);
+
 				}
 			}
 			//If both are on
@@ -97,17 +99,45 @@ var Game;
 				//Plays Note
 				this.playNote();
 				//Draw
-
+				PS.color(x, y, this.COLORS[color]);
 			}
 
 		},
 
 		selectNoteColor : function(x){
-
-		},
-
-		paint : function(){
-
+			color = x;
+			//Selected Horizontal Mirror
+			if( x == 18 ){
+				if(horizMirror == true){
+					horizMirror = false;
+					PS.color(PS.ALL, 10, PS.COLOR_WHITE);
+				}
+				else{
+					horizMirror = true;
+					PS.color(PS.ALL, 10, PS.COLOR_GRAY);
+				}
+			}
+			//Selected Vertical Mirror
+			else if( x == 19 ){
+				if(vertMirror == true){
+					vertMirror = false;
+					for( var i = 0; i < 21; i+= 1 ){
+						PS.color(10, i, PS.COLOR_WHITE);
+					}
+				}
+				else{
+					vertMirror = true;
+					for( var i = 0; i < 21; i+= 1 ){
+						PS.color(10, i, PS.COLOR_GRAY);
+					}
+				}
+			}
+			//Selected Remove
+			else if( x == 20 ){
+				for( var i = 0; i < 21; i+= 1 ){
+					PS.color(PS.ALL, i, PS.COLOR_WHITE);
+				}
+			}
 		},
 
 		playNote : function(){
@@ -115,8 +145,8 @@ var Game;
 		},
 
 		getColor : function(){
-
-		}
+			return this.COLORS[color];
+		},
 
 		COLORS: [
 			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
@@ -220,6 +250,7 @@ PS.enter = function( x, y, data, options ) {
 			PS.statusText("Remove");
 		}
 	}else{
+		PS.statusText("Click to paint a pixel, press F to fill the canvas.")
 		PS.color( x, y, Game.getColor() );
 	}
 };
@@ -235,9 +266,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
-	if( y == 21 ){
-		PS.statusText("Draw With Music!");
-	}
+
 };
 
 /*
@@ -248,11 +277,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exitGrid = function( options ) {
-	// Uncomment the following code line to verify operation:
-
-	// PS.debug( "PS.exitGrid() called\n" );
-
-	// Add code here for when the mouse cursor/touch moves off the grid.
+	PS.statusText("Draw With Music!");
 };
 
 /*
