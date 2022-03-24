@@ -113,11 +113,11 @@ const HEIGHT = 22;
 			if( x == 18 ){
 				if(horizMirror == true){
 					horizMirror = false;
-					PS.color(PS.ALL, 10, PS.COLOR_WHITE);
+					PS.border(PS.ALL, 10, 0);
 				}
 				else{
 					horizMirror = true;
-					PS.color(PS.ALL, 10, PS.COLOR_GRAY);
+					PS.border(PS.ALL, 10, 1);
 				}
 			}
 			//Selected Vertical Mirror
@@ -125,14 +125,13 @@ const HEIGHT = 22;
 				if(vertMirror == true){
 					vertMirror = false;
 					for( var i = 0; i < 21; i+= 1 ){
-						PS.color(10, i, PS.COLOR_WHITE);
+						PS.border(10, i, 0);
 					}
 				}
 				else{
 					vertMirror = true;
 					for( var i = 0; i < 21; i+= 1 ){
-						PS.color(10, i, PS.COLOR_GRAY);
-					}
+						PS.border(10, i, 1);					}
 				}
 			}
 			//Selected Remove
