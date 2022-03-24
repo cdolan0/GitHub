@@ -55,11 +55,11 @@ const HEIGHT = 22;
 (function () {
 	var color;
 
-	var note;
+	var note = 14;
 
-	var horizMirror = new Boolean(false);
+	var horizMirror = false;
 
-	var vertMirror = new Boolean(false);
+	var vertMirror = false;
 
 	Game = {
 		click : function ( x, y, data ) {
@@ -70,7 +70,7 @@ const HEIGHT = 22;
 			//If horizontal mirroring is on and not vertical mirroring
 			else if (horizMirror && !vertMirror) {
 				//If in top half
-				if (y >= 9) {
+				if (y <= 9) {
 					//Plays Note
 					this.playNote();
 					//Draw
@@ -79,7 +79,7 @@ const HEIGHT = 22;
 			//If horizontal mirroring is not on and vertical mirroring is
 			else if (!horizMirror && vertMirror) {
 				//If in left half
-				if ( x >= 9 ) {
+				if ( x <= 9 ) {
 					//Plays Note
 					this.playNote();
 					//Draw
@@ -90,7 +90,7 @@ const HEIGHT = 22;
 			//If both are on
 			else if (horizMirror && vertMirror) {
 				//If in left half and top half
-				if (x >= 9 && y >= 9) {
+				if (x <= 9 && y <= 9) {
 					//Plays Note
 					this.playNote();
 					//Draw
@@ -142,11 +142,15 @@ const HEIGHT = 22;
 				}
 				this.trueColor = PS.COLOR_WHITE;
 			}
+			else if ( x < 18){
+				note = x;
+				this.playNote()
+			}
 		},
 
 		//Plays Note
 		playNote : function(){
-			return PS.audioPlay(this.PIANO_NOTES[note]);
+			PS.audioPlay(PS.piano((note*3)));
 		},
 
 		//Returns Color Code of Current Color
@@ -160,7 +164,9 @@ const HEIGHT = 22;
 		},
 
 		PIANO_NOTES: [
-
+			"piano_c3", "piano_d3", "piano_e3", "piano_f3", "piano_g3", "piano_a4",
+			"piano_b4", "piano_c4", "piano_e4", "piano_f4", "piano_g4", "piano_a5",
+			"piano_b5", "piano_c5", "piano_d5", "piano_f5", "piano_g5", "piano_a6",
 		],
 
 		COLORS: [
@@ -178,6 +184,12 @@ const HEIGHT = 22;
 
 
 PS.init = function( system, options ) {
+	var toLoad;
+	for( var i = 0; i < 18; i += 1 ){
+		PS.audioLoad( PS.piano((i*3)));
+		PS.debug(PS.piano((i*3)));
+	}
+
 	var x;
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
