@@ -144,13 +144,24 @@ const HEIGHT = 22;
 			}
 		},
 
+		//Plays Note
 		playNote : function(){
-
+			return PS.audioPlay(this.PIANO_NOTES[note]);
 		},
 
+		//Returns Color Code of Current Color
 		getColor : function(){
 			return this.COLORS[color];
 		},
+
+		// Returns a Number Flipped over An Axis
+		getInverse : function(num){
+			return (Math.abs(num - 10 ) + 10 );
+		},
+
+		PIANO_NOTES: [
+
+		],
 
 		COLORS: [
 			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
