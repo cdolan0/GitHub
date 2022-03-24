@@ -49,6 +49,8 @@ Any value returned is ignored.
 */
 
 var Game;
+const WIDTH = 21;
+const HEIGHT = 22;
 
 (function () {
 	var color;
@@ -99,7 +101,8 @@ var Game;
 				//Plays Note
 				this.playNote();
 				//Draw
-				PS.color(x, y, this.COLORS[color]);
+				this.trueColor = this.getColor();
+				PS.color(x, y, this.getColor());
 			}
 
 		},
@@ -137,6 +140,7 @@ var Game;
 				for( var i = 0; i < 21; i+= 1 ){
 					PS.color(PS.ALL, i, PS.COLOR_WHITE);
 				}
+				this.trueColor = PS.COLOR_WHITE;
 			}
 		},
 
@@ -154,6 +158,9 @@ var Game;
 			0xfa8282, 0xb87c37, 0xffffff, 0xadadad, 0x4a4a4a, 0x000000
 		],
 
+		trueColor: PS.COLOR_WHITE,
+		FILL_KEY: 102,
+
 	}
 
 } () )
@@ -161,15 +168,13 @@ var Game;
 
 PS.init = function( system, options ) {
 	var x;
-	const WIDTH = 21
-	const HEIGHT = 22
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
 
 	// Add any other initialization code you need here.
 
-    PS.border( PS.ALL, PS.ALL, 0 );
+	PS.border( PS.ALL, PS.ALL, 0 );
 	PS.gridColor( PS.COLOR_BLACK );
 
 	// set up reset button
@@ -248,9 +253,12 @@ PS.enter = function( x, y, data, options ) {
 		}
 		if( x == 20){
 			PS.statusText("Remove");
+		}else{
+			PS.statusText("Select a color");
 		}
 	}else{
 		PS.statusText("Click to paint a pixel, press F to fill the canvas.")
+		Game.trueColor = PS.color( x, y );
 		PS.color( x, y, Game.getColor() );
 	}
 };
@@ -266,7 +274,9 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
-
+	if( y < 21 ) {
+		PS.color(x, y, Game.trueColor);
+	}
 };
 
 /*
@@ -296,6 +306,15 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	// PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
 
 	// Add code here for when a key is pressed.
+
+	var i;
+	var lasty = HEIGHT - 1;
+
+	if( key == Game.FILL_KEY ) {
+		for (i = 0; i < lasty; i++) {
+			PS.color( PS.ALL, i, Game.getColor() );
+		}
+	}
 };
 
 /*
