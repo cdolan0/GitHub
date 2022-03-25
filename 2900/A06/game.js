@@ -53,12 +53,16 @@ const WIDTH = 21;
 const HEIGHT = 22;
 
 (function () {
+	//Color Index
 	var color;
 
+	//Note Index
 	var note = 14;
 
+	//If Horizontal Mirror is On
 	var horizMirror = false;
 
+	//If Vertical Mirror is On
 	var vertMirror = false;
 
 	Game = {
@@ -76,7 +80,8 @@ const HEIGHT = 22;
 					//Plays Note
 					this.playNote();
 					//Draw
-					PS.color(x, y, this.COLORS[color]);
+					this.trueColor = this.getColor();
+					PS.color(x, y, this.getColor());
 					PS.color(x, this.getInverse(y), this.COLORS[color]);
 				}
 			}
@@ -87,7 +92,8 @@ const HEIGHT = 22;
 					//Plays Note
 					this.playNote();
 					//Draw
-					PS.color(x, y, this.COLORS[color]);
+					this.trueColor = this.getColor();
+					PS.color(x, y, this.getColor());
 					PS.color(this.getInverse(x), y, this.COLORS[color]);
 
 				}
@@ -99,8 +105,12 @@ const HEIGHT = 22;
 					//Plays Note
 					this.playNote();
 					//Draw
-					PS.color(x, y, this.COLORS[color]);
+					this.trueColor = this.getColor();
+					PS.color(x, y, this.getColor());
+					PS.debug
 					PS.color(this.getInverse(x), this.getInverse(y), this.COLORS[color]);
+					PS.color( x, this.getInverse(y), this.COLORS[color]);
+					PS.color(this.getInverse(x), y, this.COLORS[color]);
 				}
 			}
 			//If both off
@@ -120,25 +130,67 @@ const HEIGHT = 22;
 			if( x == 18 ){
 				if(horizMirror == true){
 					horizMirror = false;
-					PS.border(PS.ALL, 10, 0);
+					PS.border( PS.ALL, 10, 0 );
+					//Remove X's without getting rid of other mirror's X's
+					if(vertMirror){
+						for( var i = 0; i < 11; i+= 1 ){
+							for( var j = 11; j < 21; j+= 1 ){
+								PS.glyph( i, j, "" );
+							}
+						}
+					}
+					else{
+						for( var i = 11; i < 21; i+= 1 ){
+							PS.glyph( PS.ALL, i, "" );
+						}
+					}
 				}
 				else{
 					horizMirror = true;
 					PS.border(PS.ALL, 10, 1);
+					for( var i = 11; i < 21; i+= 1 ){
+						PS.glyph( PS.ALL, i, "X" );
+						PS.glyphColor( PS.ALL, i, PS.COLOR_YELLOW)
+					}
 				}
 			}
 			//Selected Vertical Mirror
 			else if( x == 19 ){
 				if(vertMirror == true){
 					vertMirror = false;
+					//Remove Axis
 					for( var i = 0; i < 21; i+= 1 ){
 						PS.border(10, i, 0);
+					}
+					//Remove X's
+					if(horizMirror){
+						for( var i = 11; i < 20; i+= 1 ){
+							for( var j = 0; j < 11; j+= 1 ){
+								PS.glyph( i, j, "" );
+							}
+						}
+					}
+					else{
+						for( var i = 11; i < 21; i+= 1 ){
+							for( var j = 0; j < 21; j+= 1 ){
+								PS.glyph( i, j, "" );
+							}
+						}
 					}
 				}
 				else{
 					vertMirror = true;
+					//Add Axis
 					for( var i = 0; i < 21; i+= 1 ){
-						PS.border(10, i, 1);					}
+						PS.border(10, i, 1);
+					}
+					//Add X's
+					for( var i = 11; i < 21; i+= 1 ){
+						for( var j = 0; j < 21; j+= 1 ){
+							PS.glyph( i, j, "X" );
+							PS.glyphColor( i, j, PS.COLOR_YELLOW)
+						}
+					}
 				}
 			}
 			//Selected Remove
@@ -170,12 +222,6 @@ const HEIGHT = 22;
 			return (Math.abs(num - 10 ) + 10 );
 		},
 
-		PIANO_NOTES: [
-			"piano_c3", "piano_d3", "piano_e3", "piano_f3", "piano_g3", "piano_a4",
-			"piano_b4", "piano_c4", "piano_e4", "piano_f4", "piano_g4", "piano_a5",
-			"piano_b5", "piano_c5", "piano_d5", "piano_f5", "piano_g5", "piano_a6",
-		],
-
 		COLORS: [
 			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
 			0x2be3c7, 0x2bbbe3, 0x2b50e3, 0x722be3, 0xbe2be3, 0xe32b78,
@@ -192,13 +238,6 @@ const HEIGHT = 22;
 
 
 PS.init = function( system, options ) {
-	var toLoad;
-	for( var i = 0; i < 18; i += 1 ){
-		PS.audioLoad( PS.piano((i*3)));
-		PS.debug(PS.piano((i*3)));
-	}
-
-	var x;
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
@@ -288,14 +327,16 @@ PS.enter = function( x, y, data, options ) {
 		}else{
 			PS.statusText("Select a color");
 		}
-	}else{
-		PS.statusText("Click to paint a pixel, press F to fill the canvas.")
+	}
+	else {
+		PS.statusText( "Click to paint a pixel, press F to fill the canvas." );
 		Game.trueColor = PS.color( x, y );
 		PS.color( x, y, Game.getColor() );
-		if ( Game.drag )
-		{
-			Game.trueColor = Game.getColor();
-		}else{
+		if ( Game.drag ) {
+			//Game.trueColor = Game.getColor();
+			Game.click( x, y );
+		}
+		else {
 			Game.drag = false;
 		}
 	}
