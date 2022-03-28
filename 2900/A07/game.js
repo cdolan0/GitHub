@@ -248,10 +248,16 @@ var UNLOCKED = false;
 			return (Math.abs(num - 10 ) + 10 );
 		},
 
-		COLORS: [
+		COLORS_PIANO: [
 			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
 			0x2be3c7, 0x2bbbe3, 0x2b50e3, 0x722be3, 0xbe2be3, 0xe32b78,
 			0xfa8282, 0xb87c37, 0xffffff, 0xadadad, 0x4a4a4a, 0x000000
+		],
+		
+		COLORS_HARP: [
+			0xff4a4a, 0xff744a, 0xff984a, 0xffd54a, 0xe1ff4a, 0x77ff4a,
+			0x4affc6, 0x4ac3ff, 0x4a53ff, 0xb44aff, 0xff4a7a, 0xffabab,
+			0xb06d46, 0x3b1600, 0xdedede, 0x969696, 0x2e2e2e
 		],
 
 		trueColor: PS.COLOR_WHITE,
@@ -285,13 +291,19 @@ PS.init = function( system, options ) {
 
 	var i;
 	var color = PS.COLOR_WHITE;
-	var lastx = WIDTH - 1;
-	var lasty = HEIGHT - 1;
-	for ( i = 0; i < lastx; i += 1 ) {
-		color = Game.COLORS[i];
-		PS.color(i, lasty, color); // set visible color
-		PS.data(i, lasty, color); // also store color as bead data
-		// PS.exec(i, lasty, Game.select); // call Game.select when clicked
+	var piano_x = WIDTH - 2;
+	var piano_y = HEIGHT - 2;
+	var harp_x = WIDTH - 1;
+	var harp_y = HEIGHT - 1;
+	for ( i = 0; i < piano_x; i += 1 ) {
+		color = Game.COLORS_PIANO[i];
+		PS.color(i, piano_y, color); // set visible color
+		PS.data(i, piano_y, color); // also store color as bead data
+	}
+	for ( i = 0; i < harp_x; i += 1 ) {
+		color = Game.COLORS_HARP[i];
+		PS.color(i, harp_y, color); // set visible color
+		PS.data(i, harp_y, color); // also store color as bead data
 	}
 };
 
