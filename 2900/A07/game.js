@@ -50,6 +50,7 @@ Any value returned is ignored.
 
 var Game;
 const WIDTH = 21;
+<<<<<<< Updated upstream
 const HEIGHT = 22;
 
 //If harpsichord is unlocked
@@ -69,6 +70,17 @@ var UNLOCKED = false;
 	var horizMirror = false;
 
 	//If Vertical Mirror is On
+=======
+const HEIGHT = 23;
+
+(function () {
+	var color;
+
+	var note = 14;
+
+	var horizMirror = false;
+
+>>>>>>> Stashed changes
 	var vertMirror = false;
 
 	Game = {
@@ -76,11 +88,15 @@ var UNLOCKED = false;
 			this.drag = true;
 			//If on bottom row
 			if ( y == 21 ){
+<<<<<<< Updated upstream
 				this.selectNoteColor(x, y);
 				this.drag = false;
 			}
 			else if ( UNLOCKED && y >= 21){
 				this.selectNoteColor(x, y);
+=======
+				this.selectNoteColor(x);
+>>>>>>> Stashed changes
 				this.drag = false;
 			}
 			//If horizontal mirroring is on and not vertical mirroring
@@ -90,8 +106,12 @@ var UNLOCKED = false;
 					//Plays Note
 					this.playNote();
 					//Draw
+<<<<<<< Updated upstream
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
+=======
+					PS.color(x, y, this.COLORS[color]);
+>>>>>>> Stashed changes
 					PS.color(x, this.getInverse(y), this.COLORS[color]);
 				}
 			}
@@ -102,8 +122,12 @@ var UNLOCKED = false;
 					//Plays Note
 					this.playNote();
 					//Draw
+<<<<<<< Updated upstream
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
+=======
+					PS.color(x, y, this.COLORS[color]);
+>>>>>>> Stashed changes
 					PS.color(this.getInverse(x), y, this.COLORS[color]);
 
 				}
@@ -115,12 +139,17 @@ var UNLOCKED = false;
 					//Plays Note
 					this.playNote();
 					//Draw
+<<<<<<< Updated upstream
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
 					PS.debug
 					PS.color(this.getInverse(x), this.getInverse(y), this.COLORS[color]);
 					PS.color( x, this.getInverse(y), this.COLORS[color]);
 					PS.color(this.getInverse(x), y, this.COLORS[color]);
+=======
+					PS.color(x, y, this.COLORS[color]);
+					PS.color(this.getInverse(x), this.getInverse(y), this.COLORS[color]);
+>>>>>>> Stashed changes
 				}
 			}
 			//If both off
@@ -134,6 +163,7 @@ var UNLOCKED = false;
 
 		},
 
+<<<<<<< Updated upstream
 		selectNoteColor : function( x, y ){
 			color = x;
 			//Selected Horizontal Mirror
@@ -160,20 +190,33 @@ var UNLOCKED = false;
 							PS.glyph( PS.ALL, i, "" );
 						}
 					}
+=======
+		selectNoteColor : function(x){
+			color = x;
+			//Selected Horizontal Mirror
+			if( x == 18 ){
+				if(horizMirror == true){
+					horizMirror = false;
+					PS.border(PS.ALL, 10, 0);
+>>>>>>> Stashed changes
 				}
 				else{
 					horizMirror = true;
 					PS.border(PS.ALL, 10, 1);
+<<<<<<< Updated upstream
 					for( var i = 11; i < 21; i+= 1 ){
 						PS.glyph( PS.ALL, i, "X" );
 						PS.glyphColor( PS.ALL, i, PS.COLOR_YELLOW)
 					}
+=======
+>>>>>>> Stashed changes
 				}
 			}
 			//Selected Vertical Mirror
 			else if( x == 19 ){
 				if(vertMirror == true){
 					vertMirror = false;
+<<<<<<< Updated upstream
 					//Remove Axis
 					for( var i = 0; i < 21; i+= 1 ){
 						PS.border(10, i, 0);
@@ -207,6 +250,16 @@ var UNLOCKED = false;
 							PS.glyphColor( i, j, PS.COLOR_YELLOW)
 						}
 					}
+=======
+					for( var i = 0; i < 21; i+= 1 ){
+						PS.border(10, i, 0);
+					}
+				}
+				else{
+					vertMirror = true;
+					for( var i = 0; i < 21; i+= 1 ){
+						PS.border(10, i, 1);					}
+>>>>>>> Stashed changes
 				}
 			}
 			//Selected Remove
@@ -225,22 +278,30 @@ var UNLOCKED = false;
 
 		//Plays Note
 		playNote : function(){
+<<<<<<< Updated upstream
 			if( instrument == "piano"){
 				PS.audioPlay(PS.piano((note*3)));
 			}
 			else if ( instrument == "harpsichord" ){
 				PS.audioPlay(PS.harpsichord((note*3)));
 			}
+=======
+			PS.audioPlay(PS.piano((note*3)));
+>>>>>>> Stashed changes
 		},
 
 		//Returns Color Code of Current Color
 		getColor : function(){
+<<<<<<< Updated upstream
 			if( instrument == "piano" ){
 				return this.COLORS[color];
 			}
 			else if ( instrument == "harpsichord"){
 
 			}
+=======
+			return this.COLORS[color];
+>>>>>>> Stashed changes
 		},
 
 		// Returns a Number Flipped over An Axis
@@ -248,12 +309,29 @@ var UNLOCKED = false;
 			return (Math.abs(num - 10 ) + 10 );
 		},
 
+<<<<<<< Updated upstream
 		COLORS: [
+=======
+		PIANO_NOTES: [
+			"piano_c3", "piano_d3", "piano_e3", "piano_f3", "piano_g3", "piano_a4",
+			"piano_b4", "piano_c4", "piano_e4", "piano_f4", "piano_g4", "piano_a5",
+			"piano_b5", "piano_c5", "piano_d5", "piano_f5", "piano_g5", "piano_a6",
+		],
+
+		COLORS_PIANO: [
+>>>>>>> Stashed changes
 			0xe32b2b, 0xe3562b, 0xe36f2b,  0xe3b52b, 0xafe32b, 0x3ee32b,
 			0x2be3c7, 0x2bbbe3, 0x2b50e3, 0x722be3, 0xbe2be3, 0xe32b78,
 			0xfa8282, 0xb87c37, 0xffffff, 0xadadad, 0x4a4a4a, 0x000000
 		],
 
+<<<<<<< Updated upstream
+=======
+		COLORS_HARP: [
+
+		],
+
+>>>>>>> Stashed changes
 		trueColor: PS.COLOR_WHITE,
 		FILL_KEY: 102,
 		drag: false,
@@ -264,6 +342,16 @@ var UNLOCKED = false;
 
 
 PS.init = function( system, options ) {
+<<<<<<< Updated upstream
+=======
+	var toLoad;
+	for( var i = 0; i < 18; i += 1 ){
+		PS.audioLoad( PS.piano((i*3)));
+		PS.debug(PS.piano((i*3)));
+	}
+
+	var x;
+>>>>>>> Stashed changes
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
@@ -285,6 +373,7 @@ PS.init = function( system, options ) {
 
 	var i;
 	var color = PS.COLOR_WHITE;
+<<<<<<< Updated upstream
 	var lastx = WIDTH - 1;
 	var lasty = HEIGHT - 1;
 	for ( i = 0; i < lastx; i += 1 ) {
@@ -292,6 +381,21 @@ PS.init = function( system, options ) {
 		PS.color(i, lasty, color); // set visible color
 		PS.data(i, lasty, color); // also store color as bead data
 		// PS.exec(i, lasty, Game.select); // call Game.select when clicked
+=======
+	var piano_x = WIDTH - 2;
+	var piano_y = HEIGHT - 2;
+	var harp_x = WIDTH - 1;
+	var harp_y = HEIGHT - 1;
+	for ( i = 0; i < piano_x; i += 1 ) {
+		color = Game.COLORS_PIANO[i];
+		PS.color(i, piano_y, color); // set visible color
+		PS.data(i, piano_y, color); // also store color as bead data
+	}
+	for ( i = 0; i < harp_x; i += 1 ) {
+		color = Game.COLORS_HARP[i];
+		PS.color(i, harp_y, color); // set visible color
+		PS.data(i, harp_y, color); // also store color as bead data
+>>>>>>> Stashed changes
 	}
 };
 
@@ -353,6 +457,7 @@ PS.enter = function( x, y, data, options ) {
 		}else{
 			PS.statusText("Select a color");
 		}
+<<<<<<< Updated upstream
 	}
 	else {
 		PS.statusText( "Click to paint a pixel, press F to fill the canvas." );
@@ -363,6 +468,16 @@ PS.enter = function( x, y, data, options ) {
 			Game.click( x, y );
 		}
 		else {
+=======
+	}else{
+		PS.statusText("Click to paint a pixel, press F to fill the canvas.")
+		Game.trueColor = PS.color( x, y );
+		PS.color( x, y, Game.getColor() );
+		if ( Game.drag )
+		{
+			Game.trueColor = Game.getColor();
+		}else{
+>>>>>>> Stashed changes
 			Game.drag = false;
 		}
 	}
@@ -419,7 +534,10 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		for (i = 0; i < lasty; i++) {
 			PS.color( PS.ALL, i, Game.getColor() );
 			Game.trueColor = Game.getColor();
+<<<<<<< Updated upstream
 			Game.playNote();
+=======
+>>>>>>> Stashed changes
 		}
 	}
 };
