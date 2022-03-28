@@ -104,7 +104,7 @@ var UNLOCKED = false;
 					//Draw
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
-					PS.color(this.getInverse(x), y, this.COLORS[color]);
+					PS.color(this.getInverse(x), y, this.getColor());
 
 				}
 			}
@@ -119,8 +119,8 @@ var UNLOCKED = false;
 					PS.color(x, y, this.getColor());
 					PS.debug
 					PS.color(this.getInverse(x), this.getInverse(y), this.getColor());
-					PS.color( x, this.getInverse(y), this.getColor);
-					PS.color(this.getInverse(x), y, this.getColor);
+					PS.color( x, this.getInverse(y), this.getColor());
+					PS.color(this.getInverse(x), y, this.getColor());
 				}
 			}
 			//If both off
@@ -168,11 +168,9 @@ var UNLOCKED = false;
 						//Get rid of middle square
 						PS.border(10, 10, 0);
 					}
-					PS.fade( PS.ALL, PS.ALL , 60); //Add fader back in
 				}
 				//Add X's and Axis
 				else{
-					PS.fade( PS.ALL, PS.ALL , 0); //Turn Fader Off
 					horizMirror = true;
 					PS.border(PS.ALL, 10, 1);
 					for( var i = 11; i < 21; i+= 1 ){
@@ -208,10 +206,9 @@ var UNLOCKED = false;
 						}
 						PS.border(10, 10, 0);
 					}
-					PS.fade( PS.ALL, PS.ALL , 60); //Add fader back in
+
 				}
 				else{
-					PS.fade( PS.ALL, PS.ALL , 0); //Turn Fader Off
 					vertMirror = true;
 					//Add Axis
 					for( var i = 0; i < 21; i+= 1 ){
@@ -334,7 +331,7 @@ PS.init = function( system, options ) {
 
 	PS.color(PS.ALL, harp_y, PS.COLOR_BLACK); // set visible color
 	PS.data(PS.ALL, harp_y, PS.COLOR_BLACK); // also store color as bead data
-	PS.fade( PS.ALL, 22 , 60); //Fade colors in
+	PS.fade( PS.ALL, PS.ALL, 60); //Fade colors in
 };
 
 /*
