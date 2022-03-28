@@ -50,7 +50,7 @@ Any value returned is ignored.
 
 var Game;
 const WIDTH = 21;
-const HEIGHT = 22;
+const HEIGHT = 23;
 
 //If harpsichord is unlocked
 var UNLOCKED = false;
@@ -92,7 +92,7 @@ var UNLOCKED = false;
 					//Draw
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
-					PS.color(x, this.getInverse(y), this.COLORS[color]);
+					PS.color(x, this.getInverse(y), this.getColor());
 				}
 			}
 			//If horizontal mirroring is not on and vertical mirroring is
@@ -118,9 +118,9 @@ var UNLOCKED = false;
 					this.trueColor = this.getColor();
 					PS.color(x, y, this.getColor());
 					PS.debug
-					PS.color(this.getInverse(x), this.getInverse(y), this.COLORS[color]);
-					PS.color( x, this.getInverse(y), this.COLORS[color]);
-					PS.color(this.getInverse(x), y, this.COLORS[color]);
+					PS.color(this.getInverse(x), this.getInverse(y), this.getColor());
+					PS.color( x, this.getInverse(y), this.getColor);
+					PS.color(this.getInverse(x), y, this.getColor);
 				}
 			}
 			//If both off
@@ -146,7 +146,13 @@ var UNLOCKED = false;
 			if( x == 18 ){
 				if(horizMirror == true){
 					horizMirror = false;
-					PS.border( PS.ALL, 10, 0 );
+					//Remove Axis
+					for( var i = 0; i < 10; i+= 1 ){
+						PS.border(i, 10, 0);
+					}
+					for( var i = 11; i < 21; i+= 1 ){
+						PS.border(i, 10, 0);
+					}
 					//Remove X's without getting rid of other mirror's X's
 					if(vertMirror){
 						for( var i = 0; i < 11; i+= 1 ){
@@ -159,14 +165,19 @@ var UNLOCKED = false;
 						for( var i = 11; i < 21; i+= 1 ){
 							PS.glyph( PS.ALL, i, "" );
 						}
+						//Get rid of middle square
+						PS.border(10, 10, 0);
 					}
+					PS.fade( PS.ALL, PS.ALL , 60); //Add fader back in
 				}
+				//Add X's and Axis
 				else{
+					PS.fade( PS.ALL, PS.ALL , 0); //Turn Fader Off
 					horizMirror = true;
 					PS.border(PS.ALL, 10, 1);
 					for( var i = 11; i < 21; i+= 1 ){
 						PS.glyph( PS.ALL, i, "X" );
-						PS.glyphColor( PS.ALL, i, PS.COLOR_YELLOW)
+						PS.glyphColor( PS.ALL, i, PS.COLOR_RED)
 					}
 				}
 			}
@@ -175,12 +186,15 @@ var UNLOCKED = false;
 				if(vertMirror == true){
 					vertMirror = false;
 					//Remove Axis
-					for( var i = 0; i < 21; i+= 1 ){
+					for( var i = 0; i < 10; i+= 1 ){
+						PS.border(10, i, 0);
+					}
+					for( var i = 11; i < 21; i+= 1 ){
 						PS.border(10, i, 0);
 					}
 					//Remove X's
 					if(horizMirror){
-						for( var i = 11; i < 20; i+= 1 ){
+						for( var i = 11; i < 21; i+= 1 ){
 							for( var j = 0; j < 11; j+= 1 ){
 								PS.glyph( i, j, "" );
 							}
@@ -192,9 +206,12 @@ var UNLOCKED = false;
 								PS.glyph( i, j, "" );
 							}
 						}
+						PS.border(10, 10, 0);
 					}
+					PS.fade( PS.ALL, PS.ALL , 60); //Add fader back in
 				}
 				else{
+					PS.fade( PS.ALL, PS.ALL , 0); //Turn Fader Off
 					vertMirror = true;
 					//Add Axis
 					for( var i = 0; i < 21; i+= 1 ){
@@ -204,7 +221,7 @@ var UNLOCKED = false;
 					for( var i = 11; i < 21; i+= 1 ){
 						for( var j = 0; j < 21; j+= 1 ){
 							PS.glyph( i, j, "X" );
-							PS.glyphColor( i, j, PS.COLOR_YELLOW)
+							PS.glyphColor( i, j, PS.COLOR_RED)
 						}
 					}
 				}
@@ -233,19 +250,32 @@ var UNLOCKED = false;
 			}
 		},
 
-		//Returns Color Code of Current Color
+		//Returns Color Code of Current Color and Instrument
 		getColor : function(){
 			if( instrument == "piano" ){
-				return this.COLORS[color];
+				return this.COLORS_PIANO[color];
 			}
 			else if ( instrument == "harpsichord"){
-
+				return this.COLORS_HARP[color];
 			}
 		},
 
 		// Returns a Number Flipped over An Axis
 		getInverse : function(num){
 			return (Math.abs(num - 10 ) + 10 );
+		},
+
+		unlock : function(){
+			var i;
+			var color = PS.COLOR_WHITE;
+			var harp_x = WIDTH - 1;
+			var harp_y = HEIGHT - 1;
+			for ( i = 0; i < harp_x; i += 1 ) {
+				color = Game.COLORS_HARP[i];
+				PS.color(i, harp_y, color); // set visible color
+				PS.data(i, harp_y, color); // also store color as bead data
+			}
+			UNLOCKED = true;
 		},
 
 		COLORS_PIANO: [
@@ -256,8 +286,8 @@ var UNLOCKED = false;
 		
 		COLORS_HARP: [
 			0xff4a4a, 0xff744a, 0xff984a, 0xffd54a, 0xe1ff4a, 0x77ff4a,
-			0x4affc6, 0x4ac3ff, 0x4a53ff, 0xb44aff, 0xff4a7a, 0xffabab,
-			0xb06d46, 0x3b1600, 0xdedede, 0x969696, 0x2e2e2e
+			0x4affc6, 0x4ac3ff, 0x4a53ff, 0x894aff,	0xb44aff, 0xff4a7a,
+			0xffabab, 0xb06d46, 0x3b1600, 0xdedede, 0x969696, 0x2e2e2e
 		],
 
 		trueColor: PS.COLOR_WHITE,
@@ -270,6 +300,7 @@ var UNLOCKED = false;
 
 
 PS.init = function( system, options ) {
+	PS.audioLoad( "fx_ding" );
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.statusColor( PS.COLOR_WHITE );
 	PS.statusText( "Draw with Music!" );
@@ -300,11 +331,10 @@ PS.init = function( system, options ) {
 		PS.color(i, piano_y, color); // set visible color
 		PS.data(i, piano_y, color); // also store color as bead data
 	}
-	for ( i = 0; i < harp_x; i += 1 ) {
-		color = Game.COLORS_HARP[i];
-		PS.color(i, harp_y, color); // set visible color
-		PS.data(i, harp_y, color); // also store color as bead data
-	}
+
+	PS.color(PS.ALL, harp_y, PS.COLOR_BLACK); // set visible color
+	PS.data(PS.ALL, harp_y, PS.COLOR_BLACK); // also store color as bead data
+	PS.fade( PS.ALL, 22 , 60); //Fade colors in
 };
 
 /*
@@ -351,7 +381,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
-	if( y == 21 ){
+	if( y >= 21 ){
 		//Vertical Mirror
 		if( x == 18){
 			PS.statusText("Mirror Along X Axis");
@@ -425,13 +455,20 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 	// Add code here for when a key is pressed.
 
 	var i;
-	var lasty = HEIGHT - 1;
+	var lasty = HEIGHT - 2;
 
 	if( key == Game.FILL_KEY ) {
 		for (i = 0; i < lasty; i++) {
 			PS.color( PS.ALL, i, Game.getColor() );
 			Game.trueColor = Game.getColor();
-			Game.playNote();
+			//Only play notes if unlocked before
+			if(UNLOCKED) {
+				Game.playNote();
+			}
+		}
+		if(!UNLOCKED){
+			Game.unlock();
+			PS.audioPlay( "fx_ding" );
 		}
 	}
 };
