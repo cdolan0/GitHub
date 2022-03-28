@@ -52,12 +52,18 @@ var Game;
 const WIDTH = 21;
 const HEIGHT = 22;
 
+//If harpsichord is unlocked
+var UNLOCKED = false;
+
 (function () {
 	//Color Index
 	var color;
 
 	//Note Index
 	var note = 14;
+
+	//Selected instrument
+	var instrument = "piano";
 
 	//If Horizontal Mirror is On
 	var horizMirror = false;
@@ -70,7 +76,11 @@ const HEIGHT = 22;
 			this.drag = true;
 			//If on bottom row
 			if ( y == 21 ){
-				this.selectNoteColor(x);
+				this.selectNoteColor(x, y);
+				this.drag = false;
+			}
+			else if ( UNLOCKED && y >= 21){
+				this.selectNoteColor(x, y);
 				this.drag = false;
 			}
 			//If horizontal mirroring is on and not vertical mirroring
@@ -124,9 +134,15 @@ const HEIGHT = 22;
 
 		},
 
-		selectNoteColor : function(x){
+		selectNoteColor : function( x, y ){
 			color = x;
 			//Selected Horizontal Mirror
+			if( y == 21 ){
+				instrument = "piano";
+			}
+			else if( UNLOCKED && y == 22 ){
+				instrument = "harpsichord";
+			}
 			if( x == 18 ){
 				if(horizMirror == true){
 					horizMirror = false;
@@ -209,12 +225,22 @@ const HEIGHT = 22;
 
 		//Plays Note
 		playNote : function(){
-			PS.audioPlay(PS.piano((note*3)));
+			if( instrument == "piano"){
+				PS.audioPlay(PS.piano((note*3)));
+			}
+			else if ( instrument == "harpsichord" ){
+				PS.audioPlay(PS.harpsichord((note*3)));
+			}
 		},
 
 		//Returns Color Code of Current Color
 		getColor : function(){
-			return this.COLORS[color];
+			if( instrument == "piano" ){
+				return this.COLORS[color];
+			}
+			else if ( instrument == "harpsichord"){
+
+			}
 		},
 
 		// Returns a Number Flipped over An Axis
@@ -393,6 +419,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 		for (i = 0; i < lasty; i++) {
 			PS.color( PS.ALL, i, Game.getColor() );
 			Game.trueColor = Game.getColor();
+			Game.playNote();
 		}
 	}
 };
