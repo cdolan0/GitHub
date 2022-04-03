@@ -60,15 +60,25 @@ var level;
 //Player (x,y) and mirror (x,y);
 var pX, pY, mX, mY;
 
+//Game Over Boolean
+var gameover;
+
 (function (){
 
     // 1 = left, 2 = up, -1 = right, -2 = down
     var direction;
 
+    gameover = false;
+
+    inverted = false;
+
+    mX = 10;
+    mY = 10;
+
     Game = {
         createBlock( w, h, x, y, color){
             for(var i = x; i <= (x+w); i += 1){
-                for(var j = y; j <= (y+h); y += 1){
+                for(var j = y; j <= (y+h); j += 1){
                     PS.color( i, j, color );
                     PS.data( i, j, color );
                 }
@@ -92,9 +102,24 @@ var pX, pY, mX, mY;
                 direction = -2;
             }
 
-            if( data != "blue"){
+            if( data != PS.COLOR_BLUE && data != PS.COLOR_GRAY_DARK ){
                 this.movePlayer( x, y );
                 this.moveMirror();
+            }
+            if( data == PS.COLOR_GRAY_LIGHT ){
+                this.unlock();
+            }
+            if( data == PS.COLOR_ORANGE ){
+                if(inverted){
+                    inverted = false;
+                }
+                else{
+                    inverted = true;
+                }
+            }
+            if( data == PS.COLOR_RED){
+                PS.radius( x, y, 0);
+                this.GameOver();
             }
         },
         movePlayer( x, y ){
@@ -103,12 +128,12 @@ var pX, pY, mX, mY;
             PS.radius( x, y, 50);
             pX = x;
             pY = y;
-            //Right
+            //Left
             if(direction == 1){
                 PS.color( x + 1, y, PS.COLOR_WHITE);
                 PS.radius( x + 1, y, 0);
             }
-            //Left
+            //Right
             if(direction == -1){
                 PS.color( x - 1, y, PS.COLOR_WHITE);
                 PS.radius( x - 1, y, 0);
@@ -127,13 +152,13 @@ var pX, pY, mX, mY;
         },
 
         clearArrows(){
-            if((pX - 1) != 0){
+            if((pX) != 0){
                 PS.glyph(pX - 1, pY, "");
             }
             if((pX + 1) < WIDTH){
                 PS.glyph(pX + 1, pY, "");
             }
-            if((pY - 1) != 0){
+            if((pY) != 0){
                 PS.glyph(pX, pY - 1, "");
             }
             if((pY + 1) < HEIGHT) {
@@ -142,13 +167,13 @@ var pX, pY, mX, mY;
         },
 
         updateArrows(){
-            if((pX - 1) != 0){
+            if((pX) != 0){
                 PS.glyph(pX - 1, pY, "<");
             }
             if((pX + 1) < WIDTH){
                 PS.glyph(pX + 1, pY, ">");
             }
-            if((pY - 1) != 0){
+            if((pY) != 0){
                 PS.glyph(pX, pY - 1, "^");
             }
             if((pY + 1) < HEIGHT) {
@@ -157,7 +182,85 @@ var pX, pY, mX, mY;
         },
 
         moveMirror(){
+            //Mirror direction
+            var mDir = direction;
+            if(inverted){
+                mDir= direction * -1;
+            }
+            //Left
+            if(mDir == 1 && (mX) != 0) {
+                if(PS.data(mX - 1, mY) != PS.COLOR_RED){
+                    mX = mX - 1;
+                    PS.color(mX, mY, PS.COLOR_BLUE);
+                    PS.radius(mX, mY, 50);
 
+                    PS.color(mX + 1, mY, PS.COLOR_WHITE);
+                    PS.radius(mX + 1, mY, 0);
+                }
+            }
+            //Right
+            else if(mDir == -1 && (mX + 1) < WIDTH) {
+                if(PS.data(mX + 1, mY) != PS.COLOR_RED){
+                    mX = mX + 1;
+                    PS.color(mX, mY, PS.COLOR_BLUE);
+                    PS.radius(mX, mY, 50);
+
+                    PS.color(mX - 1, mY, PS.COLOR_WHITE);
+                    PS.radius(mX - 1, mY, 0);
+                }
+            }
+            //Up
+            else if(mDir == 2 && (mY) != 0) {
+                if(PS.data(mX, mY - 1) != PS.COLOR_RED){
+                    mY = mY - 1;
+                    PS.color(mX, mY, PS.COLOR_BLUE);
+                    PS.radius(mX, mY, 50);
+
+                    PS.color(mX, mY + 1, PS.COLOR_WHITE);
+                    PS.radius(mX, mY + 1, 0);
+                }
+            }
+            //Up
+            else if ((mY + 1) < HEIGHT){
+                if(PS.data(mX, mY + 1) != PS.COLOR_RED){
+                    mY = mY + 1;
+                    PS.color(mX, mY, PS.COLOR_BLUE);
+                    PS.radius(mX, mY, 50);
+
+                    PS.color(mX, mY - 1, PS.COLOR_WHITE);
+                    PS.radius(mX, mY - 1, 0);
+                }
+            }
+
+            //If In Blue
+            if(PS.data(mX, mY) == PS.COLOR_BLUE){
+                this.GameOver;
+            }
+
+            //If merged
+            if(mX == pX && mY == pY){
+                PS.color(mX, mY, PS.COLOR_VIOLET);
+                PS.statusText("LEVEL COMPLETE");
+                PS.statusColor(PS.COLOR_BLACK);
+                level++
+            }
+        },
+
+        unlock(){
+            for(var i = 0; i < WIDTH; i += 1){
+                for(var j = 0; j < HEIGHT; j += 1){
+                    if(PS.data( i,  j ) == PS.COLOR_GRAY_DARK){
+                        PS.color( i, j, PS.COLOR_WHITE );
+                    }
+                }
+            }
+        },
+
+        GameOver(){
+            PS.statusText("Game Over");
+            PS.statusColor(PS.COLOR_BLACK);
+            this.clearArrows();
+            gameover = true;
         },
 
         makeLevel(){
@@ -183,6 +286,11 @@ PS.init = function( system, options ) {
     level = 1;
     PS.border(PS.ALL, PS.ALL, 0);
     Game.makeLevel();
+
+    Game.createBlock(2,2, 7, 7, PS.COLOR_RED);
+
+    PS.color(mX, mY, PS.COLOR_BLUE);
+
 };
 
 /*
@@ -196,8 +304,10 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-	if( ( Math.abs(x-pX) == 1 && y == pY ) || ( Math.abs(y-pY) == 1 && x == pX ) ){
-        Game.check( x, y, data );
+	if(!gameover){
+        if( ( Math.abs(x-pX) == 1 && y == pY ) || ( Math.abs(y-pY) == 1 && x == pX ) ){
+            Game.check( x, y, data );
+        }
     }
 };
 
