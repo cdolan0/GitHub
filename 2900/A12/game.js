@@ -48,8 +48,8 @@ Any value returned is ignored.
 [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
 */
 var Game;
-const WIDTH = 16;
-const HEIGHT = 16;
+const WIDTH = 15;
+const HEIGHT = 15;
 
 // if controls are inverted
 var inverted;
@@ -243,6 +243,7 @@ var gameover;
                 PS.statusText("LEVEL COMPLETE");
                 PS.statusColor(PS.COLOR_BLACK);
                 level++
+                this.makeLevel();
             }
         },
 
@@ -266,14 +267,74 @@ var gameover;
         makeLevel(){
             if(level == 1){
                 PS.gridSize( WIDTH, HEIGHT );
-                PS.statusColor( PS.COLOR_WHITE );
-                PS.statusText( "" );
+                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusText( "Level 1" );
                 pX = 5;
-                pY = 5;
+                pY = 7;
+                mX = 9;
+                mY = 7;
                 PS.color(pX, pY, PS.COLOR_RED);
+                PS.color(mX, mY, PS.COLOR_BLUE);
                 PS.radius(pX, pY, 50);
+                PS.radius(mX, mY, 50);
                 this.updateArrows();
-                this.createBlock();
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 12, 14, 1, PS.COLOR_RED );
+                this.createBlock( 0, 12, 0, 1, PS.COLOR_BLUE );
+            }
+            if(level == 2){
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusText( "Level 2" );
+                pX = 3;
+                pY = 3;
+                mX = 11;
+                mY = 3;
+                PS.color(pX, pY, PS.COLOR_RED);
+                PS.color(mX, mY, PS.COLOR_BLUE);
+                PS.radius(pX, pY, 50);
+                PS.radius(mX, mY, 50);
+                this.updateArrows();
+                this.createBlock( 0, 6, 7, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 3, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 6, 0, 0, 0, PS.COLOR_RED );
+                this.createBlock( 11, 0, 1, 14, PS.COLOR_RED );
+                this.createBlock( 0, 13, 0, 1, PS.COLOR_RED );
+                this.createBlock( 5, 0, 8, 0, PS.COLOR_BLUE )
+                this.createBlock( 0, 7, 14, 7, PS.COLOR_BLUE );
+                this.createBlock( 1, 0, 5, 7, PS.COLOR_BLUE );
+                this.createBlock( 0, 2, 14, 4, PS.COLOR_BLUE );
+                this.createBlock( 7, 0, 7, 7, PS.COLOR_GRAY_DARK );
+                this.createBlock( 0, 0, 13, 14, PS.COLOR_GRAY_LIGHT );
+            }
+            if(level == 3){
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusText( "Level 3" );
+                pX = 3;
+                pY = 7;
+                mX = 11;
+                mY = 7;
+                PS.color(pX, pY, PS.COLOR_RED);
+                PS.color(mX, mY, PS.COLOR_BLUE);
+                PS.radius(pX, pY, 50);
+                PS.radius(mX, mY, 50);
+                this.updateArrows();
+                this.createBlock( 14, 0, 0,0, PS.COLOR_BLACK );
+                this.createBlock( 0, 5, 0, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 5, 14, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 8, 7, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 6, 0, 8, PS.COLOR_RED );
+                this.createBlock( 5, 0, 1, 14, PS.COLOR_RED );
+                this.createBlock( 4, 0, 2, 4, PS.COLOR_RED );
+                this.createBlock( 0, 1, 13, 1, PS.COLOR_BLUE );
+                this.createBlock( 0, 6, 14, 8, PS.COLOR_BLUE );
+                this.createBlock( 5, 0, 8, 14, PS.COLOR_BLUE );
+                this.createBlock( 0, 4, 7, 10, PS.COLOR_GRAY_DARK );
+                this.createBlock( 0, 0, 0, 7, PS.COLOR_GRAY_LIGHT );
+                this.createBlock( 0, 0, 14, 7, PS.COLOR_GRAY_LIGHT );
+                this.createBlock( 0, 0, 3, 1, PS.COLOR_ORANGE );
             }
         }
 
@@ -286,8 +347,6 @@ PS.init = function( system, options ) {
     level = 1;
     PS.border(PS.ALL, PS.ALL, 0);
     Game.makeLevel();
-
-    Game.createBlock(2,2, 7, 7, PS.COLOR_RED);
 
     PS.color(mX, mY, PS.COLOR_BLUE);
 
