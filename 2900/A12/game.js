@@ -63,6 +63,8 @@ var pX, pY, mX, mY;
 //Game Over Boolean
 var gameover;
 
+const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
+
 (function (){
 
     // 1 = left, 2 = up, -1 = right, -2 = down
@@ -84,8 +86,8 @@ var gameover;
                 }
             }
         },
-        check(  x, y, data ){
-            //Left
+        check(key){
+            /*//Left
             if((pX - x) == 1){
                 direction = 1
             }
@@ -102,10 +104,36 @@ var gameover;
                 direction = -2;
             }
 
-            if( data != PS.COLOR_BLUE && data != PS.COLOR_GRAY_DARK ){
-                this.movePlayer( x, y );
+
+*/
+            var data;
+            //Left
+            if(key == 1005){
+                direction = 1;
+                data = PS.data(pX-1, pY);
+            }
+            //Up
+            else if(key == 1006){
+                direction = 2;
+                data = PS.data(pX, pY-1);
+            }
+            //Right
+            else if(key == 1007){
+                direction = -1;
+                data = PS.data(pX+1, pY);
+            }
+            //Down
+            else if(key == 1008){
+                direction = -2;
+                data = PS.data(pX, pY+1);
+            }
+
+            if( data != PS.COLOR_BLUE && !OBSTACLES.includes(data)){
+                this.movePlayer();
                 this.moveMirror();
             }
+            PS.color(pX, pY, PS.COLOR_RED);
+            PS.radius(pX, pY, 50);
             if( data == PS.COLOR_GRAY_LIGHT ){
                 this.unlock();
             }
@@ -118,36 +146,38 @@ var gameover;
                 }
             }
             if( data == PS.COLOR_RED){
-                PS.radius( x, y, 0);
+                PS.radius( pX, pY, 0);
                 this.GameOver();
             }
         },
-        movePlayer( x, y ){
+        movePlayer(){
             this.clearArrows();
-            PS.color( x, y, PS.COLOR_RED);
-            PS.radius( x, y, 50);
-            pX = x;
-            pY = y;
             //Left
             if(direction == 1){
-                PS.color( x + 1, y, PS.COLOR_WHITE);
-                PS.radius( x + 1, y, 0);
+                pX = pX-1;
+                PS.color( pX+1, pY, PS.COLOR_WHITE);
+                PS.radius( pX+1, pY, 0);
             }
             //Right
-            if(direction == -1){
-                PS.color( x - 1, y, PS.COLOR_WHITE);
-                PS.radius( x - 1, y, 0);
+            else if(direction == -1){
+                pX = pX+1;
+                PS.color( pX - 1, pY, PS.COLOR_WHITE);
+                PS.radius( pX, pY, 0);
             }
             //Up
-            if(direction == 2){
-                PS.color( x, y + 1, PS.COLOR_WHITE);
-                PS.radius( x, y + 1, 0);
+            else if(direction == 2){
+                pY = pY - 1;
+                PS.color( pX, pY + 1, PS.COLOR_WHITE);
+                PS.radius( pX, pY + 1, 0);
             }
             //Down
-            if(direction == -2){
-                PS.color( x, y - 1, PS.COLOR_WHITE);
-                PS.radius( x, y - 1, 0);
+            else if(direction == -2){
+                pY = pY + 1;
+                PS.color( pX, pY - 1, PS.COLOR_WHITE);
+                PS.radius( pX, pY - 1, 0);
             }
+            PS.color( pX, pY, PS.COLOR_RED);
+            PS.radius( pX, pY, 50);
             this.updateArrows();
         },
 
@@ -181,15 +211,55 @@ var gameover;
             }
         },
 
+        highlightArrow(key){
+            //Left
+            if(key == 1005 && (pX) != 0){
+               PS.glyphColor(pX-1, pY, PS.COLOR_GREEN);
+            }
+            //Up
+            else if(key == 1006 && (pY) != 0){
+                PS.glyphColor(pX, pY-1, PS.COLOR_GREEN);
+            }
+            //Right
+            else if(key == 1007 && (pX + 1) < WIDTH){
+                PS.glyphColor(pX+1, pY, PS.COLOR_GREEN);
+            }
+            //Down
+            else if(key == 1008 && (pY + 1) < HEIGHT){
+                PS.glyphColor(pX, pY+1, PS.COLOR_GREEN);
+            }
+        },
+
+        unHLArrow(key){
+            //Left
+            if(key == 1005 && (pX) != 0){
+                PS.glyphColor(pX-1, pY, PS.COLOR_BLACK);
+            }
+            //Up
+            else if(key == 1006 && (pY) != 0){
+                PS.glyphColor(pX, pY-1, PS.COLOR_BLACK);
+            }
+            //Right
+            else if(key == 1007 && (pX + 1) < WIDTH){
+                PS.glyphColor(pX+1, pY, PS.COLOR_BLACK);
+            }
+            //Down
+            else if(key == 1008 && (pY + 1) < HEIGHT){
+                PS.glyphColor(pX, pY+1, PS.COLOR_BLACK);
+            }
+        },
+
         moveMirror(){
             //Mirror direction
             var mDir = direction;
+            var nextBead;
             if(inverted){
                 mDir= direction * -1;
             }
             //Left
             if(mDir == 1 && (mX) != 0) {
-                if(PS.data(mX - 1, mY) != PS.COLOR_RED){
+                nextBead = PS.data(mX - 1, mY);
+                if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mX = mX - 1;
                     PS.color(mX, mY, PS.COLOR_BLUE);
                     PS.radius(mX, mY, 50);
@@ -200,7 +270,8 @@ var gameover;
             }
             //Right
             else if(mDir == -1 && (mX + 1) < WIDTH) {
-                if(PS.data(mX + 1, mY) != PS.COLOR_RED){
+                nextBead = PS.data(mX + 1, mY);
+                if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mX = mX + 1;
                     PS.color(mX, mY, PS.COLOR_BLUE);
                     PS.radius(mX, mY, 50);
@@ -211,7 +282,8 @@ var gameover;
             }
             //Up
             else if(mDir == 2 && (mY) != 0) {
-                if(PS.data(mX, mY - 1) != PS.COLOR_RED){
+                nextBead = PS.data(mX, mY - 1);
+                if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mY = mY - 1;
                     PS.color(mX, mY, PS.COLOR_BLUE);
                     PS.radius(mX, mY, 50);
@@ -222,7 +294,8 @@ var gameover;
             }
             //Up
             else if ((mY + 1) < HEIGHT){
-                if(PS.data(mX, mY + 1) != PS.COLOR_RED){
+                nextBead = PS.data(mX, mY + 1);
+                if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mY = mY + 1;
                     PS.color(mX, mY, PS.COLOR_BLUE);
                     PS.radius(mX, mY, 50);
@@ -233,8 +306,9 @@ var gameover;
             }
 
             //If In Blue
-            if(PS.data(mX, mY) == PS.COLOR_BLUE){
-                this.GameOver;
+            if(nextBead == PS.COLOR_BLUE){
+                PS.radius(mX, mY, 0);
+                this.GameOver();
             }
 
             //If merged
@@ -267,7 +341,9 @@ var gameover;
         makeLevel(){
             if(level == 1){
                 PS.gridSize( WIDTH, HEIGHT );
+                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_PURPLE );
+                PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 1" );
                 pX = 5;
                 pY = 7;
@@ -285,7 +361,9 @@ var gameover;
             }
             if(level == 2){
                 PS.gridSize( WIDTH, HEIGHT );
+                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_PURPLE );
+                PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 2" );
                 pX = 3;
                 pY = 3;
@@ -310,7 +388,9 @@ var gameover;
             }
             if(level == 3){
                 PS.gridSize( WIDTH, HEIGHT );
+                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_PURPLE );
+                PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 3" );
                 pX = 3;
                 pY = 7;
@@ -345,7 +425,6 @@ var gameover;
 
 PS.init = function( system, options ) {
     level = 1;
-    PS.border(PS.ALL, PS.ALL, 0);
     Game.makeLevel();
 
     PS.color(mX, mY, PS.COLOR_BLUE);
@@ -363,11 +442,11 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-	if(!gameover){
+	/*if(!gameover){
         if( ( Math.abs(x-pX) == 1 && y == pY ) || ( Math.abs(y-pY) == 1 && x == pX ) ){
             Game.check( x, y, data );
         }
-    }
+    }*/
 };
 
 /*
@@ -450,9 +529,10 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-    /*if( key >= 37 && key <= 40 ) {
+    if( !gameover && key >= 1005 && key <= 1008 ) {
         Game.check(key);
-    }*/
+        Game.highlightArrow(key);
+    }
 };
 
 /*
@@ -466,11 +546,9 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	// Uncomment the following code line to inspect first three parameters:
-
-	// PS.debug( "PS.keyUp(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
-
-	// Add code here for when a key is released.
+    if( !gameover && key >= 1005 && key <= 1008 ) {
+        Game.unHLArrow(key);
+    }
 };
 
 /*
