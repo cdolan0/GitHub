@@ -131,28 +131,41 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
         check(key){
             var data;
+            var goodToMove;
             //Left
             if(key == 1005){
                 direction = 1;
-                data = PS.data(pX-1, pY);
+                goodToMove =  pX != 0;
+                if(goodToMove){
+                    data = PS.data(pX-1, pY);
+                }
             }
             //Up
             else if(key == 1006){
                 direction = 2;
-                data = PS.data(pX, pY-1);
+                goodToMove =  pY != 0;
+                if(goodToMove){
+                    data = PS.data(pX, pY-1);
+                }
             }
             //Right
             else if(key == 1007){
                 direction = -1;
-                data = PS.data(pX+1, pY);
+                goodToMove = (pX + 1) < WIDTH;
+                if(goodToMove){
+                    data = PS.data(pX+1, pY);
+                }
             }
             //Down
             else if(key == 1008){
                 direction = -2;
-                data = PS.data(pX, pY+1);
+                goodToMove = (pY + 1) < HEIGHT;
+                if(goodToMove){
+                    data = PS.data(pX, pY+1);
+                }
             }
 
-            if( data != PS.COLOR_BLUE && !OBSTACLES.includes(data)){
+            if( data != PS.COLOR_BLUE && !OBSTACLES.includes(data) && goodToMove){
                 this.movePlayer();
                 this.moveMirror();
             }
