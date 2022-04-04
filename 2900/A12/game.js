@@ -131,29 +131,37 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.radius( pX, pY, 0);
                 this.GameOver();
             }
+            //If merged
+            if(mX == pX && mY == pY){
+                PS.color(mX, mY, PS.COLOR_VIOLET);
+                PS.statusText("LEVEL COMPLETE");
+                PS.statusColor(PS.COLOR_BLACK);
+                level++
+                this.makeLevel();
+            }
         },
         movePlayer(){
             this.clearArrows();
             //Left
-            if(direction == 1){
+            if(direction == 1 && (pX) != 0){
                 pX = pX-1;
                 PS.color( pX+1, pY, PS.COLOR_WHITE);
                 PS.radius( pX+1, pY, 0);
             }
             //Right
-            else if(direction == -1){
+            else if(direction == -1 && (pX + 1) < WIDTH){
                 pX = pX+1;
                 PS.color( pX - 1, pY, PS.COLOR_WHITE);
                 PS.radius( pX, pY, 0);
             }
             //Up
-            else if(direction == 2){
+            else if(direction == 2 && (pY) != 0){
                 pY = pY - 1;
                 PS.color( pX, pY + 1, PS.COLOR_WHITE);
                 PS.radius( pX, pY + 1, 0);
             }
             //Down
-            else if(direction == -2){
+            else if(direction == -2 && (pY + 1) < HEIGHT){
                 pY = pY + 1;
                 PS.color( pX, pY - 1, PS.COLOR_WHITE);
                 PS.radius( pX, pY - 1, 0);
@@ -306,15 +314,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     inverted = true;
                 }
             }
-
-            //If merged
-            if(mX == pX && mY == pY){
-                PS.color(mX, mY, PS.COLOR_VIOLET);
-                PS.statusText("LEVEL COMPLETE");
-                PS.statusColor(PS.COLOR_BLACK);
-                level++
-                this.makeLevel();
-            }
         },
 
         unlock(){
@@ -337,10 +336,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
-            if(level == 1){
+            if( level == 1 ){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
-                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusColor( PS.COLOR_VIOLET );
                 PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 1" );
                 pX = 5;
@@ -357,10 +356,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 12, 14, 1, PS.COLOR_RED );
                 this.createBlock( 0, 12, 0, 1, PS.COLOR_BLUE );
             }
-            if(level == 2){
+            if( level == 2 ){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
-                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusColor( PS.COLOR_VIOLET );
                 PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 2" );
                 pX = 3;
@@ -379,15 +378,15 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 13, 0, 1, PS.COLOR_RED );
                 this.createBlock( 5, 0, 8, 0, PS.COLOR_BLACK )
                 this.createBlock( 0, 7, 14, 7, PS.COLOR_BLUE );
-                this.createBlock( 1, 0, 5, 7, PS.COLOR_BLUE );
+                this.createBlock( 2, 0, 5, 7, PS.COLOR_BLUE );
                 this.createBlock( 0, 3, 14, 4, PS.COLOR_BLUE );
-                this.createBlock( 6, 0, 7, 7, PS.COLOR_GRAY_DARK );
+                this.createBlock( 5, 0, 8, 7, PS.COLOR_GRAY_DARK );
                 this.createBlock( 0, 0, 13, 14, PS.COLOR_GREEN );
             }
             if( level == 3 ) {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data( PS.ALL, PS.ALL, PS.COLOR_WHITE );
-                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusColor( PS.COLOR_VIOLET );
                 inverted = false;
                 PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 3" );
@@ -433,10 +432,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 0, 13, 1, PS.COLOR_GREEN );
                 this.createBlock( 0, 0, 6, 9, PS.COLOR_WHITE );
             }
-            if(level == 4){
+            if( level == 4 ){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
-                PS.statusColor( PS.COLOR_PURPLE );
+                PS.statusColor( PS.COLOR_VIOLET );
                 PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 4" );
                 pX = 3;
