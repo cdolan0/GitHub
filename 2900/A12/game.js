@@ -326,6 +326,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 for(var j = 0; j < HEIGHT; j += 1){
                     if(PS.data( i,  j ) == PS.COLOR_GRAY_DARK){
                         PS.color( i, j, PS.COLOR_WHITE );
+                        PS.data( i, j, PS.COLOR_WHITE);
                     }
                 }
             }
