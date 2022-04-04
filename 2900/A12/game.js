@@ -77,6 +77,28 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
     mX = 10;
     mY = 10;
 
+    var timer = null; //set up timer
+    var count = 3; // countdown value
+
+    // Timer function
+
+    var tick = function () {
+
+        //Check if gameover
+        if ( gameover == true ) {
+            count -= 1;
+            //After 3 seconds return to level select
+            if (count <= 0){
+                timer = null;
+                gameover = false
+                count = 3;
+                level = 0;
+                Game.makeLevel();
+            }
+        }
+    };
+
+
     Game = {
         createBlock( w, h, x, y, color){
             for(var i = x; i <= (x+w); i += 1){
@@ -336,6 +358,29 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
+            if ( timer == null ){
+                timer = PS.timerStart (60, tick);
+            }
+            else{
+                timer = null;
+                timer = PS.timerStart (60, tick);
+            }
+            if( level == 0 ){
+                PS.gridSize( 10, 1 );
+                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
+                PS.statusColor( PS.COLOR_BLACK );
+                PS.border(PS.ALL, PS.ALL, 0);
+                PS.statusText( "LEVEL SELECT" );
+                PS.glyph( 1, 0, "1");
+                PS.glyph( 3, 0, "2");
+                PS.glyph( 5, 0, "3");
+                PS.glyph( 7, 0, "4");
+
+                PS.border( 1, 0, 1);
+                PS.border( 3, 0, 1);
+                PS.border( 5, 0, 1);
+                PS.border( 7, 0, 1);
+            }
             if( level == 1 ){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
@@ -471,9 +516,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 } () )
 
 PS.init = function( system, options ) {
-    level = 1;
+    level = 0;
     Game.makeLevel();
-    PS.color(mX, mY, PS.COLOR_BLUE);
 
 };
 
@@ -488,7 +532,24 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-
+    if( level == 0 ){
+        if( x == 1 ){
+            level = 1;
+            Game.makeLevel();
+        }
+        else if( x == 3 ){
+            level = 2;
+            Game.makeLevel();
+        }
+        else if( x == 5 ){
+            level = 3;
+            Game.makeLevel();
+        }
+        else if( x == 7 ){
+            level = 4;
+            Game.makeLevel();
+        }
+    }
 };
 
 /*
@@ -520,11 +581,11 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
-
-	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch enters a bead.
+    if( level == 0 ){
+        if( x == 1 || x == 3 || x == 5 || x == 7){
+            PS.color( x, y, PS.COLOR_VIOLET );
+        }
+    }
 };
 
 /*
@@ -538,11 +599,11 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
-	// Uncomment the following code line to inspect x/y parameters:
-
-	// PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch exits a bead.
+    if( level == 0 ){
+        if( x == 1 || x == 3 || x == 5 || x == 7){
+            PS.color( x, y, PS.COLOR_WHITE );
+        }
+    }
 };
 
 /*
@@ -571,9 +632,11 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-    if( !gameover && key >= 1005 && key <= 1008 ) {
-        Game.check(key);
-        Game.highlightArrow(key);
+    if( level != 0) {
+        if (!gameover && key >= 1005 && key <= 1008) {
+            Game.check(key);
+            Game.highlightArrow(key);
+        }
     }
 };
 
@@ -588,8 +651,10 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-    if( !gameover && key >= 1005 && key <= 1008 ) {
-        Game.unHLArrow(key);
+    if( level != 0) {
+        if (!gameover && key >= 1005 && key <= 1008) {
+            Game.unHLArrow(key);
+        }
     }
 };
 
