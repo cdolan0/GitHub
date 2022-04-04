@@ -123,6 +123,9 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 for(var j = y; j <= (y+h); j += 1){
                     PS.color( i, j, color );
                     PS.data( i, j, color );
+                    if(color == PS.COLOR_ORANGE){
+                        PS.radius( i, j, 40);
+                    }
                 }
             }
         },
