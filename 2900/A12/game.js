@@ -63,6 +63,8 @@ var pX, pY, mX, mY;
 //Game Over Boolean
 var gameover;
 
+var passLevel;
+
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
 (function (){
@@ -71,6 +73,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
     var direction;
 
     gameover = false;
+
+    passLevel = false;
 
     inverted = false;
 
@@ -85,14 +89,28 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
     var tick = function () {
 
         //Check if gameover
-        if ( gameover == true ) {
+        if ( gameover ) {
             count -= 1;
             //After 3 seconds return to level select
             if (count <= 0){
+                inverted = false;
                 timer = null;
                 gameover = false
                 count = 3;
                 level = 0;
+                Game.makeLevel();
+            }
+        }
+
+        if ( passLevel ){
+            count -= 1;
+            //After 3 seconds return to level select
+            if (count <= 0){
+                inverted = false;
+                timer = null;
+                passLevel = false;
+                count = 3;
+                level += 1;
                 Game.makeLevel();
             }
         }
@@ -158,8 +176,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.color(mX, mY, PS.COLOR_VIOLET);
                 PS.statusText("LEVEL COMPLETE");
                 PS.statusColor(PS.COLOR_BLACK);
-                level++
-                this.makeLevel();
+                passLevel = true;
+                Game.clearArrows();
             }
         },
         movePlayer(){
@@ -358,11 +376,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
-            if ( timer == null ){
-                timer = PS.timerStart (60, tick);
+            if ( level > 4){
+                level = 0;
             }
-            else{
-                timer = null;
+            if ( timer == null ){
                 timer = PS.timerStart (60, tick);
             }
             if( level == 0 ){
@@ -375,6 +392,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.glyph( 3, 0, "2");
                 PS.glyph( 5, 0, "3");
                 PS.glyph( 7, 0, "4");
+                PS.fade( PS.ALL, PS.ALL, 15);
 
                 PS.border( 1, 0, 1);
                 PS.border( 3, 0, 1);
@@ -582,8 +600,21 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.enter = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 || x == 3 || x == 5 || x == 7){
+        if( x == 1 ){
             PS.color( x, y, PS.COLOR_VIOLET );
+            PS.statusText("LEVEL 1");
+        }
+        else if( x == 3 ){
+            PS.color( x, y, PS.COLOR_VIOLET );
+            PS.statusText("LEVEL 2");
+        }
+        else if( x == 5 ){
+            PS.color( x, y, PS.COLOR_VIOLET );
+            PS.statusText("LEVEL 3");
+        }
+        else if( x == 7 ){
+            PS.color( x, y, PS.COLOR_VIOLET );
+            PS.statusText("LEVEL 4");
         }
     }
 };
@@ -602,6 +633,7 @@ PS.exit = function( x, y, data, options ) {
     if( level == 0 ){
         if( x == 1 || x == 3 || x == 5 || x == 7){
             PS.color( x, y, PS.COLOR_WHITE );
+            PS.statusText("LEVEL SELECT");
         }
     }
 };
@@ -633,7 +665,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.keyDown = function( key, shift, ctrl, options ) {
     if( level != 0) {
-        if (!gameover && key >= 1005 && key <= 1008) {
+        if ( !gameover && !passLevel && key >= 1005 && key <= 1008 ) {
             Game.check(key);
             Game.highlightArrow(key);
         }
