@@ -65,6 +65,8 @@ var gameover;
 
 var passLevel;
 
+var complete1, complete2, complete3, complete4 = false;
+
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
 (function (){
@@ -192,6 +194,18 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.color(mX, mY, PS.COLOR_VIOLET);
                 PS.statusText("LEVEL COMPLETE");
                 PS.statusColor(PS.COLOR_BLACK);
+                if(level == 1){
+                    complete1 = true;
+                }
+                else if(level == 2){
+                    complete2 = true;
+                }
+                else if(level == 3){
+                    complete3 = true;
+                }
+                else if(level == 4){
+                    complete4 = true;
+                }
                 passLevel = true;
                 Game.clearArrows();
             }
@@ -409,6 +423,18 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.glyph( 5, 0, "3");
                 PS.glyph( 7, 0, "4");
                 PS.fade( PS.ALL, PS.ALL, 15);
+                if(complete1){
+                    PS.color( 1, 0, PS.COLOR_GREEN);
+                }
+                if(complete2){
+                    PS.color(3, 0, PS.COLOR_GREEN);
+                }
+                if(complete3){
+                    PS.color(5, 0, PS.COLOR_GREEN);
+                }
+                if(complete4){
+                    PS.color(7, 0, PS.COLOR_GREEN);
+                }
 
                 PS.border( 1, 0, 1);
                 PS.border( 3, 0, 1);
@@ -648,8 +674,23 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.exit = function( x, y, data, options ) {
     if( level == 0 ){
         if( x == 1 || x == 3 || x == 5 || x == 7){
-            PS.color( x, y, PS.COLOR_WHITE );
+            if(x == 1 && complete1){
+                PS.color( 1, 0, PS.COLOR_GREEN);
+            }
+            else if(x == 3 && complete2){
+                PS.color(3, 0, PS.COLOR_GREEN);
+            }
+            else if(x == 5 && complete3){
+                PS.color(5, 0, PS.COLOR_GREEN);
+            }
+            else if(x == 7 && complete4){
+                PS.color(7, 0, PS.COLOR_GREEN);
+            }
+            else{
+                PS.color( x, y, PS.COLOR_WHITE );
+            }
             PS.statusText("LEVEL SELECT");
+
         }
     }
 };
