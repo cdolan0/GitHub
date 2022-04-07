@@ -65,7 +65,7 @@ var gameover;
 
 var passLevel;
 
-var complete1, complete2, complete3, complete4, complete5 = false;
+var complete1, complete2, complete3, complete4 = false;
 
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
@@ -205,9 +205,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 }
                 else if(level == 4){
                     complete4 = true;
-                }
-                else if(level == 5){
-                    complete5 = true;
                 }
                 passLevel = true;
                 Game.clearArrows();
@@ -409,7 +406,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
-            if ( level > 5){
+            if ( level > 4){
                 level = 0;
             }
             if ( timer == null ){
@@ -425,7 +422,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.glyph( 3, 0, "2");
                 PS.glyph( 5, 0, "3");
                 PS.glyph( 7, 0, "4");
-                PS.glyph( 9, 0, "5");
                 PS.fade( PS.ALL, PS.ALL, 15);
                 if(complete1){
                     PS.color( 1, 0, PS.COLOR_GREEN);
@@ -439,15 +435,11 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 if(complete4){
                     PS.color(7, 0, PS.COLOR_GREEN);
                 }
-                if(complete5){
-                    PS.color(9, 0, PS.COLOR_GREEN);
-                }
 
                 PS.border( 1, 0, 1);
                 PS.border( 3, 0, 1);
                 PS.border( 5, 0, 1);
                 PS.border( 7, 0, 1);
-                PS.border( 9, 0, 1);
             }
             if( level == 1 ){
                 PS.gridSize( WIDTH, HEIGHT );
@@ -545,42 +537,12 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 0, 13, 1, PS.COLOR_GREEN );
                 this.createBlock( 0, 0, 6, 9, PS.COLOR_WHITE );
             }
-            if( level == 4 ) {
+            if( level == 4 ){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_VIOLET );
                 PS.border(PS.ALL, PS.ALL, 0);
                 PS.statusText( "Level 4" );
-                pX = 6;
-                pY = 7;
-                mX = 8;
-                mY = 7;
-                PS.color(pX, pY, PS.COLOR_RED);
-                PS.color(mX, mY, PS.COLOR_BLUE);
-                PS.radius(pX, pY, 50);
-                PS.radius(mX, mY, 50);
-                this.updateArrows();
-                this.createBlock( 14, 0, 0,0, PS.COLOR_BLACK );
-                this.createBlock( 0, 11, 0, 1, PS.COLOR_RED );
-                this.createBlock( 0, 0, 0, 13, PS.COLOR_BLUE );
-                this.createBlock( 0, 12, 14, 1, PS.COLOR_BLUE );
-                this.createBlock( 4, 0, 9, 1, PS.COLOR_BLUE );
-                this.createBlock( 14, 0, 0,14, PS.COLOR_BLACK );
-                this.createBlock( 0, 10, 1, 2, PS.COLOR_GRAY_DARK );
-                this.createBlock( 0, 0, 7, 1, PS.COLOR_GRAY_DARK );
-                this.createBlock( 0, 0, 7, 13, PS.COLOR_GRAY_DARK );
-                this.createBlock( 3, 10, 2, 2, PS.COLOR_BLACK );
-                this.createBlock( 4, 10, 9, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 10, 7, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 1, 1, PS.COLOR_GREEN );
-                this.createBlock( 0, 0, 1, 13, PS.COLOR_ORANGE );
-            }
-            if( level == 5 ){
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
-                PS.statusColor( PS.COLOR_VIOLET );
-                PS.border(PS.ALL, PS.ALL, 0);
-                PS.statusText( "Level 5" );
                 pX = 3;
                 pY = 7;
                 mX = 11;
@@ -696,10 +658,6 @@ PS.enter = function( x, y, data, options ) {
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 4");
         }
-        else if( x == 9 ){
-            PS.color( x, y, PS.COLOR_VIOLET );
-            PS.statusText("LEVEL 5");
-        }
     }
 };
 
@@ -715,7 +673,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.exit = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 || x == 3 || x == 5 || x == 7 || x == 9){
+        if( x == 1 || x == 3 || x == 5 || x == 7){
             if(x == 1 && complete1){
                 PS.color( 1, 0, PS.COLOR_GREEN);
             }
@@ -726,9 +684,6 @@ PS.exit = function( x, y, data, options ) {
                 PS.color(5, 0, PS.COLOR_GREEN);
             }
             else if(x == 7 && complete4){
-                PS.color(7, 0, PS.COLOR_GREEN);
-            }
-            else if(x == 9 && complete5){
                 PS.color(7, 0, PS.COLOR_GREEN);
             }
             else{
