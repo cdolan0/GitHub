@@ -253,7 +253,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.unlock();
             }
 
-            //If in orange
+            /*//If in orange
             if( data == PS.COLOR_ORANGE ){
                 PS.audioPlay( "fx_powerup6", {volume: 0.25} );
                 if(swapped) {
@@ -268,7 +268,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 else{
                     inverted = true;
                 }
-            }
+            }*/
 
             //If merged
             if(mX == pX && mY == pY){
@@ -374,7 +374,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 }
             }
 
-           /* if( nextBead == PS.COLOR_ORANGE ){
+            if( nextBead == PS.COLOR_ORANGE ){
                 PS.audioPlay( "fx_powerup6", {volume: 0.25} );
                 PS.data(pX, pY, PS.COLOR_WHITE);
                 if(inverted){
@@ -383,7 +383,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 else{
                     inverted = true;
                 }
-            }*/
+            }
 
             this.updateArrows();
         },
