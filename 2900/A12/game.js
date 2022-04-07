@@ -65,11 +65,7 @@ var gameover;
 
 var passLevel;
 
-var complete1, complete2, complete3, complete4, complete5, complete6, complete7 = false;
-
-var swapped = false;
-
-var hasBeenUnlocked = false;
+var complete1, complete2, complete3, complete4, complete5 = false;
 
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
@@ -83,9 +79,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
     passLevel = false;
 
     inverted = false;
-
-    var nextLevelUnlock = false;
-
 
     mX = 10;
     mY = 10;
@@ -123,20 +116,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 Game.makeLevel();
             }
         }
-        if (nextLevelUnlock && !hasBeenUnlocked){
-            count -=1
-            if (count <= 0){
-                inverted = false;
-                timer = null;
-                hasBeenUnlocked = true;
-                count = 3;
-                PS.border( 4, 1, 1);
-                PS.border( 6, 1, 1);
-                PS.glyph( 4, 1, "6");
-                PS.glyph( 6, 1, "7");
-
-            }
-        }
     };
 
 
@@ -149,92 +128,48 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     if(color == PS.COLOR_ORANGE){
                         PS.radius( i, j, 40);
                     }
-                    if(color == PS.COLOR_VIOLET){
-                        PS.radius( i, j, 20);
-                    }
                 }
             }
         },
         check(key){
             var data;
             var goodToMove;
-            //If controlling mirror
-            if(swapped){
-                //Left
-                if(key == 1005){
-                    direction = 1;
-                    goodToMove =  mX != 0;
-                    if(goodToMove){
-                        data = PS.data(mX-1, mY);
-                    }
-                }
-                //Up
-                else if(key == 1006){
-                    direction = 2;
-                    goodToMove =  mY != 0;
-                    if(goodToMove){
-                        data = PS.data(mX, mY-1);
-                    }
-                }
-                //Right
-                else if(key == 1007){
-                    direction = -1;
-                    goodToMove = (mX + 1) < WIDTH;
-                    if(goodToMove){
-                        data = PS.data(mX+1, mY);
-                    }
-                }
-                //Down
-                else if(key == 1008){
-                    direction = -2;
-                    goodToMove = (mY + 1) < HEIGHT;
-                    if(goodToMove){
-                        data = PS.data(mX, mY+1);
-                    }
+            //Left
+            if(key == 1005){
+                direction = 1;
+                goodToMove =  pX != 0;
+                if(goodToMove){
+                    data = PS.data(pX-1, pY);
                 }
             }
-            //If controlling player
-            else{
-                //Left
-                if(key == 1005){
-                    direction = 1;
-                    goodToMove =  pX != 0;
-                    if(goodToMove){
-                        data = PS.data(pX-1, pY);
-                    }
+            //Up
+            else if(key == 1006){
+                direction = 2;
+                goodToMove =  pY != 0;
+                if(goodToMove){
+                    data = PS.data(pX, pY-1);
                 }
-                //Up
-                else if(key == 1006){
-                    direction = 2;
-                    goodToMove =  pY != 0;
-                    if(goodToMove){
-                        data = PS.data(pX, pY-1);
-                    }
+            }
+            //Right
+            else if(key == 1007){
+                direction = -1;
+                goodToMove = (pX + 1) < WIDTH;
+                if(goodToMove){
+                    data = PS.data(pX+1, pY);
                 }
-                //Right
-                else if(key == 1007){
-                    direction = -1;
-                    goodToMove = (pX + 1) < WIDTH;
-                    if(goodToMove){
-                        data = PS.data(pX+1, pY);
-                    }
-                }
-                //Down
-                else if(key == 1008){
-                    direction = -2;
-                    goodToMove = (pY + 1) < HEIGHT;
-                    if(goodToMove){
-                        data = PS.data(pX, pY+1);
-                    }
+            }
+            //Down
+            else if(key == 1008){
+                direction = -2;
+                goodToMove = (pY + 1) < HEIGHT;
+                if(goodToMove){
+                    data = PS.data(pX, pY+1);
                 }
             }
 
-            if( ((!swapped && data != PS.COLOR_BLUE) || (swapped && data != PS.COLOR_RED))
-                && !OBSTACLES.includes(data) && goodToMove){
-                this.clearArrows();
+            if( data != PS.COLOR_BLUE && !OBSTACLES.includes(data) && goodToMove){
                 this.movePlayer();
                 this.moveMirror();
-                this.updateArrows();
             }
             PS.color(pX, pY, PS.COLOR_RED);
             PS.radius(pX, pY, 50);
@@ -250,25 +185,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     inverted = true;
                 }
             }
-            if( data == PS.COLOR_VIOLET ){
-                PS.data(pX, pY, PS.COLOR_WHITE);
-                if(swapped){
-                    swapped = false;
-                    this.clearArrows();
-                    this.updateArrows();
-                }
-                else{
-                    swapped = true;
-                    this.clearArrows();
-                    this.updateArrows();
-                }
-            }
-            if( data == PS.COLOR_RED && !swapped){
+            if( data == PS.COLOR_RED){
                 PS.radius( pX, pY, 0);
-                this.GameOver();
-            }
-            if( data == PS.COLOR_BLUE && swapped){
-                PS.radius( mX, mY, 0);
                 this.GameOver();
             }
             //If merged
@@ -296,140 +214,101 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
             }
         },
         movePlayer(){
-            var pDir = direction;
-            if(inverted && swapped){
-                pDir= direction * -1;
-            }
+            this.clearArrows();
             //Left
-            if(pDir == 1 && (pX) != 0){
+            if(direction == 1 && (pX) != 0){
                 pX = pX-1;
                 PS.color( pX+1, pY, PS.COLOR_WHITE);
                 PS.radius( pX+1, pY, 0);
             }
             //Right
-            else if(pDir == -1 && (pX + 1) < WIDTH){
+            else if(direction == -1 && (pX + 1) < WIDTH){
                 pX = pX+1;
                 PS.color( pX - 1, pY, PS.COLOR_WHITE);
                 PS.radius( pX, pY, 0);
             }
             //Up
-            else if(pDir == 2 && (pY) != 0){
+            else if(direction == 2 && (pY) != 0){
                 pY = pY - 1;
                 PS.color( pX, pY + 1, PS.COLOR_WHITE);
                 PS.radius( pX, pY + 1, 0);
             }
             //Down
-            else if(pDir == -2 && (pY + 1) < HEIGHT){
+            else if(direction == -2 && (pY + 1) < HEIGHT){
                 pY = pY + 1;
                 PS.color( pX, pY - 1, PS.COLOR_WHITE);
                 PS.radius( pX, pY - 1, 0);
             }
             PS.color( pX, pY, PS.COLOR_RED);
             PS.radius( pX, pY, 50);
+            this.updateArrows();
         },
 
         clearArrows(){
-            //Target x and y
-            var tX, tY;
-            if(swapped){
-                tX = mX;
-                tY = mY;
+            if((pX) != 0){
+                PS.glyph(pX - 1, pY, "");
             }
-            else{
-                tX = pX;
-                tY = pY;
+            if((pX + 1) < WIDTH){
+                PS.glyph(pX + 1, pY, "");
             }
-            if((tX) != 0){
-                PS.glyph(tX - 1, tY, "");
+            if((pY) != 0){
+                PS.glyph(pX, pY - 1, "");
             }
-            if((tX + 1) < WIDTH){
-                PS.glyph(tX + 1, tY, "");
-            }
-            if((tY) != 0){
-                PS.glyph(tX, tY - 1, "");
-            }
-            if((tY + 1) < HEIGHT) {
-                PS.glyph(tX, tY + 1, "");
+            if((pY + 1) < HEIGHT) {
+                PS.glyph(pX, pY + 1, "");
             }
         },
 
         updateArrows(){
-            var tX, tY;
-            if(swapped){
-                tX = mX;
-                tY = mY;
+            if((pX) != 0){
+                PS.glyph(pX - 1, pY, "<");
             }
-            else{
-                tX = pX;
-                tY = pY;
+            if((pX + 1) < WIDTH){
+                PS.glyph(pX + 1, pY, ">");
             }
-            if((tX) != 0){
-                PS.glyph(tX - 1, tY, "<");
+            if((pY) != 0){
+                PS.glyph(pX, pY - 1, "^");
             }
-            if((tX + 1) < WIDTH){
-                PS.glyph(tX + 1, tY, ">");
-            }
-            if((tY) != 0){
-                PS.glyph(tX, tY - 1, "^");
-            }
-            if((tY + 1) < HEIGHT) {
-                PS.glyph(tX, tY + 1, "v");
+            if((pY + 1) < HEIGHT) {
+                PS.glyph(pX, pY + 1, "v");
             }
         },
 
         highlightArrow(key){
-            var tX, tY;
-            if(swapped){
-                tX = mX;
-                tY = mY;
-            }
-            else{
-                tX = pX;
-                tY = pY;
-            }
             //Left
-            if(key == 1005 && (tX) != 0){
-               PS.glyphColor(tX-1, tY, PS.COLOR_GREEN);
+            if(key == 1005 && (pX) != 0){
+               PS.glyphColor(pX-1, pY, PS.COLOR_GREEN);
             }
             //Up
-            else if(key == 1006 && (tY) != 0){
-                PS.glyphColor(tX, tY-1, PS.COLOR_GREEN);
+            else if(key == 1006 && (pY) != 0){
+                PS.glyphColor(pX, pY-1, PS.COLOR_GREEN);
             }
             //Right
-            else if(key == 1007 && (tX + 1) < WIDTH){
-                PS.glyphColor(tX+1, tY, PS.COLOR_GREEN);
+            else if(key == 1007 && (pX + 1) < WIDTH){
+                PS.glyphColor(pX+1, pY, PS.COLOR_GREEN);
             }
             //Down
-            else if(key == 1008 && (tY + 1) < HEIGHT){
-                PS.glyphColor(tX, tY+1, PS.COLOR_GREEN);
+            else if(key == 1008 && (pY + 1) < HEIGHT){
+                PS.glyphColor(pX, pY+1, PS.COLOR_GREEN);
             }
         },
 
         unHLArrow(key){
-            var tX, tY;
-            if(swapped){
-                tX = mX;
-                tY = mY;
-            }
-            else{
-                tX = pX;
-                tY = pY;
-            }
             //Left
-            if(key == 1005 && (tX) != 0){
-                PS.glyphColor(tX-1, tY, PS.COLOR_BLACK);
+            if(key == 1005 && (pX) != 0){
+                PS.glyphColor(pX-1, pY, PS.COLOR_BLACK);
             }
             //Up
-            else if(key == 1006 && (tY) != 0){
-                PS.glyphColor(tX, tY-1, PS.COLOR_BLACK);
+            else if(key == 1006 && (pY) != 0){
+                PS.glyphColor(pX, pY-1, PS.COLOR_BLACK);
             }
             //Right
-            else if(key == 1007 && (tX + 1) < WIDTH){
-                PS.glyphColor(tX+1, tY, PS.COLOR_BLACK);
+            else if(key == 1007 && (pX + 1) < WIDTH){
+                PS.glyphColor(pX+1, pY, PS.COLOR_BLACK);
             }
             //Down
-            else if(key == 1008 && (tY + 1) < HEIGHT){
-                PS.glyphColor(tX, tY+1, PS.COLOR_BLACK);
+            else if(key == 1008 && (pY + 1) < HEIGHT){
+                PS.glyphColor(pX, pY+1, PS.COLOR_BLACK);
             }
         },
 
@@ -437,7 +316,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
             //Mirror direction
             var mDir = direction;
             var nextBead;
-            if(inverted && !swapped){
+            if(inverted){
                 mDir= direction * -1;
             }
             //Left
@@ -530,18 +409,14 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
-            if ( level > 6){
-                level = 0;
-            }
-            if(complete1 && complete2 && complete3 && complete4&& complete5 && !hasBeenUnlocked){
-                nextLevelUnlock = true;
+            if ( level > 5){
                 level = 0;
             }
             if ( timer == null ){
                 timer = PS.timerStart (60, tick);
             }
             if( level == 0 ){
-                PS.gridSize( 10, 2 );
+                PS.gridSize( 10, 1 );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_BLACK );
                 PS.border(PS.ALL, PS.ALL, 0);
@@ -566,20 +441,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 }
                 if(complete5){
                     PS.color(9, 0, PS.COLOR_GREEN);
-                }
-                if(hasBeenUnlocked){
-                    PS.border( 4, 1, 1);
-                    PS.border( 6, 1, 1);
-                    PS.glyph( 4, 1, "6");
-                    PS.glyph( 6, 1, "7");
-                    if(complete6){
-                        PS.color(4, 1, PS.COLOR_GREEN);
-                    }
-                    if(complete7){
-                        PS.color(6, 1, PS.COLOR_GREEN);
-                    }
-                    PS.border( 4, 1, 1);
-                    PS.border( 6, 1, 1);
                 }
 
                 PS.border( 1, 0, 1);
@@ -744,29 +605,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 0, 14, 7, PS.COLOR_BLUE );
                 this.createBlock( 0, 0, 3, 1, PS.COLOR_ORANGE );
             }
-            if( level == 6 ){
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
-                PS.statusColor( PS.COLOR_VIOLET );
-                PS.border(PS.ALL, PS.ALL, 0);
-                PS.statusText( "Level 5" );
-                pX = 3;
-                pY = 7;
-                mX = 11;
-                mY = 7;
-                PS.color(pX, pY, PS.COLOR_RED);
-                PS.color(mX, mY, PS.COLOR_BLUE);
-                PS.radius(pX, pY, 50);
-                PS.radius(mX, mY, 50);
-                this.createBlock(0, 0, 6,5, PS.COLOR_VIOLET);
-                this.createBlock(0, 0, 5,8, PS.COLOR_RED);
-                this.createBlock(0, 0, 2,8, PS.COLOR_BLUE);
-                this.createBlock(0, 0, 2,4, PS.COLOR_GREEN);
-                this.createBlock(0, 0, 5,4, PS.COLOR_GRAY_DARK);
-                this.createBlock(0, 0, 10,4, PS.COLOR_BLACK);
-                this.createBlock(0, 0, 10,8, PS.COLOR_ORANGE);
-
-            }
 
         }
 
@@ -776,8 +614,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 } () )
 
 PS.init = function( system, options ) {
-    PS.audioLoad( "fx_ding" );
-    level = 6;
+    level = 0;
     Game.makeLevel();
 
 };
@@ -794,31 +631,21 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.touch = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 && y == 0 ){
+        if( x == 1 ){
             level = 1;
             Game.makeLevel();
         }
-        else if( x == 3 && y == 0 ){
+        else if( x == 3 ){
             level = 2;
             Game.makeLevel();
         }
-        else if( x == 5 && y == 0 ){
+        else if( x == 5 ){
             level = 3;
             Game.makeLevel();
         }
-        else if( x == 7 && y == 0 ){
+        else if( x == 7 ){
             level = 4;
             Game.makeLevel();
-        }
-        else if(hasBeenUnlocked){
-            if( x == 4 && y == 1){
-                level = 6;
-                Game.makeLevel();
-            }
-            if( x == 6 && y == 1){
-                level = 7;
-                Game.makeLevel();
-            }
         }
     }
 };
@@ -853,35 +680,25 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.enter = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 && y == 0){
+        if( x == 1 ){
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 1");
         }
-        else if( x == 3 && y == 0 ){
+        else if( x == 3 ){
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 2");
         }
-        else if( x == 5 && y == 0 ){
+        else if( x == 5 ){
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 3");
         }
-        else if( x == 7 && y == 0 ){
+        else if( x == 7 ){
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 4");
         }
-        else if( x == 9 && y == 0 ){
+        else if( x == 9 ){
             PS.color( x, y, PS.COLOR_VIOLET );
             PS.statusText("LEVEL 5");
-        }
-        else if(hasBeenUnlocked){
-            if( x == 4 && y == 1){
-                PS.color( x, y, PS.COLOR_VIOLET );
-                PS.statusText("LEVEL 6");
-            }
-            if( x == 6 && y == 1){
-                PS.color( x, y, PS.COLOR_VIOLET );
-                PS.statusText("LEVEL 7");
-            }
         }
     }
 };
@@ -898,7 +715,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.exit = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 || x == 3 || x == 5 || x == 7 || x == 9 && y == 0){
+        if( x == 1 || x == 3 || x == 5 || x == 7 || x == 9){
             if(x == 1 && complete1){
                 PS.color( 1, 0, PS.COLOR_GREEN);
             }
@@ -917,19 +734,9 @@ PS.exit = function( x, y, data, options ) {
             else{
                 PS.color( x, y, PS.COLOR_WHITE );
             }
+            PS.statusText("LEVEL SELECT");
+
         }
-        else if(hasBeenUnlocked){
-            if( x == 4 && y == 1 && complete6){
-                PS.color( x, y, PS.COLOR_GREEN );
-            }
-            if( x == 6 && y == 1 && complete6){
-                PS.color( x, y, PS.COLOR_GREEN );
-            }
-            else{
-                PS.color( x, y, PS.COLOR_WHITE );
-            }
-        }
-        PS.statusText("LEVEL SELECT");
     }
 };
 
