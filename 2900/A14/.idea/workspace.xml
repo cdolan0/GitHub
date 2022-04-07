@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02ce5d7f-f7d1-4db2-8c20-935e631f95ed" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../A12/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../A12/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -34,6 +35,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -46,6 +48,8 @@
       <updated>1647895712470</updated>
       <workItem from="1647895713649" duration="17000" />
       <workItem from="1649016852106" duration="8102000" />
+      <workItem from="1649371102541" duration="782000" />
+      <workItem from="1649371893867" duration="2896000" />
     </task>
     <servers />
   </component>

@@ -130,7 +130,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 timer = null;
                 hasBeenUnlocked = true;
                 count = 3;
-                PS.audioPlay( "fx_ding" );
+                PS.audioPlay( "fx_ding", {volume: 0.5} );
                 PS.border( 4, 1, 1);
                 PS.border( 6, 1, 1);
                 PS.glyph( 4, 1, "6");
@@ -230,17 +230,32 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 }
             }
 
-            if( ((!swapped && data != PS.COLOR_BLUE) || (swapped && data != PS.COLOR_RED))
-                && !OBSTACLES.includes(data) && goodToMove){
-                this.movePlayer();
-                this.moveMirror();
+            if(!OBSTACLES.includes(data) && goodToMove){
+                PS.audioPlay( "fx_blip", { volume: .25} );
+                if (!swapped && data != PS.COLOR_BLUE){
+                    this.movePlayer();
+                    this.moveMirror();
+                }
+                else if (swapped && data != PS.COLOR_RED){
+                    this.moveMirror();
+                    this.movePlayer();
+                }
+                else{
+                    PS.audioPlay( "fx_zurp", { volume: .25} );
+                }
+
+            }
+            else{
+                PS.audioPlay( "fx_zurp", { volume: .25} );
             }
             if( data == PS.COLOR_GREEN ){
+                PS.audioPlay( "fx_bloop", { volume: .25} );
                 this.unlock();
             }
 
             //If in orange
             if( data == PS.COLOR_ORANGE ){
+                PS.audioPlay( "fx_powerup6", {volume: 0.25} );
                 if(swapped) {
                     PS.data(mX, mY, PS.COLOR_WHITE);
                 }
@@ -257,6 +272,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
             //If merged
             if(mX == pX && mY == pY){
+                PS.audioPlay( "fx_squish", { volume: .25} );
                 PS.color(mX, mY, PS.COLOR_VIOLET);
                 PS.statusText("LEVEL COMPLETE");
                 PS.statusColor(PS.COLOR_BLACK);
@@ -333,6 +349,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
             //if in green
             if( nextBead == PS.COLOR_GREEN ){
+                PS.audioPlay( "fx_bloop", { volume: .25} );
                 this.unlock();
             }
 
@@ -343,6 +360,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
             }
             
             if( nextBead == PS.COLOR_VIOLET ){
+                PS.audioPlay("fx_powerup7", {volume: 0.25});
                 PS.data(pX, pY, PS.COLOR_WHITE);
                 if(swapped){
                     this.clearArrows();
@@ -355,6 +373,18 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     this.updateArrows();
                 }
             }
+
+           /* if( nextBead == PS.COLOR_ORANGE ){
+                PS.audioPlay( "fx_powerup6", {volume: 0.25} );
+                PS.data(pX, pY, PS.COLOR_WHITE);
+                if(inverted){
+                    inverted = false;
+                }
+                else{
+                    inverted = true;
+                }
+            }*/
+
             this.updateArrows();
         },
 
@@ -513,6 +543,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
             //If in green
             if( nextBead == PS.COLOR_GREEN ){
+                PS.audioPlay( "fx_bloop", { volume: .25} );
                 this.unlock();
             }
 
@@ -522,6 +553,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.GameOver();
             }
             if( nextBead == PS.COLOR_VIOLET ){
+                PS.audioPlay("fx_powerup7", {volume: 0.25});
                 PS.data(mX, mY, PS.COLOR_WHITE);
                 if(swapped){
                     this.clearArrows();
@@ -532,6 +564,16 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     this.clearArrows();
                     swapped = true;
                     this.updateArrows();
+                }
+            }
+            if( nextBead == PS.COLOR_ORANGE ){
+                PS.audioPlay( "fx_powerup6", {volume: 0.25} );
+                PS.data(mX, mY, PS.COLOR_WHITE);
+                if(inverted){
+                    inverted = false;
+                }
+                else{
+                    inverted = true;
                 }
             }
             this.updateArrows();
@@ -550,6 +592,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         GameOver(){
+            swapped = false;
+            PS.audioPlay( "fx_squink", { volume: .5} );
             PS.statusText("Game Over");
             PS.statusColor(PS.COLOR_BLACK);
             this.clearArrows();
@@ -557,6 +601,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         makeLevel(){
+            swapped = false;
             if ( level > 6){
                 level = 0;
             }
@@ -776,17 +821,27 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor( PS.COLOR_VIOLET );
                 PS.border(PS.ALL, PS.ALL, 0);
-                PS.statusText( "Level 5" );
-                pX = 3;
+                PS.statusText( "Level 6" );
+                pX = 2;
                 pY = 7;
-                mX = 11;
+                mX = 12;
                 mY = 7;
                 PS.color(pX, pY, PS.COLOR_RED);
                 PS.color(mX, mY, PS.COLOR_BLUE);
                 PS.radius(pX, pY, 50);
                 PS.radius(mX, mY, 50);
-
-
+                this.updateArrows();
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 12, 0, 1, PS.COLOR_RED );
+                this.createBlock( 3, 0, 1, 8, PS.COLOR_RED );
+                this.createBlock( 0, 0, 0, 7, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 0, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 12, 14, 1, PS.COLOR_BLUE );
+                this.createBlock( 0, 6, 4, 1, PS.COLOR_GRAY_DARK );
+                this.createBlock( 0, 0, 13, 13, PS.COLOR_GREEN);
+                this.createBlock( 0, 0, 7, 7, PS.COLOR_ORANGE );
+                this.createBlock( 0, 0, 1, 1, PS.COLOR_VIOLET );
             }
             if( level > 0 ){
                 this.updateArrows();
@@ -800,6 +855,14 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
 PS.init = function( system, options ) {
     PS.audioLoad( "fx_ding" );
+    PS.audioLoad( "fx_powerup6" );
+    PS.audioLoad( "fx_powerup7" );
+    PS.audioLoad( "fx_blip" );
+    PS.audioLoad( "fx_zurp" );
+    PS.audioLoad( "fx_click" );
+    PS.audioLoad( "fx_bloop" );
+    PS.audioLoad( "fx_squink" );
+    PS.audioLoad( "fx_squish" );
     level = 0;
     Game.makeLevel();
 
@@ -818,27 +881,33 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
     if( level == 0 ){
         if( x == 1 && y == 0 ){
+            PS.audioPlay( "fx_click", { volume: .25} );
             level = 1;
             Game.makeLevel();
         }
         else if( x == 3 && y == 0 ){
+            PS.audioPlay( "fx_click", { volume: .25} );
             level = 2;
             Game.makeLevel();
         }
         else if( x == 5 && y == 0 ){
+            PS.audioPlay( "fx_click", { volume: .25} );
             level = 3;
             Game.makeLevel();
         }
         else if( x == 7 && y == 0 ){
+            PS.audioPlay( "fx_click", { volume: .25} );
             level = 4;
             Game.makeLevel();
         }
         else if(hasBeenUnlocked){
             if( x == 4 && y == 1){
+                PS.audioPlay( "fx_click", { volume: .25} );
                 level = 6;
                 Game.makeLevel();
             }
             if( x == 6 && y == 1){
+                PS.audioPlay( "fx_click", { volume: .25} );
                 level = 7;
                 Game.makeLevel();
             }
@@ -945,7 +1014,7 @@ PS.exit = function( x, y, data, options ) {
             if( x == 4 && y == 1 && complete6){
                 PS.color( x, y, PS.COLOR_GREEN );
             }
-            if( x == 6 && y == 1 && complete7){
+            else if( x == 6 && y == 1 && complete7){
                 PS.color( x, y, PS.COLOR_GREEN );
             }
             else{
