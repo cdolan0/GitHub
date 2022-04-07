@@ -113,8 +113,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
         if ( passLevel ){
             count -= 1;
-            //After 3 seconds return to level select
-            if (count <= 0){
+            //After 4 seconds return to level select
+            if (count <= -1){
                 inverted = false;
                 timer = null;
                 passLevel = false;
@@ -125,11 +125,12 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         }
         if (nextLevelUnlock && !hasBeenUnlocked){
             count -=1
-            if (count <= 0){
+            if (count <= -2){
                 inverted = false;
                 timer = null;
                 hasBeenUnlocked = true;
                 count = 3;
+                PS.audioPlay( "fx_ding" );
                 PS.border( 4, 1, 1);
                 PS.border( 6, 1, 1);
                 PS.glyph( 4, 1, "6");
@@ -231,18 +232,21 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
             if( ((!swapped && data != PS.COLOR_BLUE) || (swapped && data != PS.COLOR_RED))
                 && !OBSTACLES.includes(data) && goodToMove){
-                this.clearArrows();
                 this.movePlayer();
                 this.moveMirror();
-                this.updateArrows();
             }
-            PS.color(pX, pY, PS.COLOR_RED);
-            PS.radius(pX, pY, 50);
             if( data == PS.COLOR_GREEN ){
                 this.unlock();
             }
+
+            //If in orange
             if( data == PS.COLOR_ORANGE ){
-                PS.data(pX, pY, PS.COLOR_WHITE);
+                if(swapped) {
+                    PS.data(mX, mY, PS.COLOR_WHITE);
+                }
+                else{
+                    PS.data(pX, pY, PS.COLOR_WHITE);
+                }
                 if(inverted){
                     inverted = false;
                 }
@@ -250,27 +254,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     inverted = true;
                 }
             }
-            if( data == PS.COLOR_VIOLET ){
-                PS.data(pX, pY, PS.COLOR_WHITE);
-                if(swapped){
-                    swapped = false;
-                    this.clearArrows();
-                    this.updateArrows();
-                }
-                else{
-                    swapped = true;
-                    this.clearArrows();
-                    this.updateArrows();
-                }
-            }
-            if( data == PS.COLOR_RED && !swapped){
-                PS.radius( pX, pY, 0);
-                this.GameOver();
-            }
-            if( data == PS.COLOR_BLUE && swapped){
-                PS.radius( mX, mY, 0);
-                this.GameOver();
-            }
+
             //If merged
             if(mX == pX && mY == pY){
                 PS.color(mX, mY, PS.COLOR_VIOLET);
@@ -291,41 +275,87 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 else if(level == 5){
                     complete5 = true;
                 }
+                else if(level == 6){
+                    complete6 = true;
+                }
+                else if(level == 7){
+                    complete7 = true;
+                }
                 passLevel = true;
                 Game.clearArrows();
             }
         },
         movePlayer(){
+            this.clearArrows();
             var pDir = direction;
+            var nextBead;
             if(inverted && swapped){
                 pDir= direction * -1;
             }
             //Left
-            if(pDir == 1 && (pX) != 0){
-                pX = pX-1;
-                PS.color( pX+1, pY, PS.COLOR_WHITE);
-                PS.radius( pX+1, pY, 0);
+            if(pDir == 1 && (pX) != 0) {
+                nextBead = PS.data(pX - 1, pY);
+                if(nextBead != PS.COLOR_BLUE && !OBSTACLES.includes(nextBead)){
+                    pX = pX - 1;
+                    PS.radius(pX + 1, pY, 0);
+                    PS.color(pX + 1, pY, PS.COLOR_WHITE);
+                }
             }
             //Right
-            else if(pDir == -1 && (pX + 1) < WIDTH){
-                pX = pX+1;
-                PS.color( pX - 1, pY, PS.COLOR_WHITE);
-                PS.radius( pX, pY, 0);
+            else if(pDir == -1 && (pX + 1) < WIDTH) {
+                nextBead = PS.data(pX + 1, pY);
+                if(nextBead != PS.COLOR_BLUE && !OBSTACLES.includes(nextBead)){
+                    pX = pX + 1;
+                    PS.radius(pX - 1, pY, 0);
+                    PS.color(pX - 1, pY, PS.COLOR_WHITE);
+                }
             }
             //Up
-            else if(pDir == 2 && (pY) != 0){
-                pY = pY - 1;
-                PS.color( pX, pY + 1, PS.COLOR_WHITE);
-                PS.radius( pX, pY + 1, 0);
+            else if(pDir == 2 && (pY) != 0) {
+                nextBead = PS.data(pX, pY - 1);
+                if(nextBead != PS.COLOR_BLUE && !OBSTACLES.includes(nextBead)){
+                    pY = pY - 1;
+                    PS.radius(pX, pY + 1, 0);
+                    PS.color(pX, pY + 1, PS.COLOR_WHITE);
+                }
             }
             //Down
-            else if(pDir == -2 && (pY + 1) < HEIGHT){
-                pY = pY + 1;
-                PS.color( pX, pY - 1, PS.COLOR_WHITE);
-                PS.radius( pX, pY - 1, 0);
+            else if (pDir == -2 && (mY + 1) < HEIGHT){
+                nextBead = PS.data(pX, pY + 1);
+                if(nextBead != PS.COLOR_BLUE && !OBSTACLES.includes(nextBead)){
+                    pY = pY + 1;
+                    PS.radius(pX, pY - 1, 0);
+                    PS.color(pX, pY - 1, PS.COLOR_WHITE);
+                }
             }
-            PS.color( pX, pY, PS.COLOR_RED);
-            PS.radius( pX, pY, 50);
+            PS.color(pX, pY, PS.COLOR_RED);
+            PS.radius(pX, pY, 50);
+
+            //if in green
+            if( nextBead == PS.COLOR_GREEN ){
+                this.unlock();
+            }
+
+            //If In Red
+            if(nextBead == PS.COLOR_RED){
+                PS.radius(pX, pY, 0);
+                this.GameOver();
+            }
+            
+            if( nextBead == PS.COLOR_VIOLET ){
+                PS.data(pX, pY, PS.COLOR_WHITE);
+                if(swapped){
+                    this.clearArrows();
+                    swapped = false;
+                    this.updateArrows();
+                }
+                else{
+                    this.clearArrows();
+                    swapped = true;
+                    this.updateArrows();
+                }
+            }
+            this.updateArrows();
         },
 
         clearArrows(){
@@ -434,6 +464,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         },
 
         moveMirror(){
+            this.clearArrows();
             //Mirror direction
             var mDir = direction;
             var nextBead;
@@ -445,9 +476,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 nextBead = PS.data(mX - 1, mY);
                 if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mX = mX - 1;
-                    PS.color(mX, mY, PS.COLOR_BLUE);
-                    PS.radius(mX, mY, 50);
-
                     PS.color(mX + 1, mY, PS.COLOR_WHITE);
                     PS.radius(mX + 1, mY, 0);
                 }
@@ -457,9 +485,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 nextBead = PS.data(mX + 1, mY);
                 if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mX = mX + 1;
-                    PS.color(mX, mY, PS.COLOR_BLUE);
-                    PS.radius(mX, mY, 50);
-
                     PS.color(mX - 1, mY, PS.COLOR_WHITE);
                     PS.radius(mX - 1, mY, 0);
                 }
@@ -469,26 +494,24 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 nextBead = PS.data(mX, mY - 1);
                 if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mY = mY - 1;
-                    PS.color(mX, mY, PS.COLOR_BLUE);
-                    PS.radius(mX, mY, 50);
-
                     PS.color(mX, mY + 1, PS.COLOR_WHITE);
                     PS.radius(mX, mY + 1, 0);
                 }
             }
-            //Up
-            else if ((mY + 1) < HEIGHT){
+            //Down
+            else if (mDir == -2 && (mY + 1) < HEIGHT){
                 nextBead = PS.data(mX, mY + 1);
                 if(nextBead != PS.COLOR_RED && !OBSTACLES.includes(nextBead)){
                     mY = mY + 1;
-                    PS.color(mX, mY, PS.COLOR_BLUE);
-                    PS.radius(mX, mY, 50);
-
                     PS.color(mX, mY - 1, PS.COLOR_WHITE);
                     PS.radius(mX, mY - 1, 0);
                 }
             }
 
+            PS.color(mX, mY, PS.COLOR_BLUE);
+            PS.radius(mX, mY, 50);
+
+            //If in green
             if( nextBead == PS.COLOR_GREEN ){
                 this.unlock();
             }
@@ -498,16 +521,20 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.radius(mX, mY, 0);
                 this.GameOver();
             }
-
-            if( nextBead == PS.COLOR_ORANGE ){
+            if( nextBead == PS.COLOR_VIOLET ){
                 PS.data(mX, mY, PS.COLOR_WHITE);
-                if(inverted){
-                    inverted = false;
+                if(swapped){
+                    this.clearArrows();
+                    swapped = false;
+                    this.updateArrows();
                 }
                 else{
-                    inverted = true;
+                    this.clearArrows();
+                    swapped = true;
+                    this.updateArrows();
                 }
             }
+            this.updateArrows();
         },
 
         unlock(){
@@ -758,16 +785,12 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.color(mX, mY, PS.COLOR_BLUE);
                 PS.radius(pX, pY, 50);
                 PS.radius(mX, mY, 50);
-                this.createBlock(0, 0, 6,5, PS.COLOR_VIOLET);
-                this.createBlock(0, 0, 5,8, PS.COLOR_RED);
-                this.createBlock(0, 0, 2,8, PS.COLOR_BLUE);
-                this.createBlock(0, 0, 2,4, PS.COLOR_GREEN);
-                this.createBlock(0, 0, 5,4, PS.COLOR_GRAY_DARK);
-                this.createBlock(0, 0, 10,4, PS.COLOR_BLACK);
-                this.createBlock(0, 0, 10,8, PS.COLOR_ORANGE);
+
 
             }
-
+            if( level > 0 ){
+                this.updateArrows();
+            }
         }
 
     }
@@ -777,7 +800,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
 PS.init = function( system, options ) {
     PS.audioLoad( "fx_ding" );
-    level = 6;
+    level = 0;
     Game.makeLevel();
 
 };
@@ -922,7 +945,7 @@ PS.exit = function( x, y, data, options ) {
             if( x == 4 && y == 1 && complete6){
                 PS.color( x, y, PS.COLOR_GREEN );
             }
-            if( x == 6 && y == 1 && complete6){
+            if( x == 6 && y == 1 && complete7){
                 PS.color( x, y, PS.COLOR_GREEN );
             }
             else{
