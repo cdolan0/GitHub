@@ -127,6 +127,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
         }
         if (nextLevelUnlock && !hasBeenUnlocked){
             count -=1
+            PS.statusText("NEW LEVELS UNLOCKED!");
             if (count <= -2){
                 inverted = false;
                 timer = null;
@@ -137,7 +138,6 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.border( 6, 1, 1);
                 PS.glyph( 4, 1, "6");
                 PS.glyph( 6, 1, "7");
-
             }
         }
         if (missed){
@@ -285,16 +285,15 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 else{
                     PS.audioPlay( "fx_zurp", { volume: .25} );
                 }
-
+            }
+            else{
+                PS.audioPlay( "fx_zurp", { volume: .25} );
             }
             if(PS.data(pX, pY) != PS.COLOR_RED && PS.data(mX, mY) != PS.COLOR_BLUE){
                 PS.color(pX, pY, PS.COLOR_RED);
                 PS.color(mX, mY, PS.COLOR_BLUE);
                 PS.radius(pX, pY, 50);
                 PS.radius(mX, mY, 50);
-            }
-            else{
-                PS.audioPlay( "fx_zurp", { volume: .25} );
             }
             if( data == PS.COLOR_GREEN ){
                 PS.audioPlay( "fx_bloop", { volume: .25} );
@@ -622,7 +621,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
         makeLevel(){
             swapped = false;
-            if ( level > 7){
+            if ( level > 7 || (level > 5 && !hasBeenUnlocked)){
                 level = 0;
             }
             if(complete1 && complete2 && complete3 && complete4&& complete5 && !hasBeenUnlocked){
