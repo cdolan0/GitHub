@@ -165,6 +165,9 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     if(color == PS.COLOR_VIOLET){
                         PS.radius( i, j, 20);
                     }
+                    if(color == PS.COLOR_GRAY_DARK){
+                        PS.fade( i, j, 15);
+                    }
                 }
             }
         },
@@ -605,7 +608,14 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 for(var j = 0; j < HEIGHT; j += 1){
                     if(PS.data( i,  j ) == PS.COLOR_GRAY_DARK){
                         PS.color( i, j, PS.COLOR_WHITE );
-                        PS.data( i, j, PS.COLOR_WHITE);
+                    }
+                }
+            }
+            for(var i = 0; i < WIDTH; i += 1) {
+                for (var j = 0; j < HEIGHT; j += 1) {
+                    if (PS.data(i, j) == PS.COLOR_GRAY_DARK) {
+                        PS.fade(i, j, 0);
+                        PS.data(i, j, PS.COLOR_WHITE);
                     }
                 }
             }
