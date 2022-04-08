@@ -1092,7 +1092,7 @@ PS.exit = function( x, y, data, options ) {
                 PS.color(7, 0, PS.COLOR_GREEN);
             }
             else if(x == 9 && complete5){
-                PS.color(7, 0, PS.COLOR_GREEN);
+                PS.color(9, 0, PS.COLOR_GREEN);
             }
             else{
                 PS.color( x, y, PS.COLOR_WHITE );
