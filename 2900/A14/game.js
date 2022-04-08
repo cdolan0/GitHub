@@ -84,6 +84,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
     inverted = false;
 
+    var missed = false;
+
     var nextLevelUnlock = false;
 
 
@@ -136,6 +138,16 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 PS.glyph( 4, 1, "6");
                 PS.glyph( 6, 1, "7");
 
+            }
+        }
+        if (missed){
+            count -= 1
+            PS.statusText( "Missed It By That Much!" );
+            if (count <= -1){
+                missed = false;
+                PS.statusText( "Level " + level );
+                timer = null;
+                count = 3;
             }
         }
     };
@@ -245,6 +257,12 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 }
 
             }
+            if(PS.data(pX, pY) != PS.COLOR_RED && PS.data(mX, mY) != PS.COLOR_BLUE){
+                PS.color(pX, pY, PS.COLOR_RED);
+                PS.color(mX, mY, PS.COLOR_BLUE);
+                PS.radius(pX, pY, 50);
+                PS.radius(mX, mY, 50);
+            }
             else{
                 PS.audioPlay( "fx_zurp", { volume: .25} );
             }
@@ -253,21 +271,13 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.unlock();
             }
 
-            /*//If in orange
-            if( data == PS.COLOR_ORANGE ){
-                PS.audioPlay( "fx_powerup6", {volume: 0.25} );
-                if(swapped) {
-                    PS.data(mX, mY, PS.COLOR_WHITE);
-                }
-                else{
-                    PS.data(pX, pY, PS.COLOR_WHITE);
-                }
-                if(inverted){
-                    inverted = false;
-                }
-                else{
-                    inverted = true;
-                }
+           /* if( inverted && (
+                ( ( pX+1 == mX || pX-1 == mX ) && ( pY== mX ) )
+                ||
+                ( ( pY+1 == mY || pY-1 == mY ) && ( pX== mX ) )
+            ) ){
+                missed = true;
+                PS.audioPlay( "fx_swoosh", {volume: 0.5} );
             }*/
 
             //If merged
@@ -602,7 +612,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
         makeLevel(){
             swapped = false;
-            if ( level > 6){
+            if ( level > 7){
                 level = 0;
             }
             if(complete1 && complete2 && complete3 && complete4&& complete5 && !hasBeenUnlocked){
@@ -843,12 +853,12 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 0, 0, 7, 7, PS.COLOR_ORANGE );
                 this.createBlock( 0, 0, 1, 1, PS.COLOR_VIOLET );
             }
-            if( level == 1 ) {
+            if( level == 7 ) {
                 PS.gridSize(WIDTH, HEIGHT);
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
                 PS.statusColor(PS.COLOR_VIOLET);
                 PS.border(PS.ALL, PS.ALL, 0);
-                PS.statusText("Level 6");
+                PS.statusText("Level 7");
                 pX = 6;
                 pY = 13;
                 mX = 8;
@@ -885,7 +895,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                 this.createBlock( 2, 0, 5, 11, PS.COLOR_BLACK );
                 this.createBlock( 0, 1, 12, 9, PS.COLOR_BLACK );
                 this.createBlock( 2, 0, 11, 12, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 4, 11, PS.COLOR_BLACK );
+                this.createBlock( 1, 0, 3, 9, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 1, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 2, 11, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 5, 13, PS.COLOR_RED );
                 this.createBlock( 0, 0, 8, 7, PS.COLOR_RED );
                 this.createBlock( 1, 0, 8, 8, PS.COLOR_RED );
@@ -910,6 +923,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
 
 PS.init = function( system, options ) {
     PS.audioLoad( "fx_ding" );
+    PS.audioLoad( "fx_swoosh" );
     PS.audioLoad( "fx_powerup6" );
     PS.audioLoad( "fx_powerup7" );
     PS.audioLoad( "fx_blip" );
@@ -918,7 +932,7 @@ PS.init = function( system, options ) {
     PS.audioLoad( "fx_bloop" );
     PS.audioLoad( "fx_squink" );
     PS.audioLoad( "fx_squish" );
-    level = 0;
+    level = 7;
     Game.makeLevel();
 
 };
@@ -953,6 +967,11 @@ PS.touch = function( x, y, data, options ) {
         else if( x == 7 && y == 0 ){
             PS.audioPlay( "fx_click", { volume: .25} );
             level = 4;
+            Game.makeLevel();
+        }
+        else if( x == 9 && y == 0 ){
+            PS.audioPlay( "fx_click", { volume: .25} );
+            level = 5;
             Game.makeLevel();
         }
         else if(hasBeenUnlocked){
