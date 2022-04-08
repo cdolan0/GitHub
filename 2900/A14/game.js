@@ -932,7 +932,7 @@ PS.init = function( system, options ) {
     PS.audioLoad( "fx_bloop" );
     PS.audioLoad( "fx_squink" );
     PS.audioLoad( "fx_squish" );
-    level = 7;
+    level = 0;
     Game.makeLevel();
 
 };
