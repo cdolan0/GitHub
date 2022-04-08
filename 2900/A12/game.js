@@ -673,7 +673,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 
 PS.exit = function( x, y, data, options ) {
     if( level == 0 ){
-        if( x == 1 || x == 3 || x == 5 || x == 7){
+        if( x == 1 || x == 3 || x == 5 || x == 7 || x == 9){
             if(x == 1 && complete1){
                 PS.color( 1, 0, PS.COLOR_GREEN);
             }
@@ -685,6 +685,9 @@ PS.exit = function( x, y, data, options ) {
             }
             else if(x == 7 && complete4){
                 PS.color(7, 0, PS.COLOR_GREEN);
+            }
+            else if(x == 9 && complete4){
+                PS.color(9, 0, PS.COLOR_GREEN);
             }
             else{
                 PS.color( x, y, PS.COLOR_WHITE );

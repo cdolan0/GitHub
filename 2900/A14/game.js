@@ -674,6 +674,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_DARK];
                     PS.border( 6, 1, 1);
                 }
 
+                if(complete1 && complete2 && complete3 && complete4 && complete5 & complete6 && complete7){
+                    PS.statusText("ALL LEVELS COMPLETE!")
+                }
+
                 PS.border( 1, 0, 1);
                 PS.border( 3, 0, 1);
                 PS.border( 5, 0, 1);
