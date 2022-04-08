@@ -1110,6 +1110,9 @@ PS.exit = function( x, y, data, options ) {
             }
         }
         PS.statusText("LEVEL SELECT");
+        if(complete1 && complete2 && complete3 && complete4 && complete5 & complete6 && complete7){
+            PS.statusText("ALL LEVELS COMPLETE!")
+        }
     }
 };
 
