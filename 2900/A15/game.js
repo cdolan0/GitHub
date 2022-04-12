@@ -75,6 +75,14 @@ var finalHasBeenUnlocked = false;
 
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
 
+const KEY_SOUNDS = ["beep0", "beep1", "beep2", "beep3", "beep4", "beep5", "beep6",];
+
+const MUSIC = ["GuitarBeat", "FunkyBeat", "EnergeticBeat", "ChillBeat"];
+
+var musicChannels = [];
+
+var currentSong;
+
 (function (){
 
     // 1 = left, 2 = up, -1 = right, -2 = down
@@ -159,7 +167,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
             }
         }
 
-        if(level == 1){
+        /*if(level == 8){
             if (count == -4){
                 PS.audioPlay( "fx_zurp", {volume: 0.5});
                 wallMoveCount -= 1;
@@ -174,7 +182,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
             else {
                 count -= 1;
             }
-        }
+        }*/
         if (missed){
             count -= 1;
             PS.statusText( "Missed It By That Much!" );
@@ -204,6 +212,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
             }
         },
         check(key){
+            var keyNoise = KEY_SOUNDS[Math.floor(Math.random() * 7)];
             var data;
             var goodToMove;
             //If controlling mirror
@@ -278,7 +287,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
             }
 
             if(!OBSTACLES.includes(data) && goodToMove){
-                PS.audioPlay( "fx_blip", { volume: .25} );
+                PS.audioPlay( keyNoise, { volume: .25, path: "PuzzleAudio/"} );
                 if (!swapped && data != PS.COLOR_BLUE){
                     this.movePlayer();
                     this.moveMirror();
@@ -370,6 +379,9 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
                 }
                 else if(level == 7){
                     complete7 = true;
+                }
+                else if(level == 8){
+                    complete8 = true;
                 }
                 passLevel = true;
                 Game.clearArrows();
@@ -655,10 +667,10 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
         },
 
         makeLevel(){
-
+          //  PS.audioStop(currentSong);
             swapped = false;
             if ( level > 8 || (level > 5 && !hasBeenUnlocked) || (level > 7 && !finalHasBeenUnlocked)){
-                level = 0;
+               level = 0;
             }
             if(complete1 && complete2 && complete3 && !hasBeenUnlocked){
                 nextLevelUnlock = true;
@@ -670,6 +682,18 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
             }
             if ( timer == null ){
                 timer = PS.timerStart (60, tick);
+            }
+            if(level == 0){
+                currentSong = musicChannels[0];
+            }
+            else if (1 <= level && 3>= level){
+                currentSong = musicChannels[1];
+            }
+            else if(level == 4 || level == 5){
+                currentSong = musicChannels[2];
+            }
+            else if(level >= 6){
+                currentSong = musicChannels[3];
             }
             if( level == 0 ){
                 PS.gridSize( 9, 3 );
@@ -998,7 +1022,8 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
                 this.createBlock( 1, 0, 7, 8, PS.COLOR_BLACK );
                 this.createBlock( 3, 0, 8, 6, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 13, 8, PS.COLOR_BLACK );
-                this.createBlock( 0, 6, 10, 7, PS.COLOR_BLACK );
+                this.createBlock( 0, 5, 10, 7, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 10, 13, PS.COLOR_BLUE)
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLUE );
                 this.createBlock( 0, 0, 1, 6, PS.COLOR_RED );
                 this.createBlock( 0, 0, 9, 6, PS.COLOR_GREEN );
@@ -1017,7 +1042,7 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
                 this.createBlock( 0, 0, 9, 13, PS.COLOR_VIOLET );
                 this.createBlock( 0, 0, 9, 12, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 8, 11, PS.COLOR_WHITE );
-                this.createBlock( 0, 0, 5, 1, PS.COLOR_ORANGE );
+                this.createBlock( 0, 0, 5, 4, PS.COLOR_ORANGE );
                 this.createBlock( 0, 0, 8, 5, PS.COLOR_WHITE );
                 this.createBlock( 0, 0, 8, 13, PS.COLOR_WHITE );
                 this.createBlock( 0, 0, 13, 8, PS.COLOR_WHITE );
@@ -1027,6 +1052,9 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
                 this.updateArrows();
             }
             timer = null;
+         /*   PS.audioPlayChannel(currentSong, {voliume: 0.25, loop: true, path: "PuzzleAudio/"});
+            PS.debug(currentSong);
+            PS.debug("");*/
         }
 
     }
@@ -1035,6 +1063,14 @@ const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
 } () )
 
 PS.init = function( system, options ) {
+
+    var loader = function (data){
+        if(!musicChannels.includes(data.channel)){
+            musicChannels.push(data.channel);
+          //  PS.debug("Loaded " + data.channel + " ");
+        }
+    }
+
     PS.audioLoad( "fx_ding" );
     PS.audioLoad( "fx_swoosh" );
     PS.audioLoad( "fx_powerup6" );
@@ -1045,7 +1081,23 @@ PS.init = function( system, options ) {
     PS.audioLoad( "fx_bloop" );
     PS.audioLoad( "fx_squink" );
     PS.audioLoad( "fx_squish" );
-    level = 0;
+    PS.audioLoad( "beep0", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep1", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep2", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep3", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep4", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep5", {path: "PuzzleAudio/"});
+    PS.audioLoad( "beep6", {path: "PuzzleAudio/"});
+    PS.audioLoad( "GuitarBeat", {path: "PuzzleAudio/", onLoad: loader, lock : true});
+    PS.audioLoad( "FunkyBeat", {path: "PuzzleAudio/", onLoad: loader});
+    PS.audioLoad( "EnergeticBeat", {path: "PuzzleAudio/", onLoad: loader});
+    PS.audioLoad( "ChillBeat", {path: "PuzzleAudio/", onLoad: loader});
+
+    PS.audioPlay( "ChillBeat", {path: "PuzzleAudio/", volume: 0.10, loop: true});
+
+    currentSong = musicChannels[0];
+
+    level = 8;
     Game.makeLevel();
 
 };
@@ -1169,11 +1221,9 @@ PS.enter = function( x, y, data, options ) {
                 PS.statusText("LEVEL 7");
             }
         }
-        else if(finalHasBeenUnlocked){
-            if( x == 4 && y == 2){
-                PS.color( x, y, PS.COLOR_VIOLET );
-                PS.statusText("LEVEL 8");
-            }
+        else if(finalHasBeenUnlocked && x == 4 && y == 2){
+            PS.color( x, y, PS.COLOR_VIOLET );
+            PS.statusText("LEVEL 8");
         }
     }
 };
@@ -1221,13 +1271,16 @@ PS.exit = function( x, y, data, options ) {
                 PS.color( x, y, PS.COLOR_WHITE );
             }
         }
-        else if(finalHasBeenUnlocked) {
-            if (x == 4 && y == 2 && complete8) {
+        if(finalHasBeenUnlocked && x == 4 && y == 2) {
+            if (complete8) {
                 PS.color(x, y, PS.COLOR_GREEN);
             }
             else{
                 PS.color( x, y, PS.COLOR_WHITE );
             }
+        }
+        else{
+            //PS.debug(finalHasBeenUnlocked + " x: " + x + " y: " + y);
         }
         PS.statusText("LEVEL SELECT");
         if(complete1 && complete2 && complete3 && complete4 && complete5 & complete6 && complete7 && complete8){
