@@ -1,4 +1,9 @@
 /*
+
+Sound effects were found from the following on Freesound.org
+MentosLat, SomeGuy22, jeckkech, JapanYoshiTheGamer, lulyc, FartBiscuit1700, Breviceps, AwesomeFantastic, and
+thisusernameis
+
 game.js for Perlenspiel 3.3.x
 Last revision: 2022-03-15 (BM)
 
@@ -145,7 +150,7 @@ var currentSong;
                 timer = null;
                 hasBeenUnlocked = true;
                 count = 3;
-                PS.audioPlay( "fx_ding", {volume: 0.5} );
+                PS.audioPlay( "correct", {volume: 0.25, path: "PuzzleAudio/"} );
                 PS.border( 3, 1, 1);
                 PS.border( 5, 1, 1);
                 PS.glyph( 3, 1, "6");
@@ -161,7 +166,7 @@ var currentSong;
                 timer = null;
                 finalHasBeenUnlocked = true;
                 count = 3;
-                PS.audioPlay( "fx_ding", {volume: 0.5} );
+                PS.audioPlay( "correct", {volume: 0.25, path: "PuzzleAudio/"} );
                 PS.border( 4, 2, 1);
                 PS.glyph( 4, 2, "8");
             }
@@ -292,7 +297,7 @@ var currentSong;
                     this.movePlayer();
                     this.moveMirror();
                     if( data == PS.COLOR_ORANGE || PS.data(mX, mY) == PS.COLOR_ORANGE ){
-                        PS.audioPlay( "fx_powerup6", {volume: 0.25} );
+                        PS.audioPlay( "inverse", {volume: 0.25, path: "PuzzleAudio/"} );
                         if ( PS.data(mX, mY) == PS.COLOR_ORANGE ){
                             PS.data(mX, mY, PS.COLOR_WHITE)
                         }
@@ -311,7 +316,7 @@ var currentSong;
                     this.moveMirror();
                     this.movePlayer();
                     if( data == PS.COLOR_ORANGE || PS.data(pX, pY) == PS.COLOR_ORANGE ){
-                        PS.audioPlay( "fx_powerup6", {volume: 0.25} );
+                        PS.audioPlay( "inverse", {volume: 0.25, path: "PuzzleAudio/"} );
                         if ( PS.data(pX, pY) == PS.COLOR_ORANGE ){
                             PS.data(pX, pY, PS.COLOR_WHITE)
                         }
@@ -327,11 +332,11 @@ var currentSong;
                     }
                 }
                 else{
-                    PS.audioPlay( "fx_zurp", { volume: .25} );
+                    PS.audioPlay( "error", { volume: .25, path: "PuzzleAudio/" } );
                 }
             }
             else{
-                PS.audioPlay( "fx_zurp", { volume: .25} );
+                PS.audioPlay( "error", { volume: .25, path: "PuzzleAudio/" } );
             }
             if(PS.data(pX, pY) != PS.COLOR_RED && PS.data(mX, mY) != PS.COLOR_BLUE){
                 PS.color(pX, pY, PS.COLOR_RED);
@@ -340,22 +345,13 @@ var currentSong;
                 PS.radius(mX, mY, 50);
             }
             if( data == PS.COLOR_GREEN ){
-                PS.audioPlay( "fx_bloop", { volume: .25} );
+                PS.audioPlay( "bounce", { volume: .10, path: "PuzzleAudio/" } );
                 this.unlock();
             }
 
-           /* if( inverted && (
-                ( ( pX+1 == mX || pX-1 == mX ) && ( pY== mX ) )
-                ||
-                ( ( pY+1 == mY || pY-1 == mY ) && ( pX== mX ) )
-            ) ){
-                missed = true;
-                PS.audioPlay( "fx_swoosh", {volume: 0.5} );
-            }*/
-
             //If merged
             if(mX == pX && mY == pY){
-                PS.audioPlay( "fx_squish", { volume: .25} );
+                PS.audioPlay( "collision", { volume: .25, path: "PuzzleAudio/" } );
                 PS.color(mX, mY, PS.COLOR_VIOLET);
                 PS.statusText("LEVEL COMPLETE");
                 PS.statusColor(PS.COLOR_BLACK);
@@ -435,7 +431,7 @@ var currentSong;
 
             //if in green
             if( nextBead == PS.COLOR_GREEN ){
-                PS.audioPlay( "fx_bloop", { volume: .25} );
+                PS.audioPlay( "bounce", { volume: .10, path: "PuzzleAudio/"} );
                 this.unlock();
             }
 
@@ -446,7 +442,7 @@ var currentSong;
             }
             
             if( nextBead == PS.COLOR_VIOLET ){
-                PS.audioPlay("fx_powerup7", {volume: 0.25});
+                PS.audioPlay("swap", {volume: 0.25, path: "PuzzleAudio/"});
                 PS.data(pX, pY, PS.COLOR_WHITE);
                 if(swapped){
                     this.clearArrows();
@@ -618,7 +614,7 @@ var currentSong;
 
             //If in green
             if( nextBead == PS.COLOR_GREEN ){
-                PS.audioPlay( "fx_bloop", { volume: .25} );
+                PS.audioPlay( "bounce", { volume: .10, path: "PuzzleAudio/" } );
                 this.unlock();
             }
 
@@ -628,7 +624,7 @@ var currentSong;
                 this.GameOver();
             }
             if( nextBead == PS.COLOR_VIOLET ){
-                PS.audioPlay("fx_powerup7", {volume: 0.25});
+                PS.audioPlay("swap", {volume: 0.25, path: "PuzzleAudio/"});
                 PS.data(mX, mY, PS.COLOR_WHITE);
                 if(swapped){
                     this.clearArrows();
@@ -659,7 +655,7 @@ var currentSong;
 
         GameOver(){
             swapped = false;
-            PS.audioPlay( "fx_squink", { volume: .5} );
+            PS.audioPlay( "death", { volume: .5, path: "PuzzleAudio/"} );
             PS.statusText("Game Over");
             PS.statusColor(PS.COLOR_BLACK);
             this.clearArrows();
@@ -1064,23 +1060,14 @@ var currentSong;
 
 PS.init = function( system, options ) {
 
-    var loader = function (data){
-        if(!musicChannels.includes(data.channel)){
-            musicChannels.push(data.channel);
-          //  PS.debug("Loaded " + data.channel + " ");
-        }
-    }
-
-    PS.audioLoad( "fx_ding" );
-    PS.audioLoad( "fx_swoosh" );
-    PS.audioLoad( "fx_powerup6" );
-    PS.audioLoad( "fx_powerup7" );
-    PS.audioLoad( "fx_blip" );
-    PS.audioLoad( "fx_zurp" );
+    PS.audioLoad( "correct", {path: "PuzzleAudio/"} );
+    PS.audioLoad( "inverse", {path: "PuzzleAudio/"} );
+    PS.audioLoad( "swap", {path: "PuzzleAudio/"} );
+    PS.audioLoad( "error", {path: "PuzzleAudio/"} );
     PS.audioLoad( "fx_click" );
-    PS.audioLoad( "fx_bloop" );
-    PS.audioLoad( "fx_squink" );
-    PS.audioLoad( "fx_squish" );
+    PS.audioLoad( "bounce", {path: "PuzzleAudio/"} );
+    PS.audioLoad( "death", {path: "PuzzleAudio/"} );
+    PS.audioLoad( "collision", {path: "PuzzleAudio/"} );
     PS.audioLoad( "beep0", {path: "PuzzleAudio/"});
     PS.audioLoad( "beep1", {path: "PuzzleAudio/"});
     PS.audioLoad( "beep2", {path: "PuzzleAudio/"});
@@ -1088,10 +1075,7 @@ PS.init = function( system, options ) {
     PS.audioLoad( "beep4", {path: "PuzzleAudio/"});
     PS.audioLoad( "beep5", {path: "PuzzleAudio/"});
     PS.audioLoad( "beep6", {path: "PuzzleAudio/"});
-    PS.audioLoad( "GuitarBeat", {path: "PuzzleAudio/", onLoad: loader, lock : true});
-    PS.audioLoad( "FunkyBeat", {path: "PuzzleAudio/", onLoad: loader});
-    PS.audioLoad( "EnergeticBeat", {path: "PuzzleAudio/", onLoad: loader});
-    PS.audioLoad( "ChillBeat", {path: "PuzzleAudio/", onLoad: loader});
+    PS.audioLoad( "ChillBeat", {path: "PuzzleAudio/"});
 
     PS.audioPlay( "ChillBeat", {path: "PuzzleAudio/", volume: 0.10, loop: true});
 
