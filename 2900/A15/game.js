@@ -1041,7 +1041,7 @@ const KEY_SOUNDS = ["beep0", "beep1", "beep2", "beep3", "beep4", "beep5", "beep6
                 this.createBlock( 0, 0, 9, 13, PS.COLOR_VIOLET );
                 this.createBlock( 0, 0, 9, 12, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 8, 11, PS.COLOR_WHITE );
-                this.createBlock( 0, 0, 5, 4, PS.COLOR_ORANGE );
+                this.createBlock( 0, 0, 5, 3, PS.COLOR_ORANGE );
                 this.createBlock( 0, 0, 8, 5, PS.COLOR_WHITE );
                 this.createBlock( 0, 0, 8, 13, PS.COLOR_WHITE );
                 this.createBlock( 0, 0, 13, 8, PS.COLOR_WHITE );
