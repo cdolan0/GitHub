@@ -68,25 +68,26 @@ var pX, pY, mX, mY;
 //Game Over Boolean
 var gameover;
 
+//If just passed a level
 var passLevel;
 
+//Individual checks for level completion
 var complete1, complete2, complete3, complete4, complete5, complete6, complete7, complete8 = false;
 
+//If control is swapped to blue
 var swapped = false;
 
+//If 6&7 have been unlocked
 var hasBeenUnlocked = false;
 
+//If 8 has been unlocked
 var finalHasBeenUnlocked = false;
 
+//Library for universal obstacles
 const OBSTACLES = [PS.COLOR_BLACK, PS.COLOR_GRAY_LIGHT];
 
+//Library for sounds on key press
 const KEY_SOUNDS = ["beep0", "beep1", "beep2", "beep3", "beep4", "beep5", "beep6",];
-
-const MUSIC = ["GuitarBeat", "FunkyBeat", "EnergeticBeat", "ChillBeat"];
-
-var musicChannels = [];
-
-var currentSong;
 
 (function (){
 
@@ -97,12 +98,13 @@ var currentSong;
 
     passLevel = false;
 
+
     inverted = false;
 
-    var missed = false;
-
+    //If set to unlock 6&7
     var nextLevelUnlock = false;
 
+    //If set to unlock 8
     var finalLevelUnlock = false;
 
 
@@ -130,6 +132,7 @@ var currentSong;
                 Game.makeLevel();
             }
         }
+        //Pause after completing level
         if ( passLevel ){
             count -= 1;
             //After 4 seconds return to level select
@@ -142,6 +145,7 @@ var currentSong;
                 Game.makeLevel();
             }
         }
+        //Begin unlock animation of 6 and 7
         if (nextLevelUnlock && !hasBeenUnlocked){
             count -=1;
             PS.statusText("NEW LEVELS UNLOCKED!");
@@ -157,7 +161,7 @@ var currentSong;
                 PS.glyph( 5, 1, "7");
             }
         }
-
+        //Begin unlock animation of 8
         if (finalLevelUnlock && !finalHasBeenUnlocked){
             count -=1;
             PS.statusText("NEW LEVEL UNLOCKED!");
@@ -172,6 +176,7 @@ var currentSong;
             }
         }
 
+        //Code for moving wall in final level
         /*if(level == 8){
             if (count == -4){
                 PS.audioPlay( "fx_zurp", {volume: 0.5});
@@ -188,20 +193,11 @@ var currentSong;
                 count -= 1;
             }
         }*/
-        if (missed){
-            count -= 1;
-            PS.statusText( "Missed It By That Much!" );
-            if (count == -1){
-                missed = false;
-                PS.statusText( "Level " + level );
-                timer = null;
-                count = 3;
-            }
-        }
     };
 
 
     Game = {
+        //Level creation system
         createBlock( w, h, x, y, color){
             for(var i = x; i <= (x+w); i += 1){
                 for(var j = y; j <= (y+h); j += 1){
@@ -291,8 +287,10 @@ var currentSong;
                 }
             }
 
+            //Nothing in the way and valid movement
             if(!OBSTACLES.includes(data) && goodToMove){
                 PS.audioPlay( keyNoise, { volume: .25, path: "PuzzleAudio/"} );
+                //If red and no blue in way
                 if (!swapped && data != PS.COLOR_BLUE){
                     this.movePlayer();
                     this.moveMirror();
@@ -312,6 +310,7 @@ var currentSong;
                         }
                     }
                 }
+                //If blue and no red in way
                 else if (swapped && data != PS.COLOR_RED){
                     this.moveMirror();
                     this.movePlayer();
@@ -383,6 +382,8 @@ var currentSong;
                 Game.clearArrows();
             }
         },
+
+        //Move red circle
         movePlayer(){
             this.clearArrows();
             var pDir = direction;
@@ -459,6 +460,7 @@ var currentSong;
             this.updateArrows();
         },
 
+        //Remove arrows after moving
         clearArrows(){
             //Target x and y
             var tX, tY;
@@ -484,6 +486,7 @@ var currentSong;
             }
         },
 
+        //Redraw arrows at apropriate positions
         updateArrows(){
             var tX, tY;
             if(swapped){
@@ -508,6 +511,7 @@ var currentSong;
             }
         },
 
+        //Highlight arrow key on press
         highlightArrow(key){
             var tX, tY;
             if(swapped){
@@ -536,6 +540,7 @@ var currentSong;
             }
         },
 
+        //After highlighting arrow key de-highlight it
         unHLArrow(key){
             var tX, tY;
             if(swapped){
@@ -564,6 +569,7 @@ var currentSong;
             }
         },
 
+        //Move blue circle
         moveMirror(){
             this.clearArrows();
             //Mirror direction
@@ -641,6 +647,7 @@ var currentSong;
             this.updateArrows();
         },
 
+        //Get rid of all light gray beads
         unlock(){
             PS.data(pX, pY, PS.COLOR_WHITE);
             for(var i = 0; i < WIDTH; i += 1){
@@ -653,6 +660,7 @@ var currentSong;
             }
         },
 
+        //Trigger gameover sequence
         GameOver(){
             swapped = false;
             PS.audioPlay( "death", { volume: .5, path: "PuzzleAudio/"} );
@@ -662,35 +670,29 @@ var currentSong;
             gameover = true;
         },
 
+        //Make each level based on level value
         makeLevel(){
-          //  PS.audioStop(currentSong);
+
             swapped = false;
+            //Make sure can't get to 8 without first beating the necessary levels
             if ( level > 8 || (level > 5 && !hasBeenUnlocked) || (level > 7 && !finalHasBeenUnlocked)){
                level = 0;
             }
+            //Check for unlock of 6 and 7
             if(complete1 && complete2 && complete3 && !hasBeenUnlocked){
                 nextLevelUnlock = true;
                 level = 0;
             }
+            //Check for unlock of 8
             if(complete1 && complete2 && complete3 && complete4 && complete5 && !finalHasBeenUnlocked){
                 finalLevelUnlock = true;
                 level = 0;
             }
+            //If timer isn't started restart it
             if ( timer == null ){
                 timer = PS.timerStart (60, tick);
             }
-            if(level == 0){
-                currentSong = musicChannels[0];
-            }
-            else if (1 <= level && 3>= level){
-                currentSong = musicChannels[1];
-            }
-            else if(level == 4 || level == 5){
-                currentSong = musicChannels[2];
-            }
-            else if(level >= 6){
-                currentSong = musicChannels[3];
-            }
+
             if( level == 0 ){
                 PS.gridSize( 9, 3 );
                 PS.data(PS.ALL, PS.ALL, PS.COLOR_WHITE);
@@ -703,6 +705,7 @@ var currentSong;
                 PS.glyph( 6, 0, "4");
                 PS.glyph( 8, 0, "5");
                 PS.fade( PS.ALL, PS.ALL, 15);
+                //Color green if complete
                 if(complete1){
                     PS.color( 0, 0, PS.COLOR_GREEN);
                 }
@@ -1044,10 +1047,10 @@ var currentSong;
                 this.createBlock( 0, 0, 13, 8, PS.COLOR_WHITE );
                 this.createBlock( 0, 0, 6, 9, PS.COLOR_GRAY_LIGHT );
             }
+            //Update arrows on level load
             if( level > 0 ){
                 this.updateArrows();
             }
-            timer = null;
          /*   PS.audioPlayChannel(currentSong, {voliume: 0.25, loop: true, path: "PuzzleAudio/"});
             PS.debug(currentSong);
             PS.debug("");*/
@@ -1079,8 +1082,6 @@ PS.init = function( system, options ) {
 
     PS.audioPlay( "ChillBeat", {path: "PuzzleAudio/", volume: 0.10, loop: true});
 
-    currentSong = musicChannels[0];
-
     level = 8;
     Game.makeLevel();
 
@@ -1097,6 +1098,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
+    //Level select
     if( level == 0 ){
         if( x == 0 && y == 0 ){
             PS.audioPlay( "fx_click", { volume: .25} );
@@ -1174,6 +1176,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.enter = function( x, y, data, options ) {
+    //Highlight levels on select screen
     if( level == 0 ){
         if( x == 0 && y == 0){
             PS.color( x, y, PS.COLOR_VIOLET );
@@ -1223,6 +1226,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.exit = function( x, y, data, options ) {
+    //Return level icons to previous state after highlighting them
     if( level == 0 ){
         if( x == 0 || x == 2 || x == 4 || x == 6 || x == 8 && y == 0){
             if(x == 0 && complete1){
