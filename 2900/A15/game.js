@@ -142,6 +142,10 @@ const KEY_SOUNDS = ["beep0", "beep1", "beep2", "beep3", "beep4", "beep5", "beep6
                 passLevel = false;
                 count = 3;
                 level += 1;
+                if(complete1 && complete2 && complete3 && complete4 && complete5 && complete6 && complete7 &&
+                    complete8){
+                    level = 0;
+                }
                 Game.makeLevel();
             }
         }
