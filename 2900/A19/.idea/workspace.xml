@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="02ce5d7f-f7d1-4db2-8c20-935e631f95ed" name="Changes" comment="" />
+    <list default="true" id="523722af-1b54-4146-91a2-17a23e0bdd77" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../A15/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../A15/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,7 +23,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="26i9oL9d88TGJvJuBWUQaWn6miM" />
+  <component name="ProjectId" id="27wDzXxb9jSw88brCFKO7IfWkae" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,25 +33,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="02ce5d7f-f7d1-4db2-8c20-935e631f95ed" name="Changes" comment="" />
-      <created>1647895712470</created>
+      <changelist id="523722af-1b54-4146-91a2-17a23e0bdd77" name="Changes" comment="" />
+      <created>1650222519180</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1647895712470</updated>
-      <workItem from="1647895713649" duration="17000" />
-      <workItem from="1649016852106" duration="8102000" />
-      <workItem from="1649371102541" duration="782000" />
-      <workItem from="1649371893867" duration="5969000" />
-      <workItem from="1649384059996" duration="2392000" />
-      <workItem from="1649717392673" duration="4535000" />
-      <workItem from="1649741667368" duration="9904000" />
-      <workItem from="1650222392409" duration="5000" />
+      <updated>1650222519180</updated>
+      <workItem from="1650222520774" duration="3615000" />
     </task>
     <servers />
   </component>
