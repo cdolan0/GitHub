@@ -58,18 +58,30 @@ const OBSTACLES = [PS.COLOR_BLACK];
 
 const ENEMY_TYPES = [PS.COLOR_RED];
 
-var pX = 0;
-var pY = 0;//player x and y
+
 
 var isOutOfBounds = false;
 
 var level = 0;
+
+var startX;
+
+var startY;
+
+var pX = startX;
+var pY = startY;//player x and y
 
 var direction;
 
 var firing = false;
 
 var returnX, returnY;
+
+var shieldStrength;
+
+var gameover = false;
+
+var start;
 
 var enemies = [
 
@@ -85,13 +97,16 @@ var projectile = {
 
 (function () {
     var target;
+    var targetColor;
     var pastProjX;
     var pastProjY;
     var timer = null;
     var enemyMoveCounter = 1;
 
+
     var tick = function () {
         if(firing){
+        //    PS.debug("firing");
                 pastProjX = projectile.x;
                 pastProjY = projectile.y;
                 if((projectile.projDir == "right") && (projectile.x < WIDTH-1)){
@@ -109,21 +124,21 @@ var projectile = {
                 PS.glyph(pastProjX, pastProjY, "");
                 PS.glyph(projectile.x, projectile.y, "*");
                 target = PS.data(projectile.x, projectile.y);
+                targetColor = PS.color(projectile.x, projectile.y)
+              // PS.debug(targetColor);
                 if(OBSTACLES.includes(target)){
                     projectile.destroyed = true;
                     projectile.fired = false;
                     firing = false;
                 }
-                else if(ENEMY_TYPES.includes(target)){
-                    projectile.destroyed = true;
-                    projectile.fired = false;
-                    firing = false;
+                else if(ENEMY_TYPES.includes(targetColor)){
+                    Game.hitEnemy();
                 }
-                if(projectile.destroyed){
-                    PS.glyph(projectile.x, projectile.y, "*");
-                }
+          /*      if(projectile.destroyed){
+                    PS.glyph(projectile.x, projectile.y, "");
+                }*/
         }
-        if(enemies.length > 0 && !isOutOfBounds){
+        if(enemies.length > 0 && !isOutOfBounds && !gameover && !start){
             enemyMoveCounter -= 1;
             if(enemyMoveCounter < 0){
                 Game.moveEnemies();
@@ -148,6 +163,26 @@ var projectile = {
             }
         },
 
+        hitEnemy(){
+            PS.debug("hit");
+            projectile.destroyed = true;
+            projectile.fired = false;
+            firing = false;
+            for(var i = 0; i < enemies.length; i += 0){
+                if(enemies[i].x == projectile.x && enemies[i].y == projectile.y){
+                    enemies.splice(i, 1);
+                    PS.color(projectile.x, projectile.y, target);
+                    PS.glyph(projectile.x, projectile.y, "");
+                }
+            }
+        },
+
+        GameOver(){
+            Game.deleteAllEnemies();
+            Game.startScreen();
+            gameover = true;
+        },
+
         moveEnemies(){
             var path;
             var nextStep;
@@ -155,17 +190,25 @@ var projectile = {
             var nextY;
             var nextBead;
             for(var i = 0; i < enemies.length; i += 1){
-                PS.debug("moving enemy")
-                path = PS.line(enemies[i].x, enemies[i].y, pX, pY);
-                nextStep = path[0];
-                nextX = nextStep[0];
-                nextY = nextStep[1];
-                nextBead = PS.data(nextX, nextY);
-                if(!OBSTACLES.includes(nextBead) && !ENEMY_TYPES.includes(nextBead)){
-                    PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
-                    enemies[i].x = nextX;
-                    enemies[i].y = nextY;
-                    PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                if(!gameover) {
+                    //PS.debug("moving enemy");
+                    path = PS.line(enemies[i].x, enemies[i].y, pX, pY);
+                    nextStep = path[0];
+                    nextX = nextStep[0];
+                    nextY = nextStep[1];
+                    nextBead = PS.data(nextX, nextY);
+                    if (!OBSTACLES.includes(nextBead) && !ENEMY_TYPES.includes(nextBead)) {
+                        PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
+                        enemies[i].x = nextX;
+                        enemies[i].y = nextY;
+                        PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                    }
+                    if (enemies[i].x == pX && enemies[i].y == pY) {
+                        Game.GameOver();
+                    }
+                    if (!gameover && (enemies[i].x == projectile.x) && (enemies[i].y == projectile.y)) {
+                        Game.hitEnemy();
+                    }
                 }
             }
         },
@@ -188,6 +231,20 @@ var projectile = {
             }
         },
 
+        deleteAllEnemies(){
+            for(var i = 0; i < enemies.length; i += 1){
+                enemies.pop();
+            }
+        },
+
+        startScreen(){
+            this.deleteAllEnemies();
+            PS.fade(PS.ALL, PS.ALL, 15);
+            PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+            PS.color(startX, startY, PS.COLOR_GREEN);
+            start = true;
+        },
+
         makeLevel(){
             if(timer == null){
                timer = PS.timerStart(6, tick);
@@ -196,6 +253,8 @@ var projectile = {
             pY = 3;
             PS.gridSize(WIDTH, HEIGHT);
             PS.border(PS.ALL, PS.ALL, 0);
+            startX = 2;
+            startY = 2;
             this.createBlock(WIDTH-1, HEIGHT-1, 0, 0, PS.COLOR_WHITE);
             this.makeEnemy(13, 13, PS.COLOR_RED);
             this.createBlock(5,5,5,5, PS.COLOR_BLACK);
@@ -209,6 +268,7 @@ var projectile = {
 
 PS.init = function( system, options ) {
     Game.makeLevel();
+    Game.startScreen();
 };
 
 /*
@@ -222,7 +282,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-    if(!firing && !isOutOfBounds){
+    if(!firing && !isOutOfBounds && !gameover){
         projectile.x = x;
         projectile.y = y;
         projectile.projDir = direction;
@@ -264,7 +324,7 @@ PS.enter = function( x, y, data, options ) {
     var pastY = pY;
     pX = x;
     pY = y;
-    if ((!OBSTACLES.includes(nextBead)) && (!ENEMY_TYPES.includes(nextBead)) && !isOutOfBounds){
+    if ((!OBSTACLES.includes(nextBead)) && (!ENEMY_TYPES.includes(nextBead)) && !isOutOfBounds && !gameover && !start){
         PS.color(pX, pY, PS.COLOR_BLUE);
         PS.radius(pX, pY, 50);
         PS.color(pastX, pastY, PS.data(pastX, pastY));
@@ -287,7 +347,7 @@ PS.enter = function( x, y, data, options ) {
         }
         PS.glyph(pastX, pastY, "");
     }
-    else if(OBSTACLES.includes(nextBead) && !isOutOfBounds){
+    else if(OBSTACLES.includes(nextBead) && !isOutOfBounds && !gameover && !start){
         isOutOfBounds = true;
         PS.fade(PS.ALL, PS.ALL, 15);
         PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
@@ -295,7 +355,7 @@ PS.enter = function( x, y, data, options ) {
         returnX = pastX;
         returnY = pastY;
     }
-    else if(returnX == pX && returnY == pY && isOutOfBounds){
+    else if(returnX == pX && returnY == pY && isOutOfBounds && !gameover && !start){
         PS.fade(PS.ALL, PS.ALL, 0);
         isOutOfBounds = false;
         for(var i = 0; i < WIDTH; i+= 1){
@@ -305,6 +365,19 @@ PS.enter = function( x, y, data, options ) {
         }
         PS.color(returnX, returnY, PS.COLOR_BLUE);
         Game.reDrawEnemies();
+    }
+    else if(start && pX == startX && pY == startY){
+        PS.fade(PS.ALL, PS.ALL, 0);
+        gameover = false;
+        start = false;
+        for(var i = 0; i < WIDTH; i+= 1){
+            for(var j = 0; j < HEIGHT; j+= 1){
+                PS.color(i, j, PS.data(i, j));
+            }
+        }
+        PS.color(startX, startY, PS.COLOR_BLUE);
+        PS.radius(startX, startY, 50);
+        Game.makeLevel();
     }
 
 };
