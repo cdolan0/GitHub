@@ -56,7 +56,7 @@ const HEIGHT = 15;
 
 const OBSTACLES = [PS.COLOR_BLACK];
 
-const ENEMY_TYPES = ["eBasic, eFast, eRange, eShield"];
+const ENEMY_TYPES = [PS.COLOR_RED];
 
 var pX = 0;
 var pY = 0;//player x and y
@@ -71,6 +71,10 @@ var firing = false;
 
 var returnX, returnY;
 
+var enemies = [
+
+];
+
 var projectile = {
     projDir: "right",
     x: 0,
@@ -83,12 +87,11 @@ var projectile = {
     var target;
     var pastProjX;
     var pastProjY;
-    var firingCount = 1;
     var timer = null;
+    var enemyMoveCounter = 1;
 
     var tick = function () {
         if(firing){
-            if(firingCount == 0){
                 pastProjX = projectile.x;
                 pastProjY = projectile.y;
                 if((projectile.projDir == "right") && (projectile.x < WIDTH-1)){
@@ -119,9 +122,14 @@ var projectile = {
                 if(projectile.destroyed){
                     PS.glyph(projectile.x, projectile.y, "*");
                 }
-                firingCount = 1;
+        }
+        if(enemies.length > 0 && !isOutOfBounds){
+            enemyMoveCounter -= 1;
+            if(enemyMoveCounter < 0){
+                Game.moveEnemies();
+                enemyMoveCounter = 1;
             }
-            firingCount -= 1;
+
         }
     };
     Game = {
@@ -140,6 +148,46 @@ var projectile = {
             }
         },
 
+        moveEnemies(){
+            var path;
+            var nextStep;
+            var nextX;
+            var nextY;
+            var nextBead;
+            for(var i = 0; i < enemies.length; i += 1){
+                PS.debug("moving enemy")
+                path = PS.line(enemies[i].x, enemies[i].y, pX, pY);
+                nextStep = path[0];
+                nextX = nextStep[0];
+                nextY = nextStep[1];
+                nextBead = PS.data(nextX, nextY);
+                if(!OBSTACLES.includes(nextBead) && !ENEMY_TYPES.includes(nextBead)){
+                    PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
+                    enemies[i].x = nextX;
+                    enemies[i].y = nextY;
+                    PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                }
+            }
+        },
+
+        reDrawEnemies(){
+            for(var i = 0; i < enemies.length; i += 1){
+                PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+            }
+        },
+
+        makeEnemy(x, y, type){
+            if(ENEMY_TYPES.includes(type)){
+                var enemy = {
+                    x: x,
+                    y: y,
+                    type: type
+                }
+                enemies.push(enemy);
+                PS.color(x, y, PS.COLOR_RED);
+            }
+        },
+
         makeLevel(){
             if(timer == null){
                timer = PS.timerStart(6, tick);
@@ -149,6 +197,7 @@ var projectile = {
             PS.gridSize(WIDTH, HEIGHT);
             PS.border(PS.ALL, PS.ALL, 0);
             this.createBlock(WIDTH-1, HEIGHT-1, 0, 0, PS.COLOR_WHITE);
+            this.makeEnemy(13, 13, PS.COLOR_RED);
             this.createBlock(5,5,5,5, PS.COLOR_BLACK);
             this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
             this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
@@ -173,7 +222,7 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-    if(!firing){
+    if(!firing && !isOutOfBounds){
         projectile.x = x;
         projectile.y = y;
         projectile.projDir = direction;
@@ -255,6 +304,7 @@ PS.enter = function( x, y, data, options ) {
             }
         }
         PS.color(returnX, returnY, PS.COLOR_BLUE);
+        Game.reDrawEnemies();
     }
 
 };
