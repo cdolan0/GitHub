@@ -67,15 +67,63 @@ var level = 0;
 
 var direction;
 
-
+var firing = false;
 
 var returnX, returnY;
 
-(function () {
-/*    var timer = PS.timerStart(60, tick);
-    var tick = function () {
+var projectile = {
+    projDir: "right",
+    x: 0,
+    y: 0,
+    fired: false,
+    destroyed: false,
+};
 
-    }*/
+(function () {
+    var target;
+    var pastProjX;
+    var pastProjY;
+    var firingCount = 1;
+    var timer = null;
+
+    var tick = function () {
+        if(firing){
+            if(firingCount == 0){
+                pastProjX = projectile.x;
+                pastProjY = projectile.y;
+                if((projectile.projDir == "right") && (projectile.x < WIDTH-1)){
+                    projectile.x = projectile.x + 1;
+                }
+                else if((projectile.projDir == "left") && (projectile.x != 0)){
+                    projectile.x = projectile.x - 1;
+                }
+                else if((projectile.projDir == "up") && (projectile.y != 0)){
+                    projectile.y = projectile.y - 1;
+                }
+                else if((projectile.projDir == "down") && (projectile.y < HEIGHT-1)){
+                    projectile.y = projectile.y + 1;
+                }
+                PS.glyph(pastProjX, pastProjY, "");
+                PS.glyph(projectile.x, projectile.y, "*");
+                target = PS.data(projectile.x, projectile.y);
+                if(OBSTACLES.includes(target)){
+                    projectile.destroyed = true;
+                    projectile.fired = false;
+                    firing = false;
+                }
+                else if(ENEMY_TYPES.includes(target)){
+                    projectile.destroyed = true;
+                    projectile.fired = false;
+                    firing = false;
+                }
+                if(projectile.destroyed){
+                    PS.glyph(projectile.x, projectile.y, "*");
+                }
+                firingCount = 1;
+            }
+            firingCount -= 1;
+        }
+    };
     Game = {
         createBlock( w, h, x, y, color){
             for(var i = x; i <= (x+w); i += 1){
@@ -93,10 +141,19 @@ var returnX, returnY;
         },
 
         makeLevel(){
+            if(timer == null){
+               timer = PS.timerStart(6, tick);
+            }
+            pX = 3;
+            pY = 3;
             PS.gridSize(WIDTH, HEIGHT);
             PS.border(PS.ALL, PS.ALL, 0);
             this.createBlock(WIDTH-1, HEIGHT-1, 0, 0, PS.COLOR_WHITE);
             this.createBlock(5,5,5,5, PS.COLOR_BLACK);
+            this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
+            this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+            this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
+            this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
         }
     }
 } () );
@@ -116,13 +173,12 @@ This function doesn't have to do anything. Any value returned is ignored.
 */
 
 PS.touch = function( x, y, data, options ) {
-	// Uncomment the following code line
-	// to inspect x/y parameters:
-
-	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
-	// Add code here for mouse clicks/touches
-	// over a bead.
+    if(!firing){
+        projectile.x = x;
+        projectile.y = y;
+        projectile.projDir = direction;
+        firing = true;
+    }
 };
 
 /*
