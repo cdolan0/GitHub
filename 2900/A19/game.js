@@ -202,6 +202,7 @@ var projectile = {
                         enemies[i].x = nextX;
                         enemies[i].y = nextY;
                         PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                        PS.bgColor(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
                     }
                     if (enemies[i].x == pX && enemies[i].y == pY) {
                         Game.GameOver();
@@ -252,10 +253,11 @@ var projectile = {
             pX = 3;
             pY = 3;
             PS.gridSize(WIDTH, HEIGHT);
+            PS.bgAlpha(PS.ALL, PS.ALL, 255);
             PS.border(PS.ALL, PS.ALL, 0);
             startX = 2;
             startY = 2;
-            this.createBlock(WIDTH-1, HEIGHT-1, 0, 0, PS.COLOR_WHITE);
+            this.createBlock(WIDTH-1, HEIGHT-1, 0, 0, PS.COLOR_GRAY_LIGHT);
             this.makeEnemy(13, 13, PS.COLOR_RED);
             this.createBlock(5,5,5,5, PS.COLOR_BLACK);
             this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
@@ -326,6 +328,7 @@ PS.enter = function( x, y, data, options ) {
     pY = y;
     if ((!OBSTACLES.includes(nextBead)) && (!ENEMY_TYPES.includes(nextBead)) && !isOutOfBounds && !gameover && !start){
         PS.color(pX, pY, PS.COLOR_BLUE);
+        PS.bgColor(pX, pY, PS.data(pX, pY));
         PS.radius(pX, pY, 50);
         PS.color(pastX, pastY, PS.data(pastX, pastY));
         PS.radius(pastX, pastY, 0);
@@ -364,6 +367,7 @@ PS.enter = function( x, y, data, options ) {
             }
         }
         PS.color(returnX, returnY, PS.COLOR_BLUE);
+        PS.bgColor(returnX, returnY, PS.data(returnX, returnY));
         Game.reDrawEnemies();
     }
     else if(start && pX == startX && pY == startY){
@@ -376,6 +380,7 @@ PS.enter = function( x, y, data, options ) {
             }
         }
         PS.color(startX, startY, PS.COLOR_BLUE);
+        PS.bgColor(startX, startY, PS.data(startX, startY));
         PS.radius(startX, startY, 50);
         Game.makeLevel();
     }

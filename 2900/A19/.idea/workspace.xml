@@ -48,6 +48,7 @@
       <workItem from="1650222520774" duration="11425000" />
       <workItem from="1650309814196" duration="20000" />
       <workItem from="1650309979459" duration="4073000" />
+      <workItem from="1650327414070" duration="242000" />
     </task>
     <servers />
   </component>
@@ -59,8 +60,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/game.js</url>
-          <line>107</line>
-          <properties lambdaOrdinal="-1" />
+          <line>105</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
