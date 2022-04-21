@@ -85,7 +85,7 @@ const projectile = {
             }
             PS.glyph( pastProjX, pastProjY, "" );
             PS.glyphColor( pastProjX, pastProjY, PS.COLOR_BLACK );
-            PS.glyph( projectile.x, projectile.y, "*" );
+            PS.glyph( projectile.x, projectile.y, "⬤" );
             PS.glyphColor( projectile.x, projectile.y, PS.COLOR_RED );
 
             target = PS.data( projectile.x, projectile.y );
@@ -141,6 +141,10 @@ const projectile = {
 
         openPortal(){
             if ( level == 1 ){
+                PS.fade( 7, 11, 15);
+                Game.createBlock( 0, 0, 7, 11, PORTAL_COLOR );
+            }
+            if ( level == 2 ){
                 PS.fade( 7, 7, 15);
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
@@ -334,7 +338,7 @@ const projectile = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
-                startY = 12;
+                startY = 11;
                 this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
                 //Enemies
                 this.makeEnemy( 7, 3, PS.COLOR_GREEN, 0 );
@@ -520,18 +524,22 @@ PS.enter = function ( x, y, data, options ) {
         if ( pastX - pX < 0 ) {
             direction = "right";
             PS.glyph( pX, pY, ">" );
+            PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
         else if ( pastX - pX > 0 ) {
             direction = "left";
             PS.glyph( pX, pY, "<" );
+            PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
         else if ( pastY - pY < 0 ) {
             direction = "down";
             PS.glyph( pX, pY, "v" );
+            PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
         else if ( pastY - pY > 0 ) {
             direction = "up";
             PS.glyph( pX, pY, "^" );
+            PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
         PS.glyph( pastX, pastY, "" );
         if( nextBead == PORTAL_COLOR ){
