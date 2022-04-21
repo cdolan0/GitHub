@@ -424,8 +424,6 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
-                    //Enemies
-                    PS.debug("Making Enemies");
                     this.makeEnemy( 10, 2, PS.COLOR_GREEN, 0 );
                     this.makeEnemy( 12, 4, PS.COLOR_GREEN, 0 );
                     this.makeEnemy( 6, 3, PS.COLOR_GREEN, 1 );
@@ -476,7 +474,7 @@ const projectile = {
                     this.createBlock( 0, 6, 8, 8, PS.COLOR_BLACK );
 
                     //Key
-                    // this.createBlock( 0, 0, 13, 1, KEY_COLOR);
+                    this.createBlock( 0, 0, 13, 1, KEY_COLOR);
 
                     //Outer Walls
                     this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
