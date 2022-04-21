@@ -90,6 +90,7 @@ const projectile = {
             PS.glyphColor( pastProjX, pastProjY, PS.COLOR_BLACK );
             PS.glyph( projectile.x, projectile.y, "⬤" );
             PS.glyphColor( projectile.x, projectile.y, PS.COLOR_RED );
+            Game.shootAudio();
 
             target = PS.data( projectile.x, projectile.y );
             targetColor = PS.color( projectile.x, projectile.y );
@@ -156,6 +157,7 @@ const projectile = {
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
             portalOpened = true;
+            PS.audioPlay( "fx_pop" );
         },
 
         hitEnemy() {
@@ -317,12 +319,12 @@ const projectile = {
             start = true;
         },
 
-        makeFloor(rVal, gVal, bVal) {
+        makeFloor(rVal, gVal, bVal, randomValue ) {
             for ( yMarker = 0; yMarker < HEIGHT; yMarker++ ) {
                 for ( xMarker = 0; xMarker < WIDTH; xMarker ++ ) {
-                    var rValRandom = rVal - PS.random(20);
-                    var gValRandom = gVal - PS.random(20);
-                    var bValRandom = bVal - PS.random(20);
+                    var rValRandom = rVal - PS.random(randomValue);
+                    var gValRandom = gVal - PS.random(randomValue);
+                    var bValRandom = bVal - PS.random(randomValue);
                     rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
                     this.createBlock( 0, 0, xMarker, yMarker, rgb );
                 }
@@ -342,6 +344,28 @@ const projectile = {
             Game.startScreen();
         },
 
+        shootAudio() {
+            var randomShoot = PS.random(6);
+            if ( randomShoot == 1 ) {
+                PS.audioPlay( "fx_shoot1" );
+            }
+            if ( randomShoot == 2 ) {
+                PS.audioPlay( "fx_shoot2" );
+            }
+            if ( randomShoot == 3 ) {
+                PS.audioPlay( "fx_shoot3" );
+            }
+            if ( randomShoot == 4 ) {
+                PS.audioPlay( "fx_shoot4" );
+            }
+            if ( randomShoot == 5 ) {
+                PS.audioPlay( "fx_shoot5" );
+            }
+            if ( randomShoot == 6 ) {
+                PS.audioPlay( "fx_shoot6" );
+            }
+        },
+
         makeLevel() {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
@@ -354,7 +378,7 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 11;
-                this.makeFloor( 180, 198, 205 );
+                this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 7, 3, PS.COLOR_GREEN, 0 );
 
@@ -375,7 +399,7 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 7;
-                this.makeFloor( 180, 198, 205 );
+                this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 3, 3, PS.COLOR_GREEN, 0 );
                 this.makeEnemy( 3, 11, PS.COLOR_GREEN, 0 );
@@ -398,7 +422,7 @@ const projectile = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                this.makeFloor( 180, 198, 205 );
+                this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
                     //Enemies
                     PS.debug("Making Enemies");
@@ -473,6 +497,14 @@ PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
     level = 1;
     Game.startScreen();
+
+    PS.audioLoad( "fx_pop" );
+    PS.audioLoad ( "fx_shoot1" );
+    PS.audioLoad ( "fx_shoot2" );
+    PS.audioLoad ( "fx_shoot3" );
+    PS.audioLoad ( "fx_shoot4" );
+    PS.audioLoad ( "fx_shoot5" );
+    PS.audioLoad ( "fx_shoot6" );
 };
 
 /*
