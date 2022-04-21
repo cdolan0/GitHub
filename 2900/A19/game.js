@@ -334,6 +334,27 @@ const projectile = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
+                startY = 12;
+                this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
+                //Enemies
+                this.makeEnemy( 7, 3, PS.COLOR_GREEN, 0 );
+
+                //Inner Walls
+                this.createBlock( 6, 0, 4, 7, PS.COLOR_BLACK );
+
+                //Outer Walls
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+            }
+            if( level == 2){
+                unlocked = true;
+                room = 0;
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                startX = 7;
                 startY = 7;
                 this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
                 //Enemies
@@ -354,7 +375,7 @@ const projectile = {
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
             }
-            if( level == 2){
+            if( level == 3){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
