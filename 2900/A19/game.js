@@ -45,6 +45,9 @@ let portalOpened = false;
 let usedDoor = false;
 let unlocked = true;
 
+let rgb;
+let xMarker;
+let yMarker;
 
 const projectile = {
     projDir : "right",
@@ -314,6 +317,18 @@ const projectile = {
             start = true;
         },
 
+        makeFloor(rVal, gVal, bVal) {
+            for ( yMarker = 0; yMarker < HEIGHT; yMarker++ ) {
+                for ( xMarker = 0; xMarker < WIDTH; xMarker ++ ) {
+                    var rValRandom = rVal - PS.random(20);
+                    var gValRandom = gVal - PS.random(20);
+                    var bValRandom = bVal - PS.random(20);
+                    rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+                    this.createBlock( 0, 0, xMarker, yMarker, rgb );
+                }
+            }
+        },
+
         changeRooms(x, y){
             if(level == 2){
                 if(room == 0){
@@ -339,7 +354,7 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 11;
-                this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
+                this.makeFloor( 180, 198, 205 );
                 //Enemies
                 this.makeEnemy( 7, 3, PS.COLOR_GREEN, 0 );
 
@@ -360,7 +375,7 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 7;
-                this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
+                this.makeFloor( 180, 198, 205 );
                 //Enemies
                 this.makeEnemy( 3, 3, PS.COLOR_GREEN, 0 );
                 this.makeEnemy( 3, 11, PS.COLOR_GREEN, 0 );
@@ -383,7 +398,7 @@ const projectile = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                this.createBlock( WIDTH - 1, HEIGHT - 1, 0, 0, PS.COLOR_GRAY_LIGHT );
+                this.makeFloor( 180, 198, 205 );
                 if(enemies.length == 0 && !portalOpened){
                     //Enemies
                     PS.debug("Making Enemies");
