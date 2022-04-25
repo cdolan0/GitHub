@@ -18,15 +18,23 @@
  [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
  */
 
+// TODO:
+// Invis/Timestop Powerup
+// Trigun powerup
+// Improve Navigation
+// MEGA-SHIELDED
+
 const WIDTH = 15;
 const HEIGHT = 15;
 const SHIELD_COLOR = PS.COLOR_RED;
+const INVIS_COLOR = PS.COLOR_GRAY_LIGHT;
+const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, 0x7DE339 ];
-const POWERUPS = [ SHIELD_COLOR ];
+const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_DARK;
 const E_SHIELD_COLOR = 0x04d9ff;
@@ -101,7 +109,6 @@ const projectile = {
                 PS.glyph(projectile.x, projectile.y, "⬤");
                 PS.glyphColor(projectile.x, projectile.y, PS.COLOR_RED);
             }
-            Game.shootAudio();
 
             target = PS.data( projectile.x, projectile.y );
             targetColor = PS.color( projectile.x, projectile.y );
@@ -697,6 +704,7 @@ PS.touch = function ( x, y, data, options ) {
         projectile.projDir = direction;
         projectile.destroyed = false;
         firing = true;
+        Game.shootAudio();
     }
 };
 
