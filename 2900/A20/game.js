@@ -470,6 +470,19 @@ const projectile = {
             }
         },
 
+        alienColor() {
+            var randomColor = PS.random(3);
+            if ( randomColor == 1 ) {
+                return 0x80E81D;
+            }
+            if ( randomColor == 2 ) {
+                return 0x2FC819;
+            }
+            if ( randomColor == 3 ) {
+                return 0x7DE339;
+            }
+        },
+
         makeLevel() {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
@@ -484,7 +497,7 @@ const projectile = {
                 startY = 11;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 7, 3, 0x2fc819, 0 );
+                this.makeEnemy( 7, 3, this.alienColor(), 0 );
 
                 //Inner Walls
                 this.createBlock( 6, 0, 4, 7, PS.COLOR_BLACK );
@@ -505,9 +518,9 @@ const projectile = {
                 startY = 7;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 3, 3, 0x80e81d, 0 );
-                this.makeEnemy( 3, 11, 0x2fc819, 0 );
-                this.makeEnemy( 12, 6, 0x7de339, 0 );
+                this.makeEnemy( 3, 3, this.alienColor(), 0 );
+                this.makeEnemy( 3, 11, this.alienColor(), 0 );
+                this.makeEnemy( 12, 6, this.alienColor(), 0 );
 
                 //Inner Walls
                 this.createBlock( 0, 1, 4, 7, PS.COLOR_BLACK );
@@ -528,11 +541,11 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 11, 2, 0x2fc819, 0 );
-                    this.makeEnemy( 12, 11, 0x80e81d, 0 );
-                    this.makeEnemy( 8, 3, 0x2fc819, 1 );
-                    this.makeEnemy( 12, 8, 0x80e81d, 1 );
-                    this.makeEnemy( 10, 12, 0x7de339, 1 );
+                    this.makeEnemy( 11, 2, this.alienColor(), 0 );
+                    this.makeEnemy( 12, 11, this.alienColor(), 0 );
+                    this.makeEnemy( 8, 3, this.alienColor(), 1 );
+                    this.makeEnemy( 12, 8, this.alienColor(), 1 );
+                    this.makeEnemy( 10, 12, this.alienColor(), 1 );
                 }
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
