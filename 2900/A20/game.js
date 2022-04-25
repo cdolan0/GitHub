@@ -19,13 +19,13 @@
  */
 
 // TODO:
-// Invis/Timestop Powerup
 // Trigun powerup
 // Improve Navigation
 // MEGA-SHIELDED
 
 const WIDTH = 15;
 const HEIGHT = 15;
+const HIDDEN_DOOR_COLOR = 0x313639;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
