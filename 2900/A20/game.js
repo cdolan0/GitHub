@@ -276,6 +276,8 @@ const projectile = {
                 }
                 else if ( enemies[ i ].destroyed ) {
                     PS.color( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
+                    PS.border( enemies[ i ].x, enemies[ i ].y, 0);
+                    PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
                     enemies.splice( i, 1 );
                     length -= 1; // *BM* NOTE: i is NOT incremented! It now points to next entry due to splice.
                     break;
