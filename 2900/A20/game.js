@@ -47,7 +47,7 @@ let startX;
 let startY;
 let pX = startX;
 let pY = startY;//player x and y
-let direction;
+let direction = "up";
 let firing = false;
 let returnX, returnY;
 let shieldStrength;
