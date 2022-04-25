@@ -23,11 +23,13 @@ const HEIGHT = 15;
 const SHIELD_COLOR = PS.COLOR_RED;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK ];
-const ENEMY_TYPES = [ 0x80E81D, 0x2FC819, 0x7DE339 ];
+const SHIELDED_ENEMY = 0x2FC819;
+const DEFAULT_ENEMY = 0x80E81D;
+const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, 0x7DE339 ];
 const POWERUPS = [ SHIELD_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_DARK;
-const KEY_COLOR = PS.COLOR_YELLOW;
+const E_SHIELD_COLOR = 0x04d9ff;
 
 let Game;
 let isOutOfBounds = false;
@@ -190,8 +192,14 @@ const projectile = {
                 }
                 i++
             }
-            enemies[ enemyNum ].destroyed = true;
-            PS.color( projectile.x, projectile.y, target );
+            if( enemies[enemyNum].shield <= 0 ){
+                enemies[ enemyNum ].destroyed = true;
+                PS.color( projectile.x, projectile.y, target );
+            }
+            else if( enemies[enemyNum].shield > 0 ){
+                enemies[enemyNum].shield -= 3;
+            }
+
             PS.glyph( projectile.x, projectile.y, "" );
             PS.glyphColor( projectile.x, projectile.y, PS.COLOR_BLACK );
             projectile.x = 0;
@@ -236,10 +244,14 @@ const projectile = {
                     if ( !ENEMY_TYPES.includes( nextColor ) && !OBSTACLES.includes( nextBead )
                         && (enemies[i].room == room)) {
                         PS.color( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
+                        PS.border( enemies[ i ].x, enemies[ i ].y, 0);
+                        PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
                         enemies[ i ].x = nextX;
                         enemies[ i ].y = nextY;
                         PS.color( enemies[ i ].x, enemies[ i ].y, enemies[ i ].type );
                         PS.bgColor( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
+                        PS.border( enemies[ i ].x, enemies[ i ].y, enemies[i].shield);
+                        PS.borderColor( enemies[ i ].x, enemies[ i ].y, E_SHIELD_COLOR);
                     }
                     if (( enemies[ i ].x === projectile.x ) && ( enemies[ i ].y === projectile.y ) && !hitting){
                         Game.hitEnemy();
@@ -318,8 +330,12 @@ const projectile = {
                     y : y,
                     type : type,
                     destroyed : false,
-                    room: Room
+                    room: Room,
+                    shield: 0
                 };
+                if( enemy.type == SHIELDED_ENEMY ){
+                    enemy.shield = 3;
+                }
                 enemies.push( enemy );
                 if( room == enemy.room ) {
                     PS.color(x, y, enemy.type);
@@ -528,10 +544,10 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 11, 2, 0x2fc819, 0 );
-                    this.makeEnemy( 12, 11, 0x80e81d, 0 );
-                    this.makeEnemy( 8, 3, 0x2fc819, 1 );
-                    this.makeEnemy( 12, 8, 0x80e81d, 1 );
+                    this.makeEnemy( 11, 2, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 12, 11, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 8, 3, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 12, 8, DEFAULT_ENEMY, 1 );
                     this.makeEnemy( 10, 12, 0x7de339, 1 );
                 }
                 if(eastereggs.length == 0){
@@ -649,7 +665,7 @@ const projectile = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 3;
     shieldStrength = 0;
     Game.startScreen();
 
