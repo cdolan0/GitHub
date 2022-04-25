@@ -524,9 +524,9 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 10, 2, PS.COLOR_GREEN, 0 );
-                    this.makeEnemy( 12, 4, PS.COLOR_GREEN, 0 );
-                    this.makeEnemy( 6, 3, PS.COLOR_GREEN, 1 );
+                    this.makeEnemy( 11, 2, PS.COLOR_GREEN, 0 );
+                    this.makeEnemy( 12, 11, PS.COLOR_GREEN, 0 );
+                    this.makeEnemy( 8, 3, PS.COLOR_GREEN, 1 );
                     this.makeEnemy( 12, 8, PS.COLOR_GREEN, 1 );
                     this.makeEnemy( 10, 12, PS.COLOR_GREEN, 1 );
                 }
@@ -536,7 +536,7 @@ const projectile = {
                 if(room == 0){
                     if(usedDoor){
                         startX = 14;
-                        startY = 7;
+                        startY = 10;
                     }
                     else {
                         startX = 2;
@@ -544,12 +544,10 @@ const projectile = {
                     }
 
                     //Inner Walls
-                    this.createBlock( 0, 2, 5, 11, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 1, 8, PS.COLOR_BLACK );
-                    this.createBlock( 0, 1, 7, 3, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 8, 5, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 9, 6, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 10, 7, PS.COLOR_BLACK );
+                    this.createBlock( 0, 2, 6, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 8, 6, 6, PS.COLOR_BLACK );
+                    this.createBlock( 1, 0, 7, 8, PS.COLOR_BLACK );
+                    this.createBlock( 2, 0, 11, 8, PS.COLOR_BLACK );
 
                     //Outer Walls
                     this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
@@ -558,11 +556,11 @@ const projectile = {
                     this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
                     //Door
-                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                    this.createBlock(0, 0, 14, 10, DOOR_COLOR);
                 }
                 else if(room == 1){
                     startX = 0;
-                    startY = 7;
+                    startY = 10;
 
                     //Inner Walls
                     this.createBlock( 0, 0, 1, 6, PS.COLOR_BLACK );
@@ -583,7 +581,7 @@ const projectile = {
                     this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
                     //Door
-                    this.createBlock(0, 0, 0, 7, DOOR_COLOR);
+                    this.createBlock(0, 0, 0, 10, DOOR_COLOR);
 
                 }
             }
