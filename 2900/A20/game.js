@@ -467,22 +467,22 @@ const projectile = {
         shootAudio() {
             var randomShoot = PS.random(6);
             if ( randomShoot == 1 ) {
-                PS.audioPlay( "fx_shoot1" );
+                PS.audioPlay( "fx_shoot1", { volume: 0.25 } );
             }
             if ( randomShoot == 2 ) {
-                PS.audioPlay( "fx_shoot2" );
+                PS.audioPlay( "fx_shoot2", { volume: 0.25 } );
             }
             if ( randomShoot == 3 ) {
-                PS.audioPlay( "fx_shoot3" );
+                PS.audioPlay( "fx_shoot3", { volume: 0.25 } );
             }
             if ( randomShoot == 4 ) {
-                PS.audioPlay( "fx_shoot4" );
+                PS.audioPlay( "fx_shoot4", { volume: 0.25 } );
             }
             if ( randomShoot == 5 ) {
-                PS.audioPlay( "fx_shoot5" );
+                PS.audioPlay( "fx_shoot5", { volume: 0.25 } );
             }
             if ( randomShoot == 6 ) {
-                PS.audioPlay( "fx_shoot6" );
+                PS.audioPlay( "fx_shoot6", { volume: 0.25 } );
             }
         },
 
