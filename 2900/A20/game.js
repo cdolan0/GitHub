@@ -27,7 +27,7 @@
 const WIDTH = 15;
 const HEIGHT = 15;
 const SHIELD_COLOR = PS.COLOR_RED;
-const INVIS_COLOR = PS.COLOR_GRAY_LIGHT;
+const INVIS_COLOR = PS.COLOR_GRAY;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK ];
@@ -58,6 +58,7 @@ let eastereggs = [];
 let portalOpened = false;
 let usedDoor = false;
 let unlocked = true;
+let invis = false;
 
 let rgb;
 let xMarker;
@@ -81,6 +82,7 @@ const projectile = {
     let length = enemies.length;
     let gameoverCounter = 60
     let hitting = false;
+    let invisCount = 500;
 
     const tick = function () {
         length = enemies.length;
@@ -102,7 +104,7 @@ const projectile = {
             }
             PS.glyph(pastProjX, pastProjY, "");
             PS.glyphColor(pastProjX, pastProjY, PS.COLOR_BLACK);
-            if( POWERUPS.includes( PS.borderColor(projectile.x, projectile.y) )){
+            if( SHIELD_COLOR == PS.borderColor(projectile.x, projectile.y )){
                 Game.triggerEgg( projectile.x, projectile.y);
             }
             else {
@@ -150,6 +152,18 @@ const projectile = {
                 gameoverCounter = 60;
                 Game.startScreen();
             }
+        }
+        if(invis){
+            invisCount -= 1;
+            PS.alpha(pX, pY, 100);
+            if(invisCount <= 0){
+                invis = false;
+                invisCount = 500;
+                PS.alpha(pX, pY, 255);
+            }
+        }
+        else{
+            invisCount = 500;
         }
     };
 
@@ -239,26 +253,29 @@ const projectile = {
 
             length = enemies.length;
             let i = 0;
-            while ( i < length ) {
+            while ( i < length && !invis) {
                 if ( !gameover && !enemies[i].destroyed ) {
                     //PS.debug("moving enemy");
                     path = PS.line( enemies[ i ].x, enemies[ i ].y, pX, pY );
-                    nextStep = path[ 0 ];
-                    nextX = nextStep[ 0 ];
-                    nextY = nextStep[ 1 ];
-                    nextBead = PS.data( nextX, nextY );
-                    var nextColor = PS.color( nextX, nextY );
-                    if ( !ENEMY_TYPES.includes( nextColor ) && !OBSTACLES.includes( nextBead )
-                        && (enemies[i].room == room)) {
-                        PS.color( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
-                        PS.border( enemies[ i ].x, enemies[ i ].y, 0);
-                        PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
-                        enemies[ i ].x = nextX;
-                        enemies[ i ].y = nextY;
-                        PS.color( enemies[ i ].x, enemies[ i ].y, enemies[ i ].type );
-                        PS.bgColor( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
-                        PS.border( enemies[ i ].x, enemies[ i ].y, enemies[i].shield);
-                        PS.borderColor( enemies[ i ].x, enemies[ i ].y, E_SHIELD_COLOR);
+                    nextStep = path[0];
+                    nextX = nextStep[0];
+                    nextY = nextStep[1];
+                    if(typeof(nextStep[ 0 ]) != "undefined" && typeof(nextStep[ 1 ]) != "undefined") {
+                        nextBead = PS.data(nextX, nextY);
+
+                        var nextColor = PS.color(nextX, nextY);
+                        if (!ENEMY_TYPES.includes(nextColor) && !OBSTACLES.includes(nextBead)
+                            && (enemies[i].room == room)) {
+                            PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
+                            PS.border(enemies[i].x, enemies[i].y, 0);
+                            PS.borderColor(enemies[i].x, enemies[i].y, PS.COLOR_BLACK);
+                            enemies[i].x = nextX;
+                            enemies[i].y = nextY;
+                            PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                            PS.bgColor(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
+                            PS.border(enemies[i].x, enemies[i].y, enemies[i].shield);
+                            PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
+                        }
                     }
                     if (( enemies[ i ].x === projectile.x ) && ( enemies[ i ].y === projectile.y ) && !hitting){
                         Game.hitEnemy();
@@ -391,6 +408,10 @@ const projectile = {
                         shieldStrength = 3;
                         PS.border( pX, pY, shieldStrength);
                         PS.borderColor( pX, pY, PLAYER_SHIELD_COLOR);
+                        eastereggs[i].used = true;
+                    }
+                    else if( eastereggs[i].type == INVIS_COLOR){
+                        invis = true;
                         eastereggs[i].used = true;
                     }
                 }
@@ -561,6 +582,7 @@ const projectile = {
                 }
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
+                    this.makeEasterEgg( 3, 3, INVIS_COLOR, 0);
                 }
                 if(room == 0){
                     if(usedDoor){
@@ -705,6 +727,10 @@ PS.touch = function ( x, y, data, options ) {
         projectile.destroyed = false;
         firing = true;
         Game.shootAudio();
+        if(invis){
+            invis = false;
+            PS.alpha(pX, pY, 255);
+        }
     }
 };
 
@@ -751,6 +777,7 @@ PS.enter = function ( x, y, data, options ) {
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
         PS.radius( pX, pY, 50 );
 
+        PS.alpha(pastX, pastY, 255);
         PS.color( pastX, pastY, PS.data( pastX, pastY ) );
         PS.radius( pastX, pastY, 0 );
         PS.border( pastX, pastY, 0 );
