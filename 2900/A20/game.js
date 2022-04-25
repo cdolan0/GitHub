@@ -23,9 +23,9 @@ const HEIGHT = 15;
 const SHIELD_COLOR = PS.COLOR_RED;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK ];
-const ENEMY_TYPES = [ PS.COLOR_GREEN ];
+const ENEMY_TYPES = [ 0x80E81D, 0x2FC819, 0x7DE339 ];
 const POWERUPS = [ SHIELD_COLOR ];
-const PORTAL_COLOR = PS.COLOR_VIOLET;
+const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_DARK;
 const KEY_COLOR = PS.COLOR_YELLOW;
 
@@ -163,8 +163,12 @@ const projectile = {
                 PS.fade( 7, 7, 15);
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            if ( level == 2 && room == 0){
-                PS.fade( 7, 7, 15);
+            if ( level == 3 && room == 1){
+                PS.fade( 2, 3, 15);
+                Game.createBlock( 0, 0, 2, 3, PORTAL_COLOR );
+            }
+            if ( level == 4 && room == 1) {
+                PS.fade (7, 7, 15);
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
             portalOpened = true;
@@ -246,7 +250,7 @@ const projectile = {
                             enemies.splice( i, 1 );
                             shieldStrength -= 1;
                             PS.border(pX, pY, shieldStrength);
-                            PS.color(pX, pY, PS.COLOR_BLUE);
+                            PS.color( pX, pY, 0x238fe6 );
                             break;
                         }
 
@@ -480,7 +484,7 @@ const projectile = {
                 startY = 11;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 7, 3, PS.COLOR_GREEN, 0 );
+                this.makeEnemy( 7, 3, 0x2fc819, 0 );
 
                 //Inner Walls
                 this.createBlock( 6, 0, 4, 7, PS.COLOR_BLACK );
@@ -501,9 +505,9 @@ const projectile = {
                 startY = 7;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 3, 3, PS.COLOR_GREEN, 0 );
-                this.makeEnemy( 3, 11, PS.COLOR_GREEN, 0 );
-                this.makeEnemy( 12, 6, PS.COLOR_GREEN, 0 );
+                this.makeEnemy( 3, 3, 0x80e81d, 0 );
+                this.makeEnemy( 3, 11, 0x2fc819, 0 );
+                this.makeEnemy( 12, 6, 0x7de339, 0 );
 
                 //Inner Walls
                 this.createBlock( 0, 1, 4, 7, PS.COLOR_BLACK );
@@ -524,11 +528,11 @@ const projectile = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 11, 2, PS.COLOR_GREEN, 0 );
-                    this.makeEnemy( 12, 11, PS.COLOR_GREEN, 0 );
-                    this.makeEnemy( 8, 3, PS.COLOR_GREEN, 1 );
-                    this.makeEnemy( 12, 8, PS.COLOR_GREEN, 1 );
-                    this.makeEnemy( 10, 12, PS.COLOR_GREEN, 1 );
+                    this.makeEnemy( 11, 2, 0x2fc819, 0 );
+                    this.makeEnemy( 12, 11, 0x80e81d, 0 );
+                    this.makeEnemy( 8, 3, 0x2fc819, 1 );
+                    this.makeEnemy( 12, 8, 0x80e81d, 1 );
+                    this.makeEnemy( 10, 12, 0x7de339, 1 );
                 }
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
@@ -582,9 +586,63 @@ const projectile = {
 
                     //Door
                     this.createBlock(0, 0, 0, 10, DOOR_COLOR);
-
                 }
             }
+            /*
+            if( level == 4 ) {
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                this.makeFloor( 180, 198, 205, 20 );
+                if(enemies.length == 0 && !portalOpened) {
+                    this.makeEnemy();
+                }
+                if(room == 0) {
+                    if (usedDoor) {
+                        startX = 14;
+                        startY = 7;
+                    } else {
+                        startX = 3;
+                        startY = 7;
+                    }
+                }
+                    //Inner Walls
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    //Door
+                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                }
+                else if(room == 1){
+                    startX = 0;
+                    startY = 7;
+
+                    //Inner Walls
+                    this.createBlock( 0, 0, 1, 6, PS.COLOR_BLACK );
+                    this.createBlock( 1, 0, 3, 6, PS.COLOR_BLACK );
+                    this.createBlock( 7, 0,  7, 6, PS.COLOR_BLACK );
+                    this.createBlock( 0, 5, 4, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 5, 10, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 10, 3, PS.COLOR_GRAY_LIGHT );
+
+                    this.createBlock( 2, 0, 1, 9, PS.COLOR_BLACK );
+                    this.createBlock( 2, 0, 5, 9, PS.COLOR_BLACK );
+                    this.createBlock( 0, 6, 8, 8, PS.COLOR_BLACK );
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    //Door
+                    this.createBlock(0, 0, 0, 10, DOOR_COLOR);
+            }
+            */
         }
     };
 }() );
@@ -661,7 +719,7 @@ PS.enter = function ( x, y, data, options ) {
     pY = y;
     if ( !isOutOfBounds && !gameover && !start &&
         !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBead ) ) {
-        PS.color( pX, pY, PS.COLOR_BLUE );
+        PS.color( pX, pY, 0x238fe6 );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
@@ -729,7 +787,7 @@ PS.enter = function ( x, y, data, options ) {
                 PS.color( i, j, PS.data( i, j ) );
             }
         }
-        PS.color( returnX, returnY, PS.COLOR_BLUE );
+        PS.color( returnX, returnY, 0x238fe6 );
         PS.bgColor( returnX, returnY, PS.data( returnX, returnY ) );
         Game.reDrawEnemies();
         Game.drawEggs();
@@ -743,7 +801,7 @@ PS.enter = function ( x, y, data, options ) {
                 PS.color( i, j, PS.data( i, j ) );
             }
         }
-        PS.color( pX, pY, PS.COLOR_BLUE );
+        PS.color( pX, pY, 0x238fe6 );
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
         PS.radius( pX, pY, 50 );
         Game.reDrawEnemies();
