@@ -922,7 +922,7 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "fx_shoot4" );
     PS.audioLoad ( "fx_shoot5" );
     PS.audioLoad ( "fx_shoot6" );
-    /*
+
     PS.audioLoad ( "Laser_Shoot", { path: "GameAudio/" });
     PS.audioLoad ( "Alarm", { path: "GameAudio/" });
     PS.audioLoad ( "Alien1", { path: "GameAudio/" });
@@ -934,7 +934,7 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
     PS.audioLoad ( "Trigun_Pickup", { path: "GameAudio/" });
     PS.audioLoad ( "Shield_Pickup", { path: "GameAudio/" });
-    */
+
 };
 
 /*
