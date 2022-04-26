@@ -59,12 +59,27 @@ let portalOpened = false;
 let usedDoor = false;
 let unlocked = true;
 let invis = false;
+let trigun = false;
 
 let rgb;
 let xMarker;
 let yMarker;
 
-const projectile = {
+let projectile = {
+    projDir : "right",
+    x : 0,
+    y : 0,
+    fired : false,
+    destroyed : false
+};
+let projectile2 = {
+    projDir : "right",
+    x : 0,
+    y : 0,
+    fired : false,
+    destroyed : false
+};
+let projectile3 = {
     projDir : "right",
     x : 0,
     y : 0,
@@ -74,9 +89,22 @@ const projectile = {
 
 ( function () {
     let target;
+    let target2;
+    let target3;
+
     let targetColor;
+    let targetColor2;
+    let targetColor3;
+
     let pastProjX;
     let pastProjY;
+
+    let pastProjX2;
+    let pastProjY2;
+
+    let pastProjX3;
+    let pastProjY3;
+
     let timer = null;
     let enemyMoveCounter = 12;
     let length = enemies.length;
@@ -87,52 +115,22 @@ const projectile = {
     const tick = function () {
         length = enemies.length;
         if ( firing ) {
-            //    PS.debug("firing");
-            pastProjX = projectile.x;
-            pastProjY = projectile.y;
-            if ( ( projectile.projDir === "right" ) && ( projectile.x < WIDTH - 1 ) ) {
-                projectile.x = projectile.x + 1;
-            }
-            else if ( ( projectile.projDir === "left" ) && ( projectile.x !== 0 ) ) {
-                projectile.x = projectile.x - 1;
-            }
-            else if ( ( projectile.projDir === "up" ) && ( projectile.y !== 0 ) ) {
-                projectile.y = projectile.y - 1;
-            }
-            else if ( ( projectile.projDir === "down" ) && ( projectile.y < HEIGHT - 1 ) ) {
-                projectile.y = projectile.y + 1;
-            }
-            PS.glyph(pastProjX, pastProjY, "");
-            PS.glyphColor(pastProjX, pastProjY, PS.COLOR_BLACK);
-            if( SHIELD_COLOR == PS.borderColor(projectile.x, projectile.y )){
-                Game.triggerEgg( projectile.x, projectile.y);
-            }
-            else {
-                PS.glyph(projectile.x, projectile.y, "⬤");
-                PS.glyphColor(projectile.x, projectile.y, PS.COLOR_RED);
-            }
-
-            target = PS.data( projectile.x, projectile.y );
-            targetColor = PS.color( projectile.x, projectile.y );
-            // PS.debug(targetColor);
-
-
-            if ( OBSTACLES.includes( target ) || target == DOOR_COLOR) {
-                projectile.destroyed = true;
-                projectile.fired = false;
-                firing = false;
-            }
-            /*else if(ENEMY_TYPES.includes(targetColor)){
-             Game.hitEnemy(0, true);
-             }*/
-            if(projectile.destroyed){
-                PS.glyph(projectile.x, projectile.y, "");
-            }
+           Game.moveProjectiles();
         }
         if ( !isOutOfBounds && !gameover && !start && ( length > 0 ) ) {
             enemyMoveCounter -= 1;
             if ( ENEMY_TYPES.includes( targetColor ) && !hitting) {
                 targetColor = null;
+                hitting = true;
+                Game.hitEnemy();
+            }
+            else if(ENEMY_TYPES.includes( targetColor2 ) && !hitting){
+                targetColor2 = null;
+                hitting = true;
+                Game.hitEnemy();
+            }
+            else if(ENEMY_TYPES.includes( targetColor3 ) && !hitting){
+                targetColor3 = null;
                 hitting = true;
                 Game.hitEnemy();
             }
@@ -205,40 +203,200 @@ const projectile = {
         hitEnemy() {
             let i = 0;
             let enemyNum = 0;
-            projectile.destroyed = true;
-            projectile.fired = false;
-            firing = false;
             length = enemies.length;
             while (i < length)  {
-                if ( ( enemies[ i ].x === projectile.x ) && ( enemies[ i ].y === projectile.y ) ) {
-                    //PS.debug( "hit" );
+                if (( enemies[ i ].x === projectile.x && enemies[ i ].y === projectile.y )){
                     enemyNum = i;
+                    projectile.x = 0;
+                    projectile.y = 0;
+                    projectile.destroyed = true;
+                    projectile.fired = false;
+                    PS.glyph(projectile.x, projectile.y, "");
+                    break;
+                }
+                else if(trigun && ( enemies[ i ].x === projectile2.x && enemies[ i ].y === projectile2.y )){
+                    enemyNum = i;
+                    projectile2.x = 0;
+                    projectile2.y = 0;
+                    projectile2.destroyed = true;
+                    projectile2.fired = false;
+                    PS.glyph(projectile2.x, projectile2.y, "");
+                    break;
+                }
+                else if(trigun && ( enemies[ i ].x === projectile3.x && enemies[ i ].y === projectile3.y )){
+                    projectile3.x = 0;
+                    projectile3.y = 0;
+                    projectile3.destroyed = true;
+                    projectile3.fired = false;
+                    PS.glyph(projectile3.x, projectile3.y, "");
                     break;
                 }
                 i++
             }
             if( enemies[enemyNum].shield <= 0 ){
                 enemies[ enemyNum ].destroyed = true;
-                PS.color( projectile.x, projectile.y, target );
+                PS.color( enemies[ enemyNum ].x, enemies[ enemyNum ].y, target );
             }
             else if( enemies[enemyNum].shield > 0 ){
                 enemies[enemyNum].shield -= 3;
             }
 
-            PS.glyph( projectile.x, projectile.y, "" );
-            PS.glyphColor( projectile.x, projectile.y, PS.COLOR_BLACK );
-            projectile.x = 0;
-            projectile.y = 0;
+            PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
+            PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
         },
 
         GameOver() {
             level = 1;
             PS.color (pX, pY, PS.COLOR_GREEN);
             Game.deleteAllEnemies();
+            firing = false;
             gameover = true;
         },
 
+        moveProjectiles(){
+                if(!projectile.destroyed) {
+                    pastProjX = projectile.x;
+                    pastProjY = projectile.y;
+                    if ((projectile.projDir === "right") && (projectile.x < WIDTH - 1)) {
+                        projectile.x = projectile.x + 1;
+                    }
+                    else if ((projectile.projDir === "left") && (projectile.x !== 0)) {
+                        projectile.x = projectile.x - 1;
+                    }
+                    else if ((projectile.projDir === "up") && (projectile.y !== 0)) {
+                        projectile.y = projectile.y - 1;
+                    }
+                    else if ((projectile.projDir === "down") && (projectile.y < HEIGHT - 1)) {
+                        projectile.y = projectile.y + 1;
+                    }
+                    if(trigun) {
+                        if(!projectile2.destroyed) {
+                            pastProjX2 = projectile2.x;
+                            pastProjY2 = projectile2.y;
+                            if ((projectile2.projDir === "leftAndUp") && (projectile2.y !== 0)
+                                && (projectile2.x !== 0)) {
+                                projectile2.y = projectile2.y - 1;
+                                projectile2.x = projectile2.x - 1;
+                            } else if ((projectile2.projDir === "rightAndUp") && (projectile2.y !== 0)
+                                && (projectile2.x < WIDTH - 1)) {
+                                projectile2.y = projectile2.y - 1;
+                                projectile2.x = projectile2.x + 1;
+                            } else if ((projectile2.projDir === "leftAndDown") && (projectile2.y < HEIGHT - 1)
+                                && (projectile2.x !== 0)) {
+                                projectile2.y = projectile2.y + 1;
+                                projectile2.x = projectile2.x - 1;
+                            } else if ((projectile2.projDir === "rightAndDown") && (projectile2.y < HEIGHT - 1)
+                                && (projectile2.x < WIDTH - 1)) {
+                                projectile2.y = projectile2.y + 1;
+                                projectile2.x = projectile2.x + 1;
+                            }
+                            PS.glyph(pastProjX2, pastProjY2, "");
+                            PS.glyphColor(pastProjX2, pastProjY2, PS.COLOR_BLACK);
+                            if (SHIELD_COLOR == PS.borderColor(projectile2.x, projectile2.y)) {
+                                Game.triggerEgg(projectile2.x, projectile2.y);
+                            }
+                            else {
+                                PS.glyph(projectile2.x, projectile2.y, "⬤");
+                                PS.glyphColor(projectile2.x, projectile2.y, PS.COLOR_RED);
+                            }
 
+                            target2 = PS.data(projectile2.x, projectile2.y);
+                            targetColor2 = PS.color(projectile2.x, projectile2.y);
+                            // PS.debug(targetColor);
+
+
+                            if (OBSTACLES.includes(target2) || target2 == DOOR_COLOR) {
+                                projectile2.destroyed = true;
+                                projectile2.fired = false;
+                                PS.glyph(projectile2.x, projectile2.y, "");
+                            }
+                        }
+                        else{
+                            PS.glyph(projectile2.x, projectile2.y, "");
+                            PS.debug("Projectil2 Not Moving");
+                        }
+                        if(!projectile3.destroyed) {
+                            pastProjX3 = projectile3.x;
+                            pastProjY3 = projectile3.y;
+                            if ((projectile3.projDir === "leftAndUp") && (projectile3.y !== 0)
+                                && (projectile3.x !== 0)) {
+                                projectile3.y = projectile3.y - 1;
+                                projectile3.x = projectile3.x - 1;
+                            } else if ((projectile3.projDir === "rightAndUp") && (projectile3.y !== 0)
+                                && (projectile3.x < WIDTH - 1)) {
+                                projectile3.y = projectile3.y - 1;
+                                projectile3.x = projectile3.x + 1;
+                            } else if ((projectile3.projDir === "leftAndDown") && (projectile3.y < HEIGHT - 1)
+                                && (projectile3.x !== 0)) {
+                                projectile3.y = projectile3.y + 1;
+                                projectile3.x = projectile3.x - 1;
+                            } else if ((projectile3.projDir === "rightAndDown") && (projectile3.y < HEIGHT - 1)
+                                && (projectile3.x < WIDTH - 1)) {
+                                projectile3.y = projectile3.y + 1;
+                                projectile3.x = projectile3.x + 1;
+                            }
+                            PS.glyph(pastProjX3, pastProjY3, "");
+                            PS.glyphColor(pastProjX3, pastProjY3, PS.COLOR_BLACK);
+                            if (SHIELD_COLOR == PS.borderColor(projectile3.x, projectile3.y)) {
+                                Game.triggerEgg(projectile3.x, projectile3.y);
+                            }
+                            else {
+                                PS.glyph(projectile3.x, projectile3.y, "⬤");
+                                PS.glyphColor(projectile3.x, projectile3.y, PS.COLOR_RED);
+                            }
+
+                            target3 = PS.data(projectile3.x, projectile3.y);
+                            targetColor3 = PS.color(projectile3.x, projectile3.y);
+                            // PS.debug(targetColor);
+
+
+                            if (OBSTACLES.includes(target3) || target3 == DOOR_COLOR) {
+                                projectile3.destroyed = true;
+                                projectile3.fired = false;
+                                PS.glyph(projectile3.x, projectile3.y, "");
+                            }
+                        }
+                        else{
+                            PS.glyph(projectile3.x, projectile3.y, "");
+                            PS.debug("Projectil3 Not Moving");
+                        }
+                    }
+                    PS.glyph(pastProjX, pastProjY, "");
+                    PS.glyphColor(pastProjX, pastProjY, PS.COLOR_BLACK);
+                    if (SHIELD_COLOR == PS.borderColor(projectile.x, projectile.y)) {
+                        Game.triggerEgg(projectile.x, projectile.y);
+                    }
+                    else {
+                        PS.glyph(projectile.x, projectile.y, "⬤");
+                        PS.glyphColor(projectile.x, projectile.y, PS.COLOR_RED);
+                    }
+
+                    target = PS.data(projectile.x, projectile.y);
+                    targetColor = PS.color(projectile.x, projectile.y);
+                    // PS.debug(targetColor);
+
+
+                    if (OBSTACLES.includes(target) || target == DOOR_COLOR) {
+                        projectile.destroyed = true;
+                        projectile.fired = false;
+                        PS.glyph(projectile.x, projectile.y, "");
+                    }
+                }
+
+                if (projectile.destroyed) {
+                    PS.glyph(projectile.x, projectile.y, "");
+                    if( trigun && projectile2.destroyed && projectile3.destroyed ){
+                            firing = false;
+                            PS.glyph(projectile.x, projectile.y, "");
+                            PS.glyph(projectile2.x, projectile2.y, "");
+                            PS.glyph(projectile3.x, projectile3.y, "");
+                    }
+                    else if (!trigun) {
+                        firing = false;
+                    }
+                }
+
+        },
 
         moveEnemies() {
             let path;
@@ -281,7 +439,9 @@ const projectile = {
                             PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
                         }
                     }
-                    if (( enemies[ i ].x === projectile.x ) && ( enemies[ i ].y === projectile.y ) && !hitting){
+                    if ( ((enemies[ i ].x === projectile.x && enemies[ i ].y === projectile.y ) ||
+                        (enemies[ i ].x === projectile2.x && enemies[ i ].y === projectile2.y ) ||
+                        (enemies[ i ].x === projectile3.x && enemies[ i ].y === projectile3.y )) && !hitting){
                         Game.hitEnemy();
                     }
                     if ( ( enemies[ i ].x === pX ) && ( enemies[ i ].y === pY ) && enemies[i].room == room) {
@@ -418,6 +578,10 @@ const projectile = {
                         invis = true;
                         eastereggs[i].used = true;
                     }
+                    else if( eastereggs[i].type == TRIGUN_COLOR){
+                        trigun = true;
+                        eastereggs[i].used = true;
+                    }
                 }
                 i += 1;
             }
@@ -544,6 +708,7 @@ const projectile = {
                 this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                //this.makeEasterEgg( 3, 10, TRIGUN_COLOR, 0);
             }
             if( level == 2){
                 unlocked = true;
@@ -784,15 +949,82 @@ PS.init = function ( system, options ) {
 
 PS.touch = function ( x, y, data, options ) {
     if ( !firing && !isOutOfBounds && !gameover && !start) {
+        projectile.projDir =  direction;
         projectile.x = x;
         projectile.y = y;
-        projectile.projDir = direction;
+        projectile.fired = false;
         projectile.destroyed = false;
+        if(trigun){
+            if(direction == "up"){
+                projectile2.projDir =  "rightAndUp";
+                projectile2.x = x;
+                projectile2.y = y;
+                projectile2.fired = false;
+                projectile2.destroyed = false;
+
+                projectile3.projDir =  "leftAndUp";
+                projectile3.x = x;
+                projectile3.y = y;
+                projectile3.fired = false;
+                projectile3.destroyed = false;
+            }
+            else if(direction == "right"){
+                projectile2.projDir =  "rightAndUp";
+                projectile2.x = x;
+                projectile2.y = y;
+                projectile2.fired = false;
+                projectile2.destroyed = false;
+
+                projectile3.projDir =  "rightAndDown";
+                projectile3.x = x;
+                projectile3.y = y;
+                projectile3.fired = false;
+                projectile3.destroyed = false;
+            }
+            else if(direction == "down"){
+                projectile2.projDir =  "rightAndDown";
+                projectile2.x = x;
+                projectile2.y = y;
+                projectile2.fired = false;
+                projectile2.destroyed = false;
+
+                projectile3.projDir =  "leftAndDown";
+                projectile3.x = x;
+                projectile3.y = y;
+                projectile3.fired = false;
+                projectile3.destroyed = false;
+            }
+            else if(direction == "left"){
+                projectile2.projDir =  "leftAndDown";
+                projectile2.x = x;
+                projectile2.y = y;
+                projectile2.fired = false;
+                projectile2.destroyed = false;
+
+                projectile3.projDir =  "leftAndUp";
+                projectile3.x = x;
+                projectile3.y = y;
+                projectile3.fired = false;
+                projectile3.destroyed = false;
+            }
+        }
+
         firing = true;
         Game.shootAudio();
         if(invis){
             invis = false;
             PS.alpha(pX, pY, 255);
+        }
+    }
+    else{
+        if(projectile.destroyed){
+            PS.debug("Projectile1 Destroyed");
+        }
+        if(projectile2.destroyed){
+            PS.debug("Projectile2 Destroyed");
+        }
+        if(projectile3.destroyed){
+            PS.debug("Projectile3 Destroyed");
         }
     }
 };
