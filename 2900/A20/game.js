@@ -190,9 +190,13 @@ const projectile = {
                 PS.fade( 2, 3, 15);
                 Game.createBlock( 0, 0, 2, 3, PORTAL_COLOR );
             }
-            if ( level == 4 && room == 1) {
-                PS.fade (7, 7, 15);
+            if ( level == 4 && room == 0) {
+                PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
+            }
+            if ( level == 5 ) {
+                PS.fade ( 7, 13, 15 );
+                Game.createBlock( 0, 0, 7, 13, PORTAL_COLOR );
             }
             portalOpened = true;
             PS.audioPlay( "fx_pop" );
@@ -530,7 +534,7 @@ const projectile = {
                 startY = 11;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 7, 3, 0x2fc819, 0 );
+                this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
                 this.createBlock( 6, 0, 4, 7, PS.COLOR_BLACK );
@@ -551,9 +555,9 @@ const projectile = {
                 startY = 7;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 3, 3, 0x80e81d, 0 );
-                this.makeEnemy( 3, 11, 0x2fc819, 0 );
-                this.makeEnemy( 12, 6, 0x7de339, 0 );
+                this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 12, 6, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
                 this.createBlock( 0, 1, 4, 7, PS.COLOR_BLACK );
@@ -582,7 +586,6 @@ const projectile = {
                 }
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
-                    this.makeEasterEgg( 3, 3, INVIS_COLOR, 0);
                 }
                 if(room == 0){
                     if(usedDoor){
@@ -635,25 +638,35 @@ const projectile = {
                     this.createBlock(0, 0, 0, 10, DOOR_COLOR);
                 }
             }
-            /*
             if( level == 4 ) {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened) {
-                    this.makeEnemy();
+                    this.makeEnemy( 7, 2, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 12, 2, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 12, 7, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 10, 12, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 4, 7, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 10, 7, SHIELDED_ENEMY, 1 );
+                }
+                if(eastereggs.length == 0) {
+                    this.makeEasterEgg(7, 4, INVIS_COLOR, 1);
                 }
                 if(room == 0) {
                     if (usedDoor) {
-                        startX = 14;
-                        startY = 7;
+                        startX = 1;
+                        startY = 0;
                     } else {
                         startX = 3;
-                        startY = 7;
+                        startY = 8;
                     }
-                }
                     //Inner Walls
+                    this.createBlock( 1, 1, 3, 4, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 9, 3, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 10, 9, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 4, 10, PS.COLOR_BLACK );
 
                     //Outer Walls
                     this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
@@ -662,41 +675,78 @@ const projectile = {
                     this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
                     //Door
-                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                    this.createBlock(0, 0, 1, 0, DOOR_COLOR);
                 }
-                else if(room == 1){
-                    startX = 0;
-                    startY = 7;
+                else if(room == 1) {
+                    startX = 1;
+                    startY = 14;
 
                     //Inner Walls
-                    this.createBlock( 0, 0, 1, 6, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 3, 6, PS.COLOR_BLACK );
-                    this.createBlock( 7, 0,  7, 6, PS.COLOR_BLACK );
-                    this.createBlock( 0, 5, 4, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 5, 10, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 10, 3, PS.COLOR_GRAY_LIGHT );
-
-                    this.createBlock( 2, 0, 1, 9, PS.COLOR_BLACK );
-                    this.createBlock( 2, 0, 5, 9, PS.COLOR_BLACK );
-                    this.createBlock( 0, 6, 8, 8, PS.COLOR_BLACK );
 
                     //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
 
                     //Door
-                    this.createBlock(0, 0, 0, 10, DOOR_COLOR);
+                    this.createBlock(0, 0, 1, 14, DOOR_COLOR);
+                }
             }
-            */
+            if ( level == 5 ) {
+                unlocked = true;
+                room = 0;
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                startX = 1;
+                startY = 13;
+                this.makeFloor( 180, 198, 205, 20 );
+                //Enemies
+                this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 13, 9, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 8, 13, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 13, 5, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
+
+                //Inner Walls
+                this.createBlock( 2, 0, 2, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 2, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 4, 4, 2, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 2, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 1, 6, 1, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 1, 6, PS.COLOR_BLACK );
+                this.createBlock( 4, 0, 2, 8, PS.COLOR_BLACK );
+                this.createBlock( 0, 7, 6, 6, PS.COLOR_BLACK );
+                this.createBlock( 3, 0, 1, 10, PS.COLOR_BLACK );
+                this.createBlock( 0, 1, 2, 12, PS.COLOR_BLACK );
+                this.createBlock( 0, 1, 4, 11, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 6, 4, PS.COLOR_BLACK );
+                this.createBlock( 0, 4, 8, 2, PS.COLOR_BLACK );
+                this.createBlock( 4, 0, 8, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 8, 8, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 8, 8, PS.COLOR_BLACK );
+                this.createBlock( 0, 4, 12, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 8, 10, 4, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 7, 12, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 11, 6, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 12, 8, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 13, 10, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 12, 12, PS.COLOR_BLACK );
+
+                //Outer Walls
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+            }
         }
     };
 }() );
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 3;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -707,6 +757,19 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "fx_shoot4" );
     PS.audioLoad ( "fx_shoot5" );
     PS.audioLoad ( "fx_shoot6" );
+    /*
+    PS.audioLoad ( "Laser_Shoot", { path: "GameAudio/" });
+    PS.audioLoad ( "Alarm", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien1", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien2", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien3", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien4", { path: "GameAudio/" });
+    PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
+    PS.audioLoad ( "GameOver", { path: "GameAudio/" });
+    PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
+    PS.audioLoad ( "Trigun_Pickup", { path: "GameAudio/" });
+    PS.audioLoad ( "Shield_Pickup", { path: "GameAudio/" });
+    */
 };
 
 /*
