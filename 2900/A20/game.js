@@ -184,15 +184,19 @@ let projectile3 = {
                 PS.fade( 7, 7, 15);
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            if ( level == 3 && room == 1){
-                PS.fade( 2, 3, 15);
-                Game.createBlock( 0, 0, 2, 3, PORTAL_COLOR );
-            }
-            if ( level == 4 && room == 0) {
+            if ( level == 3 ){
                 PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            if ( level == 5 ) {
+            if ( level == 4 && room == 1){
+                PS.fade( 2, 3, 15);
+                Game.createBlock( 0, 0, 2, 3, PORTAL_COLOR );
+            }
+            if ( level == 5 && room == 0) {
+                PS.fade ( 7, 7, 15 );
+                Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
+            }
+            if ( level == 6 ) {
                 PS.fade ( 7, 13, 15 );
                 Game.createBlock( 0, 0, 7, 13, PORTAL_COLOR );
             }
@@ -774,11 +778,9 @@ let projectile3 = {
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
-                this.makeEnemy( 12, 6, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
                 this.createBlock( 0, 1, 4, 7, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 5, 9, PS.COLOR_BLACK );
                 this.createBlock( 0, 0, 8, 10, PS.COLOR_BLACK );
                 this.createBlock( 0, 1, 10, 6, PS.COLOR_BLACK );
                 this.createBlock( 1, 0, 7, 4, PS.COLOR_BLACK );
@@ -788,9 +790,44 @@ let projectile3 = {
                 this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
-
             }
-            if( level == 3){
+            if( level == 3 ) {
+                room = 0;
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                startX = 7;
+                startY = 7;
+                this.makeFloor( 180, 198, 205, 20 );
+                //Enemies
+                this.makeEnemy( 7, 3, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 7, 11, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 11, 7, DEFAULT_ENEMY, 0 );
+
+                //Inner Walls
+                this.createBlock( 3, 0, 1, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 3, 1, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 3, 1, 10, PS.COLOR_BLACK );
+                this.createBlock( 3, 0, 1, 13, PS.COLOR_BLACK );
+                this.createBlock( 3, 0, 10, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 3, 13, 1, PS.COLOR_BLACK );
+                this.createBlock( 0, 3, 13, 10, PS.COLOR_BLACK );
+                this.createBlock( 3, 0, 10, 13, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 2, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 12, 2, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 2, 12, PS.COLOR_BLACK );
+                this.createBlock( 0, 0, 12, 12, PS.COLOR_BLACK );
+                this.createBlock( 4, 0, 5, 5, PS.COLOR_BLACK );
+                this.createBlock( 4, 0, 5, 9, PS.COLOR_BLACK );
+                this.createBlock( 0, 4, 9, 5, PS.COLOR_BLACK );
+
+                //Outer Walls
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+            }
+            if( level == 4){
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
@@ -856,7 +893,7 @@ let projectile3 = {
                     this.createBlock(0, 0, 0, 10, DOOR_COLOR);
                 }
             }
-            if( level == 4 ) {
+            if( level == 5 ) {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
@@ -911,7 +948,7 @@ let projectile3 = {
                     this.createBlock(0, 0, 1, 14, DOOR_COLOR);
                 }
             }
-            if ( level == 5 ) {
+            if ( level == 6 ) {
                 room = 0;
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
