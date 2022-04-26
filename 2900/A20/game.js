@@ -1157,6 +1157,8 @@ PS.enter = function ( x, y, data, options ) {
             portalOpened = false;
             usedDoor = false;
             level += 1;
+            room = 0;
+            usedDoor = false;
             Game.deleteAllEggs();
             Game.startScreen();
         }
