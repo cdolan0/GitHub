@@ -59,6 +59,7 @@ let portalOpened = false;
 let usedDoor = false;
 let invis = false;
 let trigun = false;
+let firstStart = true;
 
 let rgb;
 let xMarker;
@@ -107,7 +108,7 @@ let projectile3 = {
     let timer = null;
     let enemyMoveCounter = 12;
     let length = enemies.length;
-    let gameoverCounter = 60
+    let gameoverCounter = 360;
     let hitting = false;
     let invisCount = 500;
 
@@ -146,7 +147,7 @@ let projectile3 = {
             gameoverCounter -= 1;
             if ( gameoverCounter == 0 ){
                 gameover = false;
-                gameoverCounter = 60;
+                gameoverCounter = 360;
                 Game.startScreen();
             }
         }
@@ -196,7 +197,7 @@ let projectile3 = {
                 Game.createBlock( 0, 0, 7, 13, PORTAL_COLOR );
             }
             portalOpened = true;
-            PS.audioPlay( "fx_pop" );
+            PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
         },
 
         hitEnemy() {
@@ -245,6 +246,7 @@ let projectile3 = {
         },
 
         GameOver() {
+            PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
             level = 1;
             PS.color (pX, pY, PS.COLOR_GREEN);
             Game.deleteAllEnemies();
@@ -485,8 +487,10 @@ let projectile3 = {
                                     PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
                                     chosenNext = true;
                                 }
-
                             }
+                        }
+                        if(PS.random(100) <= 2){
+                            Game.alienAudio();
                         }
                     }
                     if ( ((enemies[ i ].x === projectile.x && enemies[ i ].y === projectile.y ) ||
@@ -591,15 +595,18 @@ let projectile3 = {
                         shieldStrength += 3;
                         PS.border( pX, pY, shieldStrength);
                         PS.borderColor( pX, pY, PLAYER_SHIELD_COLOR);
+                        PS.audioPlay ( "Shield_Pickup", { volume: 0.25, path: "GameAudio/" });
                         eastereggs[i].used = true;
                     }
                     else if( eastereggs[i].type == INVIS_COLOR){
                         invis = true;
                         eastereggs[i].used = true;
+                        PS.audioPlay ( "Invisibility", { volume: 0.25, path: "GameAudio/" });
                     }
                     else if( eastereggs[i].type == TRIGUN_COLOR){
                         trigun = true;
                         eastereggs[i].used = true;
+                        PS.audioPlay ( "Trigun_Pickup", { volume: 0.25, path: "GameAudio/" });
                     }
                 }
                 i += 1;
@@ -685,7 +692,7 @@ let projectile3 = {
         },
 
         shootAudio() {
-            var randomShoot = PS.random(6);
+            /*var randomShoot = PS.random(6);
             if ( randomShoot == 1 ) {
                 PS.audioPlay( "fx_shoot1", { volume: 0.25 } );
             }
@@ -703,6 +710,24 @@ let projectile3 = {
             }
             if ( randomShoot == 6 ) {
                 PS.audioPlay( "fx_shoot6", { volume: 0.25 } );
+            }*/
+            PS.audioPlay( "Laser_Shoot", { volume: 0.15, path: "GameAudio/" });
+
+        },
+
+        alienAudio(){
+            var randomAlien = PS.random(4);
+            if ( randomAlien == 1 ) {
+                PS.audioPlay ( "Alien1", { volume: 0.25, path: "GameAudio/" });
+            }
+            if ( randomAlien == 2 ) {
+                PS.audioPlay ( "Alien2", { volume: 0.25, path: "GameAudio/" });
+            }
+            if ( randomAlien == 3 ) {
+                PS.audioPlay ( "Alien3", { volume: 0.25, path: "GameAudio/" });
+            }
+            if ( randomAlien == 4 ) {
+                PS.audioPlay ( "Alien4", { volume: 0.25, path: "GameAudio/" });
             }
         },
 
@@ -764,7 +789,6 @@ let projectile3 = {
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
-                this.makeEasterEgg(4, 4, INVIS_COLOR, 0);
             }
             if( level == 3){
                 PS.gridSize( WIDTH, HEIGHT );
@@ -1173,6 +1197,10 @@ PS.enter = function ( x, y, data, options ) {
             for ( let j = 0; j < HEIGHT; j += 1 ) {
                 PS.color( i, j, PS.data( i, j ) );
             }
+        }
+        if(level == 1 && firstStart){
+            firstStart = false;
+           // PS.audioPlay ( "Alarm", { volume: 0.5, path: "GameAudio/" });
         }
         PS.color( pX, pY, 0x238fe6 );
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
