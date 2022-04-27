@@ -267,6 +267,9 @@ let projectile3 = {
 
         GameOver() {
             PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
+            PS.fade ( PS.ALL, PS.ALL, 280 );
+            PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
+            PS.bgColor( pX, pY, PS.COLOR_BLACK );
             level = 1;
             PS.color (pX, pY, PS.COLOR_GREEN);
             Game.deleteAllEnemies();
@@ -1010,6 +1013,25 @@ let projectile3 = {
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
             }
+            if ( level == 7 ) {
+                room = 0;
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                startX = 1;
+                startY = 13;
+                this.makeFloor( 180, 198, 205, 20 );
+
+                //Enemies
+
+                //Inner Walls
+
+                //Outer Walls
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+            }
         }
     };
 }() );
@@ -1034,7 +1056,7 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Alien2", { path: "GameAudio/" });
     PS.audioLoad ( "Alien3", { path: "GameAudio/" });
     PS.audioLoad ( "Alien4", { path: "GameAudio/" });
-    PS.audioLoad ( "Alien5", { path: "GameAudio/" });
+    // PS.audioLoad ( "Alien5", { path: "GameAudio/" });
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
