@@ -271,7 +271,7 @@ let projectile3 = {
             PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
             PS.bgColor( pX, pY, PS.COLOR_BLACK );
             level = 1;
-            PS.color (pX, pY, PS.COLOR_GREEN);
+            PS.color (pX, pY, PS.COLOR_RED);
             Game.deleteAllEnemies();
             firing = false;
             gameover = true;
