@@ -489,6 +489,12 @@ let projectile3 = {
                     else if ((projectile.projDir === "down") && (projectile.y < HEIGHT - 1)) {
                         projectile.y = projectile.y + 1;
                     }
+                    else if((projectile.y == HEIGHT - 1) || (projectile.y == 0) || (projectile.x == 0) ||
+                        (projectile.x == WIDTH - 1)){
+                        projectile.destroyed = true;
+                        projectile.fired = false;
+                        PS.glyph(projectile.x, projectile.y, "");
+                    }
                     if(trigun) {
                         if(!projectile2.destroyed) {
                             pastProjX2 = projectile2.x;
@@ -510,6 +516,12 @@ let projectile3 = {
                                 projectile2.y = projectile2.y + 1;
                                 projectile2.x = projectile2.x + 1;
                             }
+                            else if((projectile2.y == HEIGHT - 1) || (projectile2.y == 0) || (projectile2.x == 0) ||
+                                (projectile2.x == WIDTH - 1)){
+                                projectile2.destroyed = true;
+                                projectile2.fired = false;
+                                PS.glyph(projectile2.x, projectile2.y, "");
+                            }
                             PS.glyph(pastProjX2, pastProjY2, "");
                             PS.glyphColor(pastProjX2, pastProjY2, PS.COLOR_BLACK);
                             if (SHIELD_COLOR == PS.borderColor(projectile2.x, projectile2.y)) {
@@ -525,7 +537,7 @@ let projectile3 = {
                             // PS.debug(targetColor);
 
 
-                            if (OBSTACLES.includes(target2) || target2 == DOOR_COLOR) {
+                            if ((OBSTACLES.includes(target2) && target2 != LAVA_COLOR) || target2 == DOOR_COLOR) {
                                 projectile2.destroyed = true;
                                 projectile2.fired = false;
                                 PS.glyph(projectile2.x, projectile2.y, "");
@@ -555,6 +567,12 @@ let projectile3 = {
                                 projectile3.y = projectile3.y + 1;
                                 projectile3.x = projectile3.x + 1;
                             }
+                            else if((projectile3.y == HEIGHT - 1) || (projectile3.y == 0) || (projectile3.x == 0) ||
+                                (projectile3.x == WIDTH - 1)){
+                                projectile3.destroyed = true;
+                                projectile3.fired = false;
+                                PS.glyph(projectile3.x, projectile3.y, "");
+                            }
                             PS.glyph(pastProjX3, pastProjY3, "");
                             PS.glyphColor(pastProjX3, pastProjY3, PS.COLOR_BLACK);
                             if (SHIELD_COLOR == PS.borderColor(projectile3.x, projectile3.y)) {
@@ -570,7 +588,7 @@ let projectile3 = {
                             // PS.debug(targetColor);
 
 
-                            if (OBSTACLES.includes(target3) || target3 == DOOR_COLOR) {
+                            if ((OBSTACLES.includes(target3) && target3 != LAVA_COLOR)  || target3 == DOOR_COLOR) {
                                 projectile3.destroyed = true;
                                 projectile3.fired = false;
                                 PS.glyph(projectile3.x, projectile3.y, "");
@@ -596,7 +614,7 @@ let projectile3 = {
                     // PS.debug(targetColor);
 
 
-                    if (OBSTACLES.includes(target) || target == DOOR_COLOR) {
+                    if ((OBSTACLES.includes(target) && target != LAVA_COLOR)  || target == DOOR_COLOR) {
                         projectile.destroyed = true;
                         projectile.fired = false;
                         PS.glyph(projectile.x, projectile.y, "");
@@ -1579,7 +1597,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 8;
     shieldStrength = 0;
     Game.startScreen();
 
