@@ -363,6 +363,7 @@ let projectile3 = {
             for ( let i = x; i <= ( x + w ); i += 1 ) {
                 for ( let j = y; j <= ( y + h ); j += 1 ) {
                     PS.color( i, j, color );
+                    PS.bgColor( i, j, color );
                     PS.data( i, j, color );
                 }
             }
@@ -831,11 +832,20 @@ let projectile3 = {
                         }
                         if ((enemies[i].x === pX) && (enemies[i].y === pY) && enemies[i].room == room) {
                             if (shieldStrength > 0) {
-                                enemies[i].destroyed = true;
-                                enemies.splice(i, 1);
                                 shieldStrength -= 1;
+                                this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                                let bloodSplat = {
+                                    x: enemies[i].x,
+                                    y: enemies[i].y,
+                                    room: room,
+                                    level: level,
+                                    alien: true
+                                }
+                                blood.push(bloodSplat);
                                 PS.border(pX, pY, shieldStrength);
                                 PS.color(pX, pY, PLAYER_COLOR);
+                                enemies[i].destroyed = true;
+                                enemies.splice(i, 1);
                                 break;
                             } else {
                                 Game.GameOver("Alien");
@@ -1809,7 +1819,7 @@ PS.enter = function ( x, y, data, options ) {
     pX = x;
     pY = y;
     if ( !isOutOfBounds && !gameover && !start &&
-        !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBead ) ) {
+        !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBeadColor ) ) {
         PS.color( pX, pY, PLAYER_COLOR );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
@@ -1844,6 +1854,25 @@ PS.enter = function ( x, y, data, options ) {
         if(invis){
             PS.alpha(pX, pY, 100);
         }
+        if( ENEMY_TYPES.includes(nextBeadColor) && !isOutOfBounds && !gameover && !start ){
+            if(shieldStrength <= 0) {
+                Game.GameOver("Alien");
+            }
+            else{
+                shieldStrength -= 1;
+                PS.border(pX, pY, shieldStrength);
+                PS.borderColor(pX, pY, SHIELD_COLOR);
+                this.makeBlood(pX, pY, 190, 117, 202, 40);
+                let bloodSplat = {
+                    x: pX,
+                    y: pY,
+                    room: room,
+                    level: level,
+                    alien: true
+                }
+                blood.push(bloodSplat);
+            }
+        }
         PS.glyph( pastX, pastY, "" );
         if( POWERUPS.includes(nextBeadColor) ){
             Game.triggerEgg(pX, pY);
@@ -1861,6 +1890,7 @@ PS.enter = function ( x, y, data, options ) {
             Game.changeRooms(pX, pY);
         }
     }
+
     else if ( nextBead == LAVA_COLOR && !isOutOfBounds && !gameover && !start ){
         PS.alpha(pastX, pastY, 255);
         PS.color( pastX, pastY, PS.data( pastX, pastY ) );
