@@ -21,6 +21,10 @@
 // TODO:
 // Trigun powerup
 // MEGA-SHIELDED
+// Sounds
+// Levels 10, 11, 12
+// Victory Screen
+// Improve floor for levels 4, 5, 8, 9
 
 const WIDTH = 15;
 const HEIGHT = 15;
@@ -1224,18 +1228,23 @@ let projectile3 = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 198, 213, 98, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor( 200, 200, 200, 20, 0, 0, WIDTH, HEIGHT );
+                const xFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
+                const yFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
+                var i;
                 for ( yMarker = 0; yMarker < HEIGHT; yMarker++ ) {
-                    for ( xMarker = 0; xMarker < WIDTH; xMarker ++ ) {
-                        if ( xMarker % 2 == 0 && yMarker % 2 == 0 ) {
-                            rgb = this.makeColor(140, 152, 79, 20 );
-                            this.createBlock(0, 0, xMarker, yMarker, rgb);
-                        } else if ( xMarker % 2 == 0 ) {
-                            rgb = this.makeColor(163, 175, 79, 20 );
-                            this.createBlock(0, 0, xMarker, yMarker, rgb);
-                        } else if ( yMarker % 2 == 0 ) {
-                            rgb = this.makeColor(163, 175, 79, 20 );
-                            this.createBlock(0, 0, xMarker, yMarker, rgb);
+                    for (xMarker = 0; xMarker < WIDTH; xMarker++) {
+                        for (i = 0; i < 14; i++) {
+                            if ( xMarker == xFloorValues[i] && yMarker == yFloorValues[i] ) {
+                                rgb = this.makeColor( 100, 100, 100, 20 );
+                                this.createBlock( 0, 0, xMarker, yMarker, rgb );
+                            } else if ( xMarker == xFloorValues[i] ) {
+                                rgb = this.makeColor(150, 150, 150, 20 );
+                                this.createBlock(0, 0, xMarker, yMarker, rgb);
+                            } else if ( yMarker == yFloorValues[i] ) {
+                                rgb = this.makeColor(150, 150, 150, 20 );
+                                this.createBlock(0, 0, xMarker, yMarker, rgb);
+                            }
                         }
                     }
                 }
@@ -1437,8 +1446,16 @@ let projectile3 = {
                 portalY = 7;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 216, 213, 121, 20, 0, 0, WIDTH, HEIGHT );
-
+                this.makeFloor( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor ( 216, 161, 98, 20, 5, 2, 4, 5 );
+                this.makeFloor ( 216, 161, 98, 20, 2, 7, 4, 5 );
+                this.makeFloor ( 216, 161, 98, 20, 9, 5, 4, 5 );
+                this.makeFloor ( 216, 161, 98, 20, 4, 3, 5, 4 );
+                this.makeFloor ( 216, 161, 98, 20, 1, 8, 5, 4 );
+                this.makeFloor ( 216, 161, 98, 20, 8, 6, 5, 4 );
+                this.makeFloor ( 216, 146, 98, 20, 5, 3, 4, 3 );
+                this.makeFloor ( 216, 146, 98, 20, 2, 8, 4, 3 );
+                this.makeFloor ( 216, 146, 98, 20, 9, 6, 4, 3 );
                 //Enemies
                 this.makeEnemy( 2, 4, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 9, 2, SHIELDED_ENEMY, 0 );
@@ -1460,7 +1477,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                this.makeFloor ( 21, 172, 121, 10, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor ( 216, 176, 98, 10, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
@@ -1634,7 +1651,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 4;
     shieldStrength = 0;
     Game.startScreen();
 
