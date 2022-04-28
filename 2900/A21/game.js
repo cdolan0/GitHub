@@ -1792,7 +1792,7 @@ PS.enter = function ( x, y, data, options ) {
     pX = x;
     pY = y;
     if ( !isOutOfBounds && !gameover && !start &&
-        !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBead ) ) {
+        !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBeadColor ) ) {
         PS.color( pX, pY, PLAYER_COLOR );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
@@ -1843,6 +1843,15 @@ PS.enter = function ( x, y, data, options ) {
         if( nextBead == DOOR_COLOR){
             Game.changeRooms(pX, pY);
         }
+    }
+    else if( ENEMY_TYPES.includes(nextBeadColor) && !isOutOfBounds && !gameover && !start ){
+        PS.alpha(pastX, pastY, 255);
+        PS.color( pastX, pastY, PS.data( pastX, pastY ) );
+        PS.radius( pastX, pastY, 0 );
+        PS.border( pastX, pastY, 0 );
+        PS.glyph( pastX, pastY, "" );
+        PS.radius(pX, pY, 50);
+        Game.GameOver("Alien");
     }
     else if ( nextBead == LAVA_COLOR && !isOutOfBounds && !gameover && !start ){
         PS.alpha(pastX, pastY, 255);
