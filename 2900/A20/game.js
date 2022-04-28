@@ -200,22 +200,6 @@ let projectile3 = {
                 PS.fade ( 7, 13, 15 );
                 Game.createBlock( 0, 0, 7, 13, PORTAL_COLOR );
             }
-            if ( level == 7 ) {
-                PS.fade ( 7, 7, 15 );
-                Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
-            }
-            if ( level == 8 ) {
-                PS.fade ( 7, 7, 15 );
-                Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
-            }
-            if ( level == 9 ) {
-                PS.fade ( 7, 7, 15 );
-                Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
-            }
-            if ( level == 10 ) {
-                PS.fade ( 7, 7, 15 );
-                Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
-            }
             portalOpened = true;
             PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
         },
@@ -816,9 +800,9 @@ let projectile3 = {
                 startY = 7;
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
-                this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 11, 7, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 7, 3, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 7, 11, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 11, 7, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
                 this.createBlock( 3, 0, 1, 1, PS.COLOR_BLACK );
@@ -1034,7 +1018,6 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Alien2", { path: "GameAudio/" });
     PS.audioLoad ( "Alien3", { path: "GameAudio/" });
     PS.audioLoad ( "Alien4", { path: "GameAudio/" });
-    PS.audioLoad ( "Alien5", { path: "GameAudio/" });
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
