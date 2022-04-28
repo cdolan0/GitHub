@@ -34,7 +34,9 @@ const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK, LAVA_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
-const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, 0x7DE339 ];
+const MEGA_ENEMY = 0x014421;
+// 0x7DE339
+const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY ];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_DARK;
@@ -709,9 +711,6 @@ let projectile3 = {
                         if (typeof (nextStep[0]) != "undefined" && typeof (nextStep[1]) != "undefined"
                             && (enemies[i].room == room)) {
 
-                            nextBead = PS.data(nextX, nextY);
-                            nextColor = PS.color(nextX, nextY);
-
                             //Check for diagonals
                             if( nextX == enemies[i].x+1 && nextY == enemies[i].y+1){
                                 if( OBSTACLES.includes( PS.data( nextX-1, nextY ) ) ){
@@ -745,6 +744,8 @@ let projectile3 = {
                                     nextX = enemies[i].x;
                                 }
                             }
+                            nextBead = PS.data(nextX, nextY);
+                            nextColor = PS.color(nextX, nextY);
 
                           /*      || nextY == enemies[i].y-1) )
                                 || ( nextX == enemies[i].x-1 && ( nextY == enemies[i].y+1 || nextY == enemies[i].y-1) ))*/
@@ -875,6 +876,9 @@ let projectile3 = {
                 };
                 if( enemy.type == SHIELDED_ENEMY ){
                     enemy.shield = 3;
+                }
+                else if( enemy.type == MEGA_ENEMY ){
+                    enemy.shield = 9;
                 }
                 enemies.push( enemy );
                 if( room == enemy.room ) {
@@ -1240,7 +1244,7 @@ let projectile3 = {
                     this.makeEnemy( 12, 11, DEFAULT_ENEMY, 0 );
                     this.makeEnemy( 8, 3, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 12, 8, DEFAULT_ENEMY, 1 );
-                    this.makeEnemy( 10, 12, 0x7de339, 1 );
+                    this.makeEnemy( 10, 12, DEFAULT_ENEMY, 1 );
                 }
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
@@ -1282,7 +1286,8 @@ let projectile3 = {
                     this.createBlock( 1, 0, 3, 6, PS.COLOR_BLACK );
                     this.createBlock( 7, 0,  7, 6, PS.COLOR_BLACK );
                     this.createBlock( 0, 5, 4, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 5, 10, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 1, 10, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 1, 10, 4, PS.COLOR_BLACK );
                     // this.createBlock( 0, 0, 10, 3, PS.COLOR_GRAY_LIGHT );
 
                     this.createBlock( 2, 0, 1, 9, PS.COLOR_BLACK );
