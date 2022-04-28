@@ -26,11 +26,13 @@
 const WIDTH = 15;
 const HEIGHT = 15;
 const HIDDEN_DOOR_COLOR = 0x313639;
+const PLAYER_COLOR = 0x238fe6;
+const LAVA_COLOR = 0xd53e00;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
-const OBSTACLES = [ PS.COLOR_BLACK ];
+const OBSTACLES = [ PS.COLOR_BLACK, LAVA_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, 0x7DE339 ];
@@ -38,6 +40,10 @@ const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_DARK;
 const E_SHIELD_COLOR = 0x04d9ff;
+const ALTAR_COLOR_1 = 0x911717
+const ALTAR_COLOR_2 = 0xc62828
+const ALTAR_COLOR_3 = 0xd74e4e
+const ALTAR_COLOR_4 = 0xe86060
 
 let Game;
 let isOutOfBounds = false;
@@ -49,7 +55,7 @@ let pX = startX;
 let pY = startY;//player x and y
 let direction = "up";
 let firing = false;
-let returnX, returnY;
+let returnX, returnY, exitX, exitY;
 let shieldStrength;
 let gameover = false;
 let start;
@@ -106,17 +112,50 @@ let projectile3 = {
     let pastProjY3;
 
     let timer = null;
-    let enemyMoveCounter = 12;
+    let enemyMoveCounter = 22;
     let length = enemies.length;
     let gameoverCounter = 360;
     let hitting = false;
     let invisCount = 500;
+    let boundsCount = 20;
+    let startCount = 20;
+
+    let wentX = false;
+    let wentY = false;
+    let deathX;
+    let deathY;
+    let diagonalChoice;
+    let alienDeath = false;
+    let lavaDeath = false;
 
     const tick = function () {
         length = enemies.length;
+
         if ( firing ) {
            Game.moveProjectiles();
         }
+
+        if(isOutOfBounds){
+            boundsCount -= 1;
+            if(boundsCount == 10 ){
+                PS.borderColor(returnX, returnY, PS.COLOR_YELLOW);
+            }
+            else if(boundsCount == 0){
+                PS.borderColor(returnX, returnY, PS.COLOR_BLUE);
+                boundsCount = 20;
+            }
+        }
+        if(start){
+            startCount -= 1;
+            if(startCount == 10 ){
+                PS.borderColor(startX, startY, PORTAL_COLOR);
+            }
+            else if(startCount == 0){
+                PS.borderColor(startX, startY, PLAYER_COLOR);
+                startCount = 20;
+            }
+        }
+
         if ( !isOutOfBounds && !gameover && !start && ( length > 0 ) ) {
             enemyMoveCounter -= 1;
             if ( ENEMY_TYPES.includes( targetColor ) && !hitting) {
@@ -136,24 +175,157 @@ let projectile3 = {
             }
             if ( enemyMoveCounter < 0 ) {
                 Game.moveEnemies();
-                enemyMoveCounter = 12;
+                enemyMoveCounter = 22;
             }
         }
         hitting = false;
         if ( length == 0 && !portalOpened && !gameover && !start){
+           portalOpened = true;
+           PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
+        }
+        if(portalOpened){
             Game.openPortal();
         }
         if (gameover){
-            gameoverCounter -= 1;
-            if ( gameoverCounter == 0 ){
-                gameover = false;
-                gameoverCounter = 360;
-                Game.startScreen();
+            if(alienDeath) {
+                PS.bgColor(deathX, deathY, PS.COLOR_RED);
+                if (gameoverCounter == 300) {
+                    if (Math.floor(Math.random() * 2) == 1) {
+                        if (!OBSTACLES.includes(PS.data(deathX - 1, deathY))) {
+                            PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX - 1, deathY, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX + 1, deathY))) {
+                            PS.bgColor(deathX + 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX + 1, deathY, 50);
+                        }
+                        wentX = true;
+                    } else {
+                        if (!OBSTACLES.includes(PS.data(deathX, deathY - 1))) {
+                            PS.bgColor(deathX, deathY - 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY - 1, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX, deathY + 1))) {
+                            PS.bgColor(deathX, deathY + 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY + 1, 50);
+                        }
+                        wentY = false;
+                    }
+                    PS.glyph(PS.ALL, PS.ALL, "");
+                }
+                if (gameoverCounter == 270) {
+                    if (wentY) {
+                        if (!OBSTACLES.includes(PS.data(deathX - 1, deathY))) {
+                            PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX - 1, deathY, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX + 1, deathY))) {
+                            PS.bgColor(deathX + 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX + 1, deathY, 50);
+                        }
+                        wentY = false
+                    } else if (wentX) {
+                        if (!OBSTACLES.includes(PS.data(deathX, deathY - 1))) {
+                            PS.bgColor(deathX, deathY - 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY - 1, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX, deathY + 1))) {
+                            PS.bgColor(deathX, deathY + 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY + 1, 50);
+                        }
+                        wentX = false;
+                    }
+                }
+                if (gameoverCounter == 240) {
+                    if (Math.floor(Math.random() * 2) == 1) {
+                        if (!OBSTACLES.includes(PS.data(deathX - 1, deathY)) && PS.bgColor(deathX - 1, deathY) != PS.COLOR_RED) {
+                            PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX - 1, deathY, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX + 1, deathY)) && PS.bgColor(deathX + 1, deathY) != PS.COLOR_RED) {
+                            PS.bgColor(deathX + 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX + 1, deathY, 50);
+                        }
+                        wentX = true;
+                    } else {
+                        if (!OBSTACLES.includes(PS.data(deathX, deathY - 1)) && PS.bgColor(deathX, deathY - 1) != PS.COLOR_RED) {
+                            PS.bgColor(deathX, deathY - 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY - 1, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX, deathY + 1)) && PS.bgColor(deathX, deathY + 1) != PS.COLOR_RED) {
+                            PS.bgColor(deathX, deathY + 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY + 1, 50);
+                        }
+                        wentY = false;
+                    }
+                }
+                if (gameoverCounter == 210) {
+                    if (wentY) {
+                        if (!OBSTACLES.includes(PS.data(deathX - 1, deathY)) && PS.bgColor(deathX - 1, deathY) != PS.COLOR_RED) {
+                            PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX - 1, deathY, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX + 1, deathY)) && PS.bgColor(deathX + 1, deathY) != PS.COLOR_RED) {
+                            PS.bgColor(deathX + 1, deathY, PS.COLOR_RED);
+                            PS.alpha(deathX + 1, deathY, 50);
+                        }
+                    } else if (wentX) {
+                        if (!OBSTACLES.includes(PS.data(deathX, deathY - 1)) && PS.bgColor(deathX, deathY - 1) != PS.COLOR_RED) {
+                            PS.bgColor(deathX, deathY - 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY - 1, 50);
+                        } else if (!OBSTACLES.includes(PS.data(deathX, deathY + 1)) && PS.bgColor(deathX, deathY + 1) != PS.COLOR_RED) {
+                            PS.bgColor(deathX, deathY + 1, PS.COLOR_RED);
+                            PS.alpha(deathX, deathY + 1, 50);
+                        }
+                    }
+                }
+                if (gameoverCounter == 180) {
+                    diagonalChoice = Math.floor(Math.random() * 4);
+                    if (diagonalChoice == 1 && !OBSTACLES.includes(PS.data(deathX + 1, deathY + 1))) {
+                        PS.bgColor(deathX + 1, deathY + 1, PS.COLOR_RED);
+                        PS.alpha(deathX + 1, deathY + 1, 25);
+                    } else if (diagonalChoice == 2 && !OBSTACLES.includes(PS.data(deathX + 1, deathY - 1))) {
+                        PS.bgColor(deathX + 1, deathY - 1, PS.COLOR_RED);
+                        PS.alpha(deathX + 1, deathY - 1, 25);
+                    } else if (diagonalChoice == 3 && !OBSTACLES.includes(PS.data(deathX - 1, deathY - 1))) {
+                        PS.bgColor(deathX - 1, deathY - 1, PS.COLOR_RED);
+                        PS.alpha(deathX - 1, deathY - 1, 25);
+                    } else if (diagonalChoice == 4 && !OBSTACLES.includes(PS.data(deathX - 1, deathY + 1))) {
+                        PS.bgColor(deathX - 1, deathY + 1, PS.COLOR_RED);
+                        PS.alpha(deathX - 1, deathY + 1, 25);
+                    }
+                }
+                if (gameoverCounter == 60) {
+                    PS.alpha(deathX, deathY + 1, 255);
+                    PS.alpha(deathX, deathY - 1, 255);
+                    PS.alpha(deathX + 1, deathY, 255);
+                    PS.alpha(deathX - 1, deathY, 255);
+                    PS.alpha(deathX + 1, deathY + 1, 255);
+                    PS.alpha(deathX + 1, deathY - 1, 255);
+                    PS.alpha(deathX - 1, deathY - 1, 255);
+                    PS.alpha(deathX + 1, deathY + 1, 255);
+                }
+                if (gameoverCounter == 0) {
+                    gameover = false;
+                    alienDeath = false;
+                    wentX = false;
+                    wentY = false;
+                    gameoverCounter = 360;
+                    Game.startScreen();
+                }
             }
+            else if(lavaDeath){
+                if( gameoverCounter == 360 ){
+                    PS.border(deathX, deathY, 0);
+                    PS.radius(deathX, deathY, 50);
+                    PS.bgColor(deathX, deathY, LAVA_COLOR);
+                    PS.fade(deathX, deathY, 200);
+                    PS.color(deathX, deathY, LAVA_COLOR);
+                }
+                else if ( gameoverCounter == 0 ){
+                    gameover = false;
+                    lavaDeath = false;
+                    gameoverCounter = 360;
+                    Game.startScreen();
+                }
+            }
+            gameoverCounter -= 1;
         }
         if(invis){
             invisCount -= 1;
-            PS.alpha(pX, pY, 100);
             if(invisCount <= 0){
                 invis = false;
                 invisCount = 500;
@@ -204,11 +376,11 @@ let projectile3 = {
                 PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            if ( level == 8 ) {
+            if ( level == 8 && room == 0) {
                 PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            if ( level == 9 ) {
+            if ( level == 9 && room == 2) {
                 PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
@@ -216,8 +388,6 @@ let projectile3 = {
                 PS.fade ( 7, 7, 15 );
                 Game.createBlock( 0, 0, 7, 7, PORTAL_COLOR );
             }
-            portalOpened = true;
-            PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
         },
 
         hitEnemy() {
@@ -255,25 +425,39 @@ let projectile3 = {
             }
             if( enemies[enemyNum].shield <= 0 ){
                 enemies[ enemyNum ].destroyed = true;
-                PS.color( enemies[ enemyNum ].x, enemies[ enemyNum ].y, target );
+                this.makeBlood(enemies[i].x, enemies[i].y, 177, 156, 216, 30);
             }
             else if( enemies[enemyNum].shield > 0 ){
                 enemies[enemyNum].shield -= 3;
+                PS.border( enemies[ enemyNum ].x, enemies[ enemyNum ].y, enemies[ enemyNum ].shield);
             }
 
             PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
             PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
         },
 
-        GameOver() {
+        GameOver(type) {
+            deathX = pX;
+            deathY = pY;
+            PS.color( pX, pY, PLAYER_COLOR );
             PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
             PS.fade ( PS.ALL, PS.ALL, 280 );
+            PS.border(PS.ALL, PS.ALL,  0);
             PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
-            PS.bgColor( pX, pY, PS.COLOR_BLACK );
+            PS.fade( pX, pY, 300)
+            PS.border(pX, pY, 1);
+            PS.borderColor(pX, pY, 0);
+            PS.color( pX, pY, DEFAULT_ENEMY);
             level = 1;
-            PS.color (pX, pY, PS.COLOR_RED);
+            //PS.color (pX, pY, PS.COLOR_RED);
             Game.deleteAllEnemies();
             firing = false;
+            if(type == "Alien"){
+                alienDeath = true;
+            }
+            else if(type == "Lava"){
+                lavaDeath = true;
+            }
             gameover = true;
         },
 
@@ -527,12 +711,12 @@ let projectile3 = {
                             enemies.splice( i, 1 );
                             shieldStrength -= 1;
                             PS.border(pX, pY, shieldStrength);
-                            PS.color( pX, pY, 0x238fe6 );
+                            PS.color( pX, pY, PLAYER_COLOR );
                             break;
                         }
 
                         else{
-                            Game.GameOver();
+                            Game.GameOver("Alien");
                             gameover = true;
                             break;
                         }
@@ -540,7 +724,7 @@ let projectile3 = {
                     i += 1; // increment i here
                 }
                 else if ( enemies[ i ].destroyed ) {
-                    PS.color( enemies[ i ].x, enemies[ i ].y, PS.data( enemies[ i ].x, enemies[ i ].y ) );
+                    //this.createBlock(0, 0, enemies[i].x, enemies[i].y, 0xb19cd8);
                     PS.border( enemies[ i ].x, enemies[ i ].y, 0);
                     PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
                     enemies.splice( i, 1 );
@@ -681,11 +865,11 @@ let projectile3 = {
                 level = 1;
             }
             this.makeLevel();
-            if( level <= 5){
-                PS.fade( PS.ALL, PS.ALL, 15 );
-                PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
-                PS.color( startX, startY, PS.COLOR_YELLOW );
-            }
+            PS.color( startX, startY, PORTAL_COLOR );
+            PS.border( startX, startY, 5 );
+            PS.radius( startX, startY, 50 );
+            PS.borderColor( startX, startY, PORTAL_COLOR );
+            PS.bgColor( startX, startY, PS.data( startX, startY ) );
             start = true;
         },
 
@@ -701,39 +885,48 @@ let projectile3 = {
             }
         },
 
+        makeBlood( x, y, rVal, gVal, bVal, randomValue ) {
+            var rValRandom = rVal - PS.random(randomValue);
+            var gValRandom = gVal - PS.random(randomValue);
+            var bValRandom = bVal - PS.random(randomValue);
+            rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+            this.createBlock( 0, 0, x, y, rgb );
+        },
+
         changeRooms(x, y){
-            if(level == 3 || level == 4){
+            if(level <= 8){
                 if(room == 0){
                     room = 1;
                 }
                 else if(room == 1){
                     room = 0
                 }
+                usedDoor = true;
             }
-            usedDoor = true;
+            else if( level == 9){
+                if(room == 0){
+                    room = 1;
+                }
+                else if(room == 1){
+                    if(x == 0){
+                        room = 0;
+                        usedDoor = true;
+                    }
+                    else if(x == 14){
+                        room = 2;
+                        usedDoor = false;
+                    }
+                }
+                else if(room == 2){
+                    room = 1;
+                    usedDoor = true;
+                }
+            }
+
             Game.startScreen();
         },
 
         shootAudio() {
-            /*var randomShoot = PS.random(6);
-            if ( randomShoot == 1 ) {
-                PS.audioPlay( "fx_shoot1", { volume: 0.25 } );
-            }
-            if ( randomShoot == 2 ) {
-                PS.audioPlay( "fx_shoot2", { volume: 0.25 } );
-            }
-            if ( randomShoot == 3 ) {
-                PS.audioPlay( "fx_shoot3", { volume: 0.25 } );
-            }
-            if ( randomShoot == 4 ) {
-                PS.audioPlay( "fx_shoot4", { volume: 0.25 } );
-            }
-            if ( randomShoot == 5 ) {
-                PS.audioPlay( "fx_shoot5", { volume: 0.25 } );
-            }
-            if ( randomShoot == 6 ) {
-                PS.audioPlay( "fx_shoot6", { volume: 0.25 } );
-            }*/
             PS.audioPlay( "Laser_Shoot", { volume: 0.15, path: "GameAudio/" });
 
         },
@@ -758,10 +951,11 @@ let projectile3 = {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
-            if (level > 5){
+            if (level > 9){
                 PS.gridSize( WIDTH, HEIGHT );
                 this.createBlock(WIDTH-1, HEIGHT-1, 0,0, PS.COLOR_GREEN);
                 PS.border( PS.ALL, PS.ALL, 0 );
+                start = true;
 
             }
             if( level == 1){
@@ -771,6 +965,7 @@ let projectile3 = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 11;
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
@@ -793,6 +988,7 @@ let projectile3 = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 7;
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
@@ -817,6 +1013,7 @@ let projectile3 = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 7;
                 startY = 7;
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
@@ -850,6 +1047,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 11, 2, SHIELDED_ENEMY, 0 );
@@ -916,6 +1114,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 if(enemies.length == 0 && !portalOpened) {
                     this.makeEnemy( 7, 2, DEFAULT_ENEMY, 0 );
@@ -974,6 +1173,7 @@ let projectile3 = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 startX = 1;
                 startY = 13;
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
                 //Enemies
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
@@ -1018,13 +1218,20 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                startX = 1;
-                startY = 13;
+                startX = 7;
+                startY = 12;
+                PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20 );
 
                 //Enemies
+                this.makeEnemy( 2, 4, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 9, 2, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 12, 5, DEFAULT_ENEMY, 0);
 
                 //Inner Walls
+                this.createBlock( 1, 0, 6, 4, LAVA_COLOR );
+                this.createBlock( 1, 0, 3, 9, LAVA_COLOR );
+                this.createBlock( 1, 0, 10, 7, LAVA_COLOR );
 
                 //Outer Walls
                 this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
@@ -1032,13 +1239,176 @@ let projectile3 = {
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
             }
+            if( level == 8 ) {
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                this.makeFloor ( 216, 172, 121, 20 );
+                if(enemies.length == 0 && !portalOpened){
+                    this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 3, 11, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 7, 11, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 11, 11, DEFAULT_ENEMY, 1 );
+                }
+                if(room == 0){
+                    if(usedDoor){
+                        startX = 7;
+                        startY = 14;
+                    }
+                    else {
+                        startX = 7;
+                        startY = 7;
+                    }
+
+                    //Inner Walls
+                    this.createBlock( 1, 0, 9, 3, LAVA_COLOR );
+                    this.createBlock( 1, 0, 4, 11, LAVA_COLOR );
+                    this.createBlock( 0, 1, 3, 4, LAVA_COLOR );
+                    this.createBlock( 0, 1, 11, 9, LAVA_COLOR );
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    this.createBlock( 0, 1, 0, 0, LAVA_COLOR );
+                    this.createBlock( 0, 1, 14, 0, LAVA_COLOR );
+                    this.createBlock( 0, 1, 0, 13, LAVA_COLOR );
+                    this.createBlock( 0, 1, 14, 13, LAVA_COLOR );
+                    this.createBlock( 1, 0, 0, 0, LAVA_COLOR );
+                    this.createBlock( 1, 0, 13, 0, LAVA_COLOR );
+                    this.createBlock( 1, 0, 0, 14, LAVA_COLOR );
+                    this.createBlock( 1, 0, 13, 14, LAVA_COLOR );
+
+                    //Door
+                    this.createBlock(0, 0, 7, 14, DOOR_COLOR);
+                }
+
+                else if(room == 1){
+                    startX = 7;
+                    startY = 0;
+
+                    //Inner Walls
+                    this.createBlock( 2, 2, 6, 6, PS.COLOR_BLACK );
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
+                    this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
+                    this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
+                    this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
+
+                    //Door
+                    this.createBlock(0, 0, 7, 0, DOOR_COLOR);
+                }
+            }
+            if( level == 9 ) {
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                this.makeFloor( 180, 198, 205, 20 );
+
+                //Trigun Altar
+                this.createBlock( 0, 0, 7, 7, ALTAR_COLOR_1 );
+                this.createBlock( 0, 0, 6, 7, ALTAR_COLOR_2 );
+                this.createBlock( 0, 0, 7, 8, ALTAR_COLOR_2 );
+                this.createBlock( 0, 0, 8, 6, ALTAR_COLOR_2 );
+                this.createBlock( 0, 0, 6, 6, ALTAR_COLOR_3 );
+                this.createBlock( 0, 0, 8, 8, ALTAR_COLOR_3 );
+                this.createBlock( 0, 0, 6, 9, ALTAR_COLOR_4 );
+                this.createBlock( 0, 0, 5, 7, ALTAR_COLOR_4 );
+                this.createBlock( 0, 0, 7, 5, ALTAR_COLOR_4 );
+
+                if(enemies.length == 0 && !portalOpened) {
+                    this.makeEnemy( 12, 2, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 12, 7, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 8, 3, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 8, 11, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 13, 2, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 4, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 6, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 8, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 10, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 12, DEFAULT_ENEMY, 2 );
+                }
+                if(eastereggs.length == 0) {
+                    //this.makeEasterEgg(7, 7, TRIGUN_COLOR, 0);
+                }
+                if(room == 0) {
+                    if (usedDoor) {
+                        startX = 14;
+                        startY = 7;
+                    } else {
+                        startX = 2
+                        startY = 12;
+                    }
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    //Door
+                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                }
+                else if(room == 1) {
+                    if (usedDoor) {
+                        startX = 14;
+                        startY = 7;
+                    } else {
+                        startX = 0;
+                        startY = 7;
+                    }
+
+                    //make floor red if trigun powerup is active
+                    this.makeFloor( 145, 23, 23, 30 );
+
+                    //Inner Walls
+                    this.createBlock( 1, 1, 4, 4, PS.COLOR_BLACK);
+                    this.createBlock( 1, 1, 4, 10, PS.COLOR_BLACK);
+
+                    //Outer Walls
+                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+
+                    //Door
+                    this.createBlock(0, 0, 0, 7, DOOR_COLOR);
+                    this.createBlock( 0, 0, 14, 7, DOOR_COLOR );
+                }
+                else if (room == 2) {
+                    startX = 0;
+                    startY = 7;
+
+                    //make floor red if trigun powerup is active
+                    this.makeFloor( 145, 23, 23, 30 );
+
+                    //Inner Walls
+                    this.createBlock( 0, 2, 10, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 2, 10, 11, PS.COLOR_BLACK );
+                    this.createBlock( 0, 2, 4, 6, PS.COLOR_BLACK );
+
+                    //Outer Walls
+                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+
+                    //Door
+                    this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
+                }
+            }
+            PS.gridColor(0xb4c4cc);
         }
     };
 }() );
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 9;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -1194,7 +1564,7 @@ PS.enter = function ( x, y, data, options ) {
     pY = y;
     if ( !isOutOfBounds && !gameover && !start &&
         !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBead ) ) {
-        PS.color( pX, pY, 0x238fe6 );
+        PS.color( pX, pY, PLAYER_COLOR );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
@@ -1225,6 +1595,9 @@ PS.enter = function ( x, y, data, options ) {
             PS.glyph( pX, pY, "^" );
             PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
+        if(invis){
+            PS.alpha(pX, pY, 100);
+        }
         PS.glyph( pastX, pastY, "" );
         if( POWERUPS.includes(nextBeadColor) ){
             Game.triggerEgg(pX, pY);
@@ -1242,45 +1615,49 @@ PS.enter = function ( x, y, data, options ) {
             Game.changeRooms(pX, pY);
         }
     }
+    else if ( nextBead == LAVA_COLOR && !isOutOfBounds && !gameover && !start ){
+        PS.alpha(pastX, pastY, 255);
+        PS.color( pastX, pastY, PS.data( pastX, pastY ) );
+        PS.radius( pastX, pastY, 0 );
+        PS.border( pastX, pastY, 0 );
+        PS.glyph( pastX, pastY, "" );
+        Game.GameOver("Lava");
+    }
     else if ( !isOutOfBounds && !gameover && !start && OBSTACLES.includes( nextBead ) ) {
         isOutOfBounds = true;
-        PS.fade( PS.ALL, PS.ALL, 5 );
-        PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
-        PS.radius( PS.ALL, PS.ALL, 0);
-        PS.borderColor( PS.ALL, PS.ALL, PS.COLOR_BLACK);
-        PS.color( pastX, pastY, PS.COLOR_GREEN );
-        PS.bgColor( pastX, pastY, PS.COLOR_BLACK );
-        PS.radius( pastX, pastY, 50);
+        exitX = pX;
+        exitY = pY;
+        PS.glyph(exitX, exitY, "!");
+        PS.glyphColor(exitX, exitY, PS.COLOR_YELLOW);
+        PS.border(pastX, pastY, 5);
+        PS.borderColor(pastX, pastY, PS.COLOR_YELLOW);
         returnX = pastX;
         returnY = pastY;
     }
     else if ( isOutOfBounds && !gameover && !start && ( returnX === pX ) && ( returnY === pY ) ) {
-        PS.fade( PS.ALL, PS.ALL, 0 );
         isOutOfBounds = false;
-        for ( let i = 0; i < WIDTH; i += 1 ) {
-            for ( let j = 0; j < HEIGHT; j += 1 ) {
-                PS.color( i, j, PS.data( i, j ) );
-            }
+        PS.fade( returnX, returnY, 0 );
+        PS.color( returnX, returnY, PLAYER_COLOR );
+        PS.border(returnX, returnY, 0);
+        PS.borderColor(returnX, returnY, PS.COLOR_BLACK);
+        if(shieldStrength > 0){
+            PS.border(returnX, returnY, shieldStrength);
+            PS.borderColor(returnX, returnY, SHIELD_COLOR);
         }
-        PS.color( returnX, returnY, 0x238fe6 );
-        PS.bgColor( returnX, returnY, PS.data( returnX, returnY ) );
-        Game.reDrawEnemies();
-        Game.drawEggs();
+        PS.glyph(exitX, exitY, "");
+        PS.glyphColor(exitX, exitY, PS.COLOR_BLACK);
     }
     else if ( start && ( pX === startX ) && ( pY === startY ) ) {
-        PS.fade( PS.ALL, PS.ALL, 0 );
+        PS.fade(PS.ALL, PS.ALL, 0);
         gameover = false;
         start = false;
-        for ( let i = 0; i < WIDTH; i += 1 ) {
-            for ( let j = 0; j < HEIGHT; j += 1 ) {
-                PS.color( i, j, PS.data( i, j ) );
-            }
-        }
         if(level == 1 && firstStart){
             firstStart = false;
            // PS.audioPlay ( "Alarm", { volume: 0.5, path: "GameAudio/" });
         }
-        PS.color( pX, pY, 0x238fe6 );
+        PS.border(pX, pY, shieldStrength);
+        PS.borderColor(pX, pY, SHIELD_COLOR);
+        PS.color( pX, pY, PLAYER_COLOR );
         PS.bgColor( pX, pY, PS.data( pX, pY ) );
         PS.radius( pX, pY, 50 );
         Game.reDrawEnemies();
