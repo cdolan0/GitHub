@@ -409,7 +409,7 @@ let projectile3 = {
                 if(level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))){
                     this.trigunAltar();
                 }
-                this.makeBlood(enemies[i].x, enemies[i].y, 177, 156, 216, 30);
+                this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
                 i -= 1;
             }
             else if( enemies[enemyNum].shield > 0 ){
@@ -424,7 +424,7 @@ let projectile3 = {
         trigunAltar(){
             trigun = true;
             PS.audioPlay ( "Trigun_Pickup", { volume: 0.25, path: "GameAudio/" });
-            this.makeFloor( 145, 23, 23, 30 );
+            this.makeFloor( 145, 23, 23, 30, 0, 0, WIDTH, HEIGHT );
             //Trigun Altar
             this.createBlock( 0, 0, 7, 7, ALTAR_COLOR_1 );
             this.createBlock( 0, 0, 6, 7, ALTAR_COLOR_2 );
@@ -944,23 +944,25 @@ let projectile3 = {
             start = true;
         },
 
-        makeFloor(rVal, gVal, bVal, randomValue ) {
-            for ( yMarker = 0; yMarker < HEIGHT; yMarker++ ) {
-                for ( xMarker = 0; xMarker < WIDTH; xMarker ++ ) {
-                    var rValRandom = rVal - PS.random(randomValue);
-                    var gValRandom = gVal - PS.random(randomValue);
-                    var bValRandom = bVal - PS.random(randomValue);
-                    rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+        makeColor( rVal, gVal, bVal, randomValue ) {
+            var rValRandom = rVal - PS.random(randomValue);
+            var gValRandom = gVal - PS.random(randomValue);
+            var bValRandom = bVal - PS.random(randomValue);
+            rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+            return rgb;
+        },
+
+        makeFloor(rVal, gVal, bVal, randomValue, startX, startY, floorWidth, floorHeight ) {
+            for ( yMarker = startY; yMarker < startY + floorHeight; yMarker++ ) {
+                for ( xMarker = startX; xMarker < startX + floorWidth; xMarker ++ ) {
+                    rgb = this.makeColor( rVal, gVal, bVal, randomValue );
                     this.createBlock( 0, 0, xMarker, yMarker, rgb );
                 }
             }
         },
 
         makeBlood( x, y, rVal, gVal, bVal, randomValue ) {
-            var rValRandom = rVal - PS.random(randomValue);
-            var gValRandom = gVal - PS.random(randomValue);
-            var bValRandom = bVal - PS.random(randomValue);
-            rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+            rgb = this.makeColor( rVal, gVal, bVal, randomValue );
             this.createBlock( 0, 0, x, y, rgb );
         },
 
@@ -1070,7 +1072,7 @@ let projectile3 = {
                 portalY = startY;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
 
@@ -1096,7 +1098,7 @@ let projectile3 = {
                 portalY = startY;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
@@ -1124,7 +1126,12 @@ let projectile3 = {
                 portalY = startY;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor( 143, 140, 160, 20, 4, 4, 7, 7 );
+                this.makeFloor( 143, 140, 160, 20, 3, 5, 9, 5 );
+                this.makeFloor( 143, 140, 160, 20, 5, 3, 5, 9 );
+                this.makeFloor( 135, 130, 154, 20, 5, 3, 5, 9 );
+                this.makeFloor( 127, 120, 149, 20, 6, 6, 3, 3 );
                 //Enemies
                 this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
@@ -1159,7 +1166,7 @@ let projectile3 = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 11, 2, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 12, 11, DEFAULT_ENEMY, 0 );
@@ -1230,7 +1237,7 @@ let projectile3 = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened) {
                     this.makeEnemy( 7, 2, DEFAULT_ENEMY, 0 );
                     this.makeEnemy( 12, 2, SHIELDED_ENEMY, 0 );
@@ -1295,7 +1302,7 @@ let projectile3 = {
                 portalY = 13;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 154, 156, 250, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 13, 9, SHIELDED_ENEMY, 0 );
@@ -1345,7 +1352,7 @@ let projectile3 = {
                 portalY = 7;
                 portalRoom = 0;
                 PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 180, 198, 205, 20 );
+                this.makeFloor( 216, 213, 121, 20, 0, 0, WIDTH, HEIGHT );
 
                 //Enemies
                 this.makeEnemy( 2, 4, DEFAULT_ENEMY, 0 );
@@ -1368,7 +1375,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                this.makeFloor ( 216, 172, 121, 20 );
+                this.makeFloor ( 216, 172, 121, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
@@ -1437,10 +1444,10 @@ let projectile3 = {
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
                 if(trigun){
-                    this.makeFloor( 145, 23, 23, 30 );
+                    this.makeFloor( 145, 23, 23, 30, 0, 0, WIDTH, HEIGHT );
                 }
                 else{
-                    this.makeFloor( 180, 198, 205, 20 );
+                    this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
                 }
 
                 if(enemies.length == 0 && !portalOpened) {
@@ -1541,7 +1548,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 6;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
