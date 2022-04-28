@@ -20,7 +20,6 @@
 
 // TODO:
 // Trigun powerup
-// Improve Navigation
 // MEGA-SHIELDED
 
 const WIDTH = 15;
@@ -62,6 +61,7 @@ let gameover = false;
 let start;
 let enemies = [];
 let eastereggs = [];
+let blood = [];
 let portalOpened = false;
 let usedDoor = false;
 let invis = false;
@@ -339,7 +339,7 @@ let projectile3 = {
             }
             gameoverCounter -= 1;
         }
-        if(invis){
+        if(invis && !isOutOfBounds){
             invisCount -= 1;
             if(invisCount <= 0){
                 invis = false;
@@ -347,7 +347,7 @@ let projectile3 = {
                 PS.alpha(pX, pY, 255);
             }
         }
-        else{
+        else if (!invis){
             invisCount = 500;
         }
     };
@@ -374,6 +374,7 @@ let projectile3 = {
         hitEnemy() {
             let i = 0;
             let enemyNum = 0;
+            let bloodSplat;
             length = enemies.length;
             while (i < length)  {
                 if (( enemies[ i ].x === projectile.x && enemies[ i ].y === projectile.y )){
@@ -410,6 +411,14 @@ let projectile3 = {
                     this.trigunAltar();
                 }
                 this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                bloodSplat = {
+                    x: enemies[i].x,
+                    y: enemies[i].y,
+                    room: room,
+                    level: level,
+                    alien: true
+                }
+                blood.push(bloodSplat);
                 i -= 1;
             }
             else if( enemies[enemyNum].shield > 0 ){
@@ -419,6 +428,19 @@ let projectile3 = {
 
             PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
             PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
+        },
+
+        drawBlood(){
+          for(let i = 0; i < blood.length; i += 1){
+              if(level == blood[i].level && room == blood[i].room){
+                  if(blood[i].alien){
+                      this.makeBlood(blood[i].x, blood[i].y, 190, 117, 202, 40);
+                  }
+                  else if (PS.data(blood[i].x, blood[i].y) !== LAVA_COLOR){
+                      this.makeBlood(blood[i].x, blood[i].y, 220, 20, 60, 10);
+                  }
+              }
+          }
         },
 
         trigunAltar(){
@@ -448,8 +470,17 @@ let projectile3 = {
         },
 
         GameOver(type) {
+            let bloodSplat;
             deathX = pX;
             deathY = pY;
+            bloodSplat = {
+                x: deathX,
+                y: deathY,
+                room: room,
+                level: level,
+                alien: false
+            }
+            blood.push(bloodSplat);
             Game.deleteAllEggs();
             PS.color( pX, pY, PLAYER_COLOR );
             PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
@@ -1590,6 +1621,7 @@ let projectile3 = {
                     this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
                 }
             }
+            this.drawBlood();
             PS.gridColor(0xb4c4cc);
         }
     };
@@ -1597,7 +1629,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 8;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -1621,6 +1653,9 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
     PS.audioLoad ( "Trigun_Pickup", { path: "GameAudio/" });
     PS.audioLoad ( "Shield_Pickup", { path: "GameAudio/" });
+    PS.audioLoad ( "Space_Ambient", { path: "GameAudio/" });
+
+    PS.audioPlay( "Space_Ambient", {path: "GameAudio/", loop: true, volume: 0.20});
 
 };
 
