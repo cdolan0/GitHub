@@ -180,7 +180,12 @@ let projectile3 = {
             }
             if ( enemyMoveCounter < 0 ) {
                 Game.moveEnemies();
-                enemyMoveCounter = 22;
+                if(level < 5) {
+                    enemyMoveCounter = 22;
+                }
+                else{
+                    enemyMoveCounter = 16;
+                }
             }
         }
         hitting = false;
@@ -360,7 +365,9 @@ let projectile3 = {
         openPortal(){
             if ( room == portalRoom ) {
                 PS.fade(portalX, portalY, 15);
-                Game.createBlock(0, 0, portalX, portalY, PORTAL_COLOR);
+                PS.color(portalX, portalY, PORTAL_COLOR);
+                PS.bgColor(portalX, portalY, PS.data(portalX, portalY));
+                PS.radius(portalX, portalY, 30);
             }
         },
 
@@ -403,6 +410,7 @@ let projectile3 = {
                     this.trigunAltar();
                 }
                 this.makeBlood(enemies[i].x, enemies[i].y, 177, 156, 216, 30);
+                i -= 1;
             }
             else if( enemies[enemyNum].shield > 0 ){
                 enemies[enemyNum].shield -= 3;
@@ -442,6 +450,7 @@ let projectile3 = {
         GameOver(type) {
             deathX = pX;
             deathY = pY;
+            Game.deleteAllEggs();
             PS.color( pX, pY, PLAYER_COLOR );
             PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
             PS.fade ( PS.ALL, PS.ALL, 280 );
@@ -454,7 +463,6 @@ let projectile3 = {
             level = 1;
             //PS.color (pX, pY, PS.COLOR_RED);
             Game.deleteAllEnemies();
-            Game.deleteAllEggs();
             firing = false;
             if(type == "Alien"){
                 alienDeath = true;
@@ -627,6 +635,7 @@ let projectile3 = {
             var chose2 = false;
             var chose3 = false;
             var chose4 = false;
+
             // let index;
             // let hit = false;
 
@@ -653,6 +662,43 @@ let projectile3 = {
 
                             nextBead = PS.data(nextX, nextY);
                             nextColor = PS.color(nextX, nextY);
+
+                            //Check for diagonals
+                            if( nextX == enemies[i].x+1 && nextY == enemies[i].y+1){
+                                if( OBSTACLES.includes( PS.data( nextX-1, nextY ) ) ){
+                                    nextY = enemies[i].y;
+                                }
+                                else if ( OBSTACLES.includes( PS.data( nextX, nextY-1 ) ) ){
+                                    nextX = enemies[i].x;
+                                }
+                            }
+                            else if( nextX == enemies[i].x+1 && nextY == enemies[i].y-1){
+                                if( OBSTACLES.includes( PS.data( nextX-1, nextY ) ) ){
+                                    nextY = enemies[i].y;
+                                }
+                                else if ( OBSTACLES.includes( PS.data( nextX, nextY+1 ) ) ){
+                                    nextX = enemies[i].x;
+                                }
+                            }
+                            else if( nextX == enemies[i].x-1 && nextY == enemies[i].y+1){
+                                if( OBSTACLES.includes( PS.data( nextX+1, nextY ) ) ){
+                                    nextY = enemies[i].y;
+                                }
+                                else if ( OBSTACLES.includes( PS.data( nextX, nextY-1 ) ) ){
+                                    nextX = enemies[i].x;
+                                }
+                            }
+                            else if( nextX == enemies[i].x-1 && nextY == enemies[i].y-1){
+                                if(  OBSTACLES.includes( PS.data( nextX+1, nextY ) ) ){
+                                    nextY = enemies[i].y;
+                                }
+                                else if ( OBSTACLES.includes( PS.data( nextX, nextY+1 ) ) ){
+                                    nextX = enemies[i].x;
+                                }
+                            }
+
+                          /*      || nextY == enemies[i].y-1) )
+                                || ( nextX == enemies[i].x-1 && ( nextY == enemies[i].y+1 || nextY == enemies[i].y-1) ))*/
 
                             if (!ENEMY_TYPES.includes(nextColor) && !OBSTACLES.includes(nextBead)
                                 && !POWERUPS.includes(nextColor)) {
@@ -877,6 +923,8 @@ let projectile3 = {
         deleteAllEggs() {
             length = eastereggs.length;
             for ( let i = 0; i < length; i += 1 ) {
+                PS.radius(eastereggs[i].x, eastereggs[i].y, 0);
+                PS.color(eastereggs[i].x, eastereggs[i].y, PS.data(eastereggs[i].x, eastereggs[i].y));
                 eastereggs.pop();
             }
         },
@@ -932,6 +980,17 @@ let projectile3 = {
                 PS.border(portalX, portalY, PS.random(10));
                 PS.borderColor(portalX, portalY, rgb);
             }
+            //Some Kind of Purple
+            rValRandom = 200 - PS.random(randomValue);
+            gValRandom = 20 - PS.random(randomValue);
+            bValRandom = 160 - PS.random(randomValue);
+            rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
+            if(room == portalRoom){
+                PS.glyph(portalX, portalY, "҉");
+                PS.glyphColor(portalX, portalY, rgb);
+            }
+
+
 
         },
 
@@ -1482,7 +1541,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 6;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -1676,7 +1735,7 @@ PS.enter = function ( x, y, data, options ) {
         if( POWERUPS.includes(nextBeadColor) ){
             Game.triggerEgg(pX, pY);
         }
-        if( nextBead == PORTAL_COLOR ){
+        if( nextBeadColor == PORTAL_COLOR ){
             portalOpened = false;
             usedDoor = false;
             level += 1;
