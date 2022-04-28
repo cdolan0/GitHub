@@ -808,6 +808,8 @@ let projectile3 = {
             for ( let i = 0; i < length; i += 1 ) {
                 if(enemies[i].room == room && !enemies[i].destroyed) {
                     PS.color(enemies[i].x, enemies[i].y, enemies[i].type);
+                    PS.border(enemies[i].x, enemies[i].y, enemies[i].shield);
+                    PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
                 }
             }
         },
@@ -828,6 +830,8 @@ let projectile3 = {
                 enemies.push( enemy );
                 if( room == enemy.room ) {
                     PS.color(x, y, enemy.type);
+                    PS.border(enemy.x, enemy.y, enemy.shield);
+                    PS.borderColor(enemy.x, enemy.y, E_SHIELD_COLOR);
                 }
             }
         },
@@ -876,6 +880,7 @@ let projectile3 = {
                     }
                     else if( eastereggs[i].type == INVIS_COLOR){
                         invis = true;
+                        PS.alpha(pX, pY, 100);
                         eastereggs[i].used = true;
                         PS.audioPlay ( "Invisibility", { volume: 0.25, path: "GameAudio/" });
                     }
@@ -1084,7 +1089,7 @@ let projectile3 = {
                 this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
                 this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
-                //this.makeEasterEgg( 3, 10, TRIGUN_COLOR, 0);
+               // this.makeEasterEgg( 3, 10, INVIS_COLOR, 0);
 
             }
             if( level == 2){
@@ -1574,7 +1579,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 4;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
