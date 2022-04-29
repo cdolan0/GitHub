@@ -26,6 +26,10 @@
 // Victory Screen
 // Improve floor for levels 4, 5, 8, 9
 
+//SOUNDS FOUND ON FREESOUND.ORG BY:
+//spookymodem, Sonicfreak, Darsycho, outroelison, StormwaveAudio, CGEffex, steveygos93, Breviceps, Blockfighter298,
+// SlykMrByches
+
 const WIDTH = 15;
 const HEIGHT = 15;
 const HIDDEN_DOOR_COLOR = 0x313639;
@@ -423,6 +427,7 @@ let projectile3 = {
                     this.trigunAltar();
                 }
                 this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                this.alienSplatt();
                 bloodSplat = {
                     x: enemies[i].x,
                     y: enemies[i].y,
@@ -435,6 +440,7 @@ let projectile3 = {
             }
             else if( enemies[enemyNum].shield > 0 ){
                 enemies[enemyNum].shield -= 3;
+                PS.audioPlay ( "EnemyShield", { path: "GameAudio/", volume: 0.25 });
                 PS.border( enemies[ enemyNum ].x, enemies[ enemyNum ].y, enemies[ enemyNum ].shield);
             }
 
@@ -513,6 +519,7 @@ let projectile3 = {
             }
             else if(type == "Lava"){
                 lavaDeath = true;
+                PS.audioPlay ( "LavaDeath", { path: "GameAudio/", volume: 0.5 });
             }
             gameover = true;
         },
@@ -842,7 +849,9 @@ let projectile3 = {
                         if ((enemies[i].x === pX) && (enemies[i].y === pY) && enemies[i].room == room) {
                             if (shieldStrength > 0) {
                                 shieldStrength -= 1;
+                                PS.audioPlay ( "EnemyShield", { path: "GameAudio/", volume: 0.25 });
                                 this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                                this.alienSplatt();
                                 let bloodSplat = {
                                     x: enemies[i].x,
                                     y: enemies[i].y,
@@ -1111,7 +1120,7 @@ let projectile3 = {
                     usedDoor = true;
                 }
             }
-            else if(level == 10){
+            else if(level == 11){
                 //PS.debug("changing rooms")
                 if(room == 0){
                     if(x == 0 && y == 7){
@@ -1208,13 +1217,13 @@ let projectile3 = {
             else if ( randomAlien == 4 ) {
                 PS.audioPlay ( "AlienDeath4", { volume: 0.25, path: "GameAudio/" });
             }
-            else if ( randomAlien == 4 ) {
+            else if ( randomAlien == 5 ) {
                 PS.audioPlay ( "AlienDeath5", { volume: 0.25, path: "GameAudio/" });
             }
         },
 
         alienVictory() {
-            var randomAlien = PS.random(5);
+            var randomAlien = PS.random(3);
             if (randomAlien == 1) {
                 PS.audioPlay("AlienVictory1", {volume: 0.25, path: "GameAudio/"});
             } else if (randomAlien == 2) {
@@ -1224,16 +1233,27 @@ let projectile3 = {
             }
         },
 
+        alienSplatt() {
+            var randomAlien = PS.random(3);
+            if (randomAlien == 1) {
+                PS.audioPlay("AlienSplatt", {volume: 0.15, path: "GameAudio/"});
+            } else if (randomAlien == 2) {
+                PS.audioPlay("AlienSplatt2", {volume: 0.15, path: "GameAudio/"});
+            } else if (randomAlien == 3) {
+                PS.audioPlay("AlienSplatt3", {volume: 0.15, path: "GameAudio/"});
+            }
+        },
+
         makeLevel() {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
-            if (level > 10){
+            if (level > 12){
                 PS.gridSize( WIDTH, HEIGHT );
                 this.createBlock(WIDTH-1, HEIGHT-1, 0,0, PS.COLOR_GREEN);
                 PS.border( PS.ALL, PS.ALL, 0 );
                 start = true;
-
+                PS.audioPlay ( "Victory", { path: "GameAudio/", volume: 0.25 });
             }
             if( level == 1){
                 room = 0;
@@ -2008,7 +2028,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 5;
+    level = 10;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -2034,6 +2054,18 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "AlienVictory1", { path: "GameAudio/" });
     PS.audioLoad ( "AlienVictory2", { path: "GameAudio/" });
     PS.audioLoad ( "AlienVictory3", { path: "GameAudio/" });
+
+    PS.audioLoad ( "AlienSplatt", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienSplatt2", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienSplatt3", { path: "GameAudio/" });
+
+    PS.audioLoad ( "PlayerShield", { path: "GameAudio/" });
+    PS.audioLoad ( "EnemyShield", { path: "GameAudio/" });
+    PS.audioLoad ( "LavaDeath", { path: "GameAudio/" });
+    PS.audioLoad ( "Bounds", { path: "GameAudio/" });
+    PS.audioLoad ( "Start", { path: "GameAudio/" });
+    PS.audioLoad ( "StepPortal", { path: "GameAudio/" });
+    PS.audioLoad ( "Victory", { path: "GameAudio/" });
 
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });
@@ -2217,7 +2249,9 @@ PS.enter = function ( x, y, data, options ) {
                 shieldStrength -= 1;
                 PS.border(pX, pY, shieldStrength);
                 PS.borderColor(pX, pY, SHIELD_COLOR);
+                PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.25 });
                 this.makeBlood(pX, pY, 190, 117, 202, 40);
+                this.alienSplatt();
                 let bloodSplat = {
                     x: pX,
                     y: pY,
@@ -2238,6 +2272,7 @@ PS.enter = function ( x, y, data, options ) {
             level += 1;
             room = 0;
             usedDoor = false;
+            PS.audioPlay ( "StepPortal", { path: "GameAudio/", volume: 0.25});
             Game.deleteAllEggs();
             Game.startScreen();
         }
@@ -2264,6 +2299,7 @@ PS.enter = function ( x, y, data, options ) {
         PS.borderColor(pastX, pastY, PS.COLOR_YELLOW);
         returnX = pastX;
         returnY = pastY;
+        PS.audioPlay ( "Bounds", { path: "GameAudio/", volume: 0.25 });
     }
     else if ( isOutOfBounds && !gameover && !start && ( returnX === pX ) && ( returnY === pY ) ) {
         isOutOfBounds = false;
@@ -2286,6 +2322,7 @@ PS.enter = function ( x, y, data, options ) {
             firstStart = false;
            // PS.audioPlay ( "Alarm", { volume: 0.5, path: "GameAudio/" });
         }
+        PS.audioPlay ( "Start", { path: "GameAudio/", volume: 0.25 });
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, SHIELD_COLOR);
         PS.color( pX, pY, PLAYER_COLOR );
