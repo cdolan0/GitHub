@@ -1225,12 +1225,16 @@ let projectile3 = {
         alienVictory() {
             var randomAlien = PS.random(3);
             if (randomAlien == 1) {
-                PS.audioPlay("AlienVictory1", {volume: 0.25, path: "GameAudio/"});
+                PS.audioPlay("AlienVictory1", {volume: 0.25, path: "GameAudio/", onEnd: this.transform()});
             } else if (randomAlien == 2) {
-                PS.audioPlay("AlienVictory2", {volume: 0.25, path: "GameAudio/"});
+                PS.audioPlay("AlienVictory2", {volume: 0.25, path: "GameAudio/", onEnd: this.transform()});
             } else if (randomAlien == 3) {
-                PS.audioPlay("AlienVictory3", {volume: 0.25, path: "GameAudio/"});
+                PS.audioPlay("AlienVictory3", {volume: 0.25, path: "GameAudio/", onEnd: this.transform()});
             }
+        },
+
+        transform(){
+            PS.audioPlay ( "Transform", { path: "GameAudio/", volume: 0.5 });
         },
 
         alienSplatt() {
@@ -2028,7 +2032,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 10;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -2066,6 +2070,7 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Start", { path: "GameAudio/" });
     PS.audioLoad ( "StepPortal", { path: "GameAudio/" });
     PS.audioLoad ( "Victory", { path: "GameAudio/" });
+    PS.audioLoad ( "Transform", { path: "GameAudio/" });
 
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });

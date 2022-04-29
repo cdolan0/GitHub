@@ -3,16 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="523722af-1b54-4146-91a2-17a23e0bdd77" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath1.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath1.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath1.ogg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath2.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath2.ogg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath3.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath3.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath3.ogg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath4.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath4.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath4.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath4.ogg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath5.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath5.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameAudio/AlienDeath5.ogg" beforeDir="false" afterPath="$PROJECT_DIR$/GameAudio/AlienDeath5.ogg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,6 +57,7 @@
       <workItem from="1651095893803" duration="16954000" />
       <workItem from="1651116329536" duration="4016000" />
       <workItem from="1651160597475" duration="8804000" />
+      <workItem from="1651238458517" duration="594000" />
     </task>
     <servers />
   </component>
