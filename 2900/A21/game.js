@@ -761,7 +761,8 @@ let projectile3 = {
                           /*      || nextY == enemies[i].y-1) )
                                 || ( nextX == enemies[i].x-1 && ( nextY == enemies[i].y+1 || nextY == enemies[i].y-1) ))*/
 
-                            if (!ENEMY_TYPES.includes(nextColor) && (!OBSTACLES.includes(nextBead) ||
+                            if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
+                                && (!OBSTACLES.includes(nextBead) ||
                                     ( enemies[i].type == LAVA_ENEMY && nextBead == LAVA_COLOR ) )
                                 && !POWERUPS.includes(nextColor)) {
                                 //  PS.debug("Enemy " + i + " not stuck ");
@@ -777,27 +778,27 @@ let projectile3 = {
                             } else {
                                 while (!chosenNext) {
                                     //PS.debug("Enemy " + i + " stuck ");
-                                    choice = Math.floor(Math.random() * 4);
+                                    choice = PS.random(4);
                                     //Up
-                                    if (choice == 0 && (enemies[i].y - 1 > 0) && !chose1) {
+                                    if (choice == 1 && (enemies[i].y - 1 > 0) && !chose1) {
                                         nextY = enemies[i].y - 1;
                                         nextX = enemies[i].x;
                                         chose1 = true;
                                     }
                                     //Right
-                                    else if (choice == 1 && (enemies[i].x + 1 < (WIDTH - 1)) && !chose2) {
+                                    else if (choice == 2 && (enemies[i].x + 1 < (WIDTH - 1)) && !chose2) {
                                         nextY = enemies[i].y;
                                         nextX = enemies[i].x + 1;
                                         chose2 = true;
                                     }
                                     //Down
-                                    else if (choice == 2 && (enemies[i].y + 1 < (HEIGHT - 1)) && !chose3) {
+                                    else if (choice == 3 && (enemies[i].y + 1 < (HEIGHT - 1)) && !chose3) {
                                         nextY = enemies[i].y + 1;
                                         nextX = enemies[i].x;
                                         chose3 = true;
                                     }
                                     //Left
-                                    else if (choice == 3 && (enemies[i].x - 1 > 0) && !chose4) {
+                                    else if (choice == 4 && (enemies[i].x - 1 > 0) && !chose4) {
                                         nextY = enemies[i].y;
                                         nextX = enemies[i].x - 1;
                                         chose4 = true;
@@ -809,8 +810,8 @@ let projectile3 = {
                                     nextBead = PS.data(nextX, nextY);
                                     nextColor = PS.color(nextX, nextY);
 
-                                    if (!ENEMY_TYPES.includes(nextColor) && (!OBSTACLES.includes(nextBead) ||
-                                        ( enemies[i].type == LAVA_ENEMY && nextBead == LAVA_COLOR ) ) &&
+                                    if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
+                                        && (!OBSTACLES.includes(nextBead) || ( enemies[i].type === LAVA_ENEMY && nextBead === LAVA_COLOR ) ) &&
                                         !POWERUPS.includes(nextColor) ) {
                                         PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
                                         PS.border(enemies[i].x, enemies[i].y, 0);
@@ -1554,7 +1555,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = 7;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+                PS.fade(PS.ALL, PS.ALL, 5);
                 this.makeFloor( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor ( 216, 161, 98, 20, 5, 2, 4, 5 );
                 this.makeFloor ( 216, 161, 98, 20, 2, 7, 4, 5 );
