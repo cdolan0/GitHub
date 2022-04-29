@@ -417,6 +417,7 @@ let projectile3 = {
                 i++
             }
             if( enemies[enemyNum].shield <= 0 ){
+                this.alienDeath();
                 enemies[ enemyNum ].destroyed = true;
                 if(level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))){
                     this.trigunAltar();
@@ -494,7 +495,7 @@ let projectile3 = {
             blood.push(bloodSplat);
             Game.deleteAllEggs();
             PS.color( pX, pY, PLAYER_COLOR );
-            PS.audioPlay ( "GameOver", { volume: 0.5, path: "GameAudio/" });
+            PS.audioPlay ( "GameOver", { volume: 0.3, path: "GameAudio/" });
             PS.fade ( PS.ALL, PS.ALL, 280 );
             PS.border(PS.ALL, PS.ALL,  0);
             PS.color( PS.ALL, PS.ALL, PS.COLOR_BLACK );
@@ -508,6 +509,7 @@ let projectile3 = {
             firing = false;
             if(type == "Alien"){
                 alienDeath = true;
+                this.alienVictory();
             }
             else if(type == "Lava"){
                 lavaDeath = true;
@@ -1158,18 +1160,66 @@ let projectile3 = {
         },
 
         alienAudio(){
-            var randomAlien = PS.random(4);
+            var randomAlien = PS.random(10);
             if ( randomAlien == 1 ) {
                 PS.audioPlay ( "Alien1", { volume: 0.25, path: "GameAudio/" });
             }
-            if ( randomAlien == 2 ) {
+            else if ( randomAlien == 2 ) {
                 PS.audioPlay ( "Alien2", { volume: 0.25, path: "GameAudio/" });
             }
-            if ( randomAlien == 3 ) {
+            else if ( randomAlien == 3 ) {
                 PS.audioPlay ( "Alien3", { volume: 0.25, path: "GameAudio/" });
             }
-            if ( randomAlien == 4 ) {
+            else if ( randomAlien == 4 ) {
                 PS.audioPlay ( "Alien4", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 5 ) {
+                PS.audioPlay ( "Alien5", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 6 ) {
+                PS.audioPlay ( "Alien6", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 7 ) {
+                PS.audioPlay ( "Alien7", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 8 ) {
+                PS.audioPlay ( "Alien8", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 9 ) {
+                PS.audioPlay ( "Alien9", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 10 ) {
+                PS.audioPlay ( "Alien10", { volume: 0.25, path: "GameAudio/" });
+            }
+        },
+
+        alienDeath(){
+            var randomAlien = PS.random(5);
+            if ( randomAlien == 1 ) {
+                PS.audioPlay ( "AlienDeath1", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 2 ) {
+                PS.audioPlay ( "AlienDeath2", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 3 ) {
+                PS.audioPlay ( "AlienDeath3", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 4 ) {
+                PS.audioPlay ( "AlienDeath4", { volume: 0.25, path: "GameAudio/" });
+            }
+            else if ( randomAlien == 4 ) {
+                PS.audioPlay ( "AlienDeath5", { volume: 0.25, path: "GameAudio/" });
+            }
+        },
+
+        alienVictory() {
+            var randomAlien = PS.random(5);
+            if (randomAlien == 1) {
+                PS.audioPlay("AlienVictory1", {volume: 0.25, path: "GameAudio/"});
+            } else if (randomAlien == 2) {
+                PS.audioPlay("AlienVictory2", {volume: 0.25, path: "GameAudio/"});
+            } else if (randomAlien == 3) {
+                PS.audioPlay("AlienVictory3", {volume: 0.25, path: "GameAudio/"});
             }
         },
 
@@ -1881,21 +1931,29 @@ PS.init = function ( system, options ) {
     shieldStrength = 0;
     Game.startScreen();
 
-    PS.audioLoad( "fx_pop" );
-    PS.audioLoad ( "fx_shoot1" );
-    PS.audioLoad ( "fx_shoot2" );
-    PS.audioLoad ( "fx_shoot3" );
-    PS.audioLoad ( "fx_shoot4" );
-    PS.audioLoad ( "fx_shoot5" );
-    PS.audioLoad ( "fx_shoot6" );
-
     PS.audioLoad ( "Laser_Shoot", { path: "GameAudio/" });
     PS.audioLoad ( "Alarm", { path: "GameAudio/" });
     PS.audioLoad ( "Alien1", { path: "GameAudio/" });
     PS.audioLoad ( "Alien2", { path: "GameAudio/" });
     PS.audioLoad ( "Alien3", { path: "GameAudio/" });
     PS.audioLoad ( "Alien4", { path: "GameAudio/" });
-    // PS.audioLoad ( "Alien5", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien5", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien6", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien7", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien8", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien9", { path: "GameAudio/" });
+    PS.audioLoad ( "Alien10", { path: "GameAudio/" });
+
+    PS.audioLoad ( "AlienDeath1", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienDeath2", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienDeath3", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienDeath4", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienDeath5", { path: "GameAudio/" });
+
+    PS.audioLoad ( "AlienVictory1", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienVictory2", { path: "GameAudio/" });
+    PS.audioLoad ( "AlienVictory3", { path: "GameAudio/" });
+
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
