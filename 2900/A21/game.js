@@ -1042,11 +1042,11 @@ let projectile3 = {
         },
 
         makeBlood( x, y, rVal, gVal, bVal, randomValue ) {
-            if (PS.data(x, y) !== LAVA_COLOR) {
+            if (PS.data(x, y) !== LAVA_COLOR && PS.data(x, y) !== DOOR_COLOR) {
                 rgb = this.makeColor(rVal, gVal, bVal, randomValue);
                 this.createBlock(0, 0, x, y, rgb);
             }
-            else{
+            else if(PS.data( x, y) === LAVA_COLOR){
                 this.createBlock(0, 0, x, y, LAVA_COLOR);
             }
         },
@@ -1927,7 +1927,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 10;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
