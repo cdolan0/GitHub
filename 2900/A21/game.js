@@ -726,7 +726,7 @@ let projectile3 = {
                             nextX = nextStep[0];
                             nextY = nextStep[1];
                         }
-                        if (typeof (nextStep[0]) != "undefined" && typeof (nextStep[1]) != "undefined"
+                        if (typeof (nextStep) !== "undefined" && typeof (nextStep[0])  !== "undefined" && typeof (nextStep[1]) !== "undefined"
                             && (enemies[i].room == room)) {
 
                             //Check for diagonals
@@ -849,7 +849,7 @@ let projectile3 = {
                         if ((enemies[i].x === pX) && (enemies[i].y === pY) && enemies[i].room == room) {
                             if (shieldStrength > 0) {
                                 shieldStrength -= 1;
-                                PS.audioPlay ( "EnemyShield", { path: "GameAudio/", volume: 0.25 });
+                                PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.25 });
                                 this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
                                 this.alienSplatt();
                                 let bloodSplat = {
@@ -1269,7 +1269,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
@@ -1294,7 +1294,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
@@ -1322,7 +1322,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor( 143, 140, 160, 20, 4, 4, 7, 7 );
                 this.makeFloor( 143, 140, 160, 20, 3, 5, 9, 5 );
@@ -1362,7 +1362,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                PS.fade(PS.ALL, PS.ALL, 10);
+                // (PS.ALL, PS.ALL, 10);
                 this.makeFloor( 185, 185, 185, 20, 0, 0, WIDTH, HEIGHT );
                 const xFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
                 const yFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
@@ -1451,7 +1451,7 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                PS.fade(PS.ALL, PS.ALL, 10);
+             //   PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 150, 150, 150, 25, 0, 0, WIDTH, HEIGHT );
                 for ( yMarker = 2; yMarker < 13; yMarker++ ) {
                     for ( xMarker = 2; xMarker < 13; xMarker ++ ) {
@@ -1529,7 +1529,7 @@ let projectile3 = {
                 portalX = 7;
                 portalY = 13;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+             //   PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 100, 100, 100, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
@@ -1579,7 +1579,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = 7;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 5);
+             //   PS.fade(PS.ALL, PS.ALL, 5);
                 this.makeFloor( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor ( 216, 161, 98, 20, 5, 2, 4, 5 );
                 this.makeFloor ( 216, 161, 98, 20, 2, 7, 4, 5 );
@@ -1787,7 +1787,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 1, 13, LAVA_ENEMY, 0 );
@@ -1985,7 +1985,7 @@ let projectile3 = {
                 portalX = 13;
                 portalY = 9;
                 portalRoom = 0;
-                PS.fade(PS.ALL, PS.ALL, 10);
+              //  PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 13, 13, LAVA_ENEMY, 0 );
