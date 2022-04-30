@@ -569,6 +569,18 @@ let projectile3 = {
             gameover = true;
         },
 
+        gameComplete(){
+          PS.fade(PS.ALL, PS.ALL, 180);
+          for(let i = 0; i < blood.length; i += 1){
+              if(blood[i].alien){
+                  this.makeBlood(blood[i].x, blood[i].y, 190, 117, 202, 40);
+              }
+              else{
+                  this.makeBlood(blood[i].x, blood[i].y, 220, 20, 60, 10);
+              }
+          }
+        },
+
         moveProjectiles(){
                 if(!projectile.destroyed) {
                     pastProjX = projectile.x;
