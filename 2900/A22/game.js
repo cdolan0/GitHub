@@ -76,7 +76,7 @@ let blood = [];
 let portalOpened = false;
 let usedDoor, usedDoor2, usedDoor3, usedDoor4 = false;
 let invis = false;
-let trigun = true;
+let trigun = false;
 let firstStart = true;
 let finalLevel = false;
 let runComplete = false;
@@ -145,7 +145,7 @@ let projectile3 = {
     let finishCount = 180;
 
     let bloodLength = 0;
-    let bloodCount = 60;
+    let bloodCount = 30;
     let finishOver = false;
 
     let wentX = false;
@@ -214,7 +214,7 @@ let projectile3 = {
         hitting = false;
         if ( length == 0 && !portalOpened && !gameover && !start){
            if(level === 14 && !runComplete){
-               PS.fade(PS.ALL, PS.ALL, 60);
+               PS.fade(PS.ALL, PS.ALL, 30);
                 PS.audioPlay ( "Victory", { volume: 0.25, path: "GameAudio/" });
                 runComplete = true;
            }
@@ -226,7 +226,7 @@ let projectile3 = {
         if(runComplete && !finishOver){
             bloodCount -= 1;
             if(bloodCount == 0 && bloodLength < blood.length){
-                bloodCount = 60;
+                bloodCount = 30;
                 if(blood[bloodLength].alien){
                     Game.makeBlood(blood[bloodLength].x, blood[bloodLength].y, 190, 117, 202, 40);
                 }
@@ -1153,6 +1153,10 @@ let projectile3 = {
             else if(PS.data( x, y) === LAVA_COLOR){
                 this.createBlock(0, 0, x, y, LAVA_COLOR);
             }
+        },
+        makeBloodF( x, y, rVal, gVal, bVal, randomValue ) {
+            rgb = this.makeColor(rVal, gVal, bVal, randomValue);
+            this.createBlock(0, 0, x, y, rgb);
         },
 
         makePortalBorder(randomValue){
