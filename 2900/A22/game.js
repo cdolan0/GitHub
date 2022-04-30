@@ -79,6 +79,7 @@ let invis = false;
 let trigun = false;
 let firstStart = true;
 let finalLevel = false;
+let runComplete = false;
 
 let rgb;
 let xMarker;
@@ -141,6 +142,11 @@ let projectile3 = {
     let lavaX;
     let lavaY;
     let chosenSpot = false
+    let finishCount = 180;
+
+    let bloodLength = 0;
+    let bloodCount = 60;
+    let finishOver = false;
 
     let wentX = false;
     let wentY = false;
@@ -207,8 +213,42 @@ let projectile3 = {
         }
         hitting = false;
         if ( length == 0 && !portalOpened && !gameover && !start){
-           portalOpened = true;
-           PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
+           if(level === 14 && !runComplete){
+               PS.fade(PS.ALL, PS.ALL, 60);
+                PS.audioPlay ( "Victory", { volume: 0.25, path: "GameAudio/" });
+                runComplete = true;
+           }
+           else if (!runComplete){
+               portalOpened = true;
+               PS.audioPlay ( "Enemies_Defeated", { volume: 0.25, path: "GameAudio/" });
+           }
+        }
+        if(runComplete && !finishOver){
+            bloodCount -= 1;
+            if(bloodCount == 0 && bloodLength < blood.length){
+                bloodCount = 60;
+                if(blood[bloodLength].alien){
+                    Game.makeBlood(blood[bloodLength].x, blood[bloodLength].y, 190, 117, 202, 40);
+                }
+                else{
+                    Game.makeBlood(blood[bloodLength].x, blood[bloodLength].y, 220, 20, 60, 10);
+                }
+                bloodLength += 1;
+            }
+            else if (bloodLength >= blood.length){
+                finishOver = true;
+            }
+        }
+        if(finishOver){
+            finishCount -= 1;
+            if(finishCount === 0){
+                PS.gridColor(PS.COLOR_BLACK);
+                PS.radius(PS.ALL, PS.ALL, 0);
+                PS.border(PS.ALL, PS.ALL, 0);
+                PS.fade(PS.ALL, PS.ALL, 0);
+                PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+                PS.audioPlay ( "AlienVictory1", { volume: 0.50, path: "GameAudio/" });
+            }
         }
         else if( length != 0){
             portalOpened = false;
@@ -567,18 +607,6 @@ let projectile3 = {
                 PS.audioPlay ( "LavaDeath", { path: "GameAudio/", volume: 0.5 });
             }
             gameover = true;
-        },
-
-        gameComplete(){
-          PS.fade(PS.ALL, PS.ALL, 180);
-          for(let i = 0; i < blood.length; i += 1){
-              if(blood[i].alien){
-                  this.makeBlood(blood[i].x, blood[i].y, 190, 117, 202, 40);
-              }
-              else{
-                  this.makeBlood(blood[i].x, blood[i].y, 220, 20, 60, 10);
-              }
-          }
         },
 
         moveProjectiles(){
@@ -1309,13 +1337,13 @@ let projectile3 = {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
-            if (level > 12){
+           /* if (level > 12){
                 PS.gridSize( WIDTH, HEIGHT );
                 this.createBlock(WIDTH-1, HEIGHT-1, 0,0, PS.COLOR_GREEN);
                 PS.border( PS.ALL, PS.ALL, 0 );
                 start = true;
                 PS.audioPlay ( "Victory", { path: "GameAudio/", volume: 0.25 });
-            }
+            }*/
             if( level == 1){
                 room = 0;
                 PS.gridSize( WIDTH, HEIGHT );
@@ -2089,7 +2117,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 8;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
@@ -2151,7 +2179,7 @@ PS.init = function ( system, options ) {
  */
 
 PS.touch = function ( x, y, data, options ) {
-    if ( !firing && !isOutOfBounds && !gameover && !start) {
+    if ( !firing && !isOutOfBounds && !gameover && !start && !runComplete) {
         projectile.projDir =  direction;
         projectile.x = x;
         projectile.y = y;
@@ -2267,8 +2295,8 @@ PS.enter = function ( x, y, data, options ) {
     let pastY = pY;
     pX = x;
     pY = y;
-    if ( !isOutOfBounds && !gameover && !start &&
-        !OBSTACLES.includes( nextBead ) && !ENEMY_TYPES.includes( nextBeadColor ) ) {
+    if ( !isOutOfBounds && !gameover && !start && !runComplete &&
+        !OBSTACLES.includes( nextBead ) ) {
         PS.color( pX, pY, PLAYER_COLOR );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
@@ -2312,7 +2340,7 @@ PS.enter = function ( x, y, data, options ) {
                 PS.border(pX, pY, shieldStrength);
                 PS.borderColor(pX, pY, SHIELD_COLOR);
                 PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.25 });
-                this.makeBlood(pX, pY, 190, 117, 202, 40);
+                Game.makeBlood(pX, pY, 190, 117, 202, 40);
                 this.alienSplatt();
                 let bloodSplat = {
                     x: pX,
@@ -2343,7 +2371,7 @@ PS.enter = function ( x, y, data, options ) {
         }
     }
 
-    else if ( nextBead == LAVA_COLOR && !isOutOfBounds && !gameover && !start ){
+    else if ( nextBead == LAVA_COLOR && !isOutOfBounds && !gameover && !start && !runComplete){
         PS.alpha(pastX, pastY, 255);
         PS.color( pastX, pastY, PS.data( pastX, pastY ) );
         PS.radius( pastX, pastY, 0 );
@@ -2351,7 +2379,7 @@ PS.enter = function ( x, y, data, options ) {
         PS.glyph( pastX, pastY, "" );
         Game.GameOver("Lava");
     }
-    else if ( !isOutOfBounds && !gameover && !start && OBSTACLES.includes( nextBead ) ) {
+    else if ( !isOutOfBounds && !gameover && !start && !runComplete  && OBSTACLES.includes( nextBead ) ) {
         isOutOfBounds = true;
         exitX = pX;
         exitY = pY;
@@ -2363,7 +2391,7 @@ PS.enter = function ( x, y, data, options ) {
         returnY = pastY;
         PS.audioPlay ( "Bounds", { path: "GameAudio/", volume: 0.25 });
     }
-    else if ( isOutOfBounds && !gameover && !start && ( returnX === pX ) && ( returnY === pY ) ) {
+    else if ( isOutOfBounds && !gameover && !start && !runComplete && ( returnX === pX ) && ( returnY === pY ) ) {
         isOutOfBounds = false;
         PS.fade( returnX, returnY, 0 );
         PS.color( returnX, returnY, PLAYER_COLOR );
@@ -2376,7 +2404,7 @@ PS.enter = function ( x, y, data, options ) {
         PS.glyph(exitX, exitY, "");
         PS.glyphColor(exitX, exitY, PS.COLOR_BLACK);
     }
-    else if ( start && ( pX === startX ) && ( pY === startY ) ) {
+    else if ( start && ( pX === startX ) && ( pY === startY ) && !runComplete) {
         PS.fade(PS.ALL, PS.ALL, 0);
         gameover = false;
         start = false;
