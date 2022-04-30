@@ -76,7 +76,7 @@ let blood = [];
 let portalOpened = false;
 let usedDoor, usedDoor2, usedDoor3, usedDoor4 = false;
 let invis = false;
-let trigun = false;
+let trigun = true;
 let firstStart = true;
 let finalLevel = false;
 let runComplete = false;
@@ -486,7 +486,7 @@ let projectile3 = {
                     PS.glyph(projectile.x, projectile.y, "");
                     break;
                 }
-                else if(trigun && ( enemies[ i ].x === projectile2.x && enemies[ i ].y === projectile2.y )){
+                if( enemies[ i ].x === projectile2.x && enemies[ i ].y === projectile2.y ){
                     enemyNum = i;
                     projectile2.x = 0;
                     projectile2.y = 0;
@@ -495,7 +495,8 @@ let projectile3 = {
                     PS.glyph(projectile2.x, projectile2.y, "");
                     break;
                 }
-                else if(trigun && ( enemies[ i ].x === projectile3.x && enemies[ i ].y === projectile3.y )){
+                if( enemies[ i ].x === projectile3.x && enemies[ i ].y === projectile3.y ){
+                    enemyNum = i;
                     projectile3.x = 0;
                     projectile3.y = 0;
                     projectile3.destroyed = true;
@@ -505,7 +506,7 @@ let projectile3 = {
                 }
                 i++
             }
-            if( enemies[enemyNum].shield <= 0 ){
+            if( enemies[enemyNum].shield <= 0 && enemies.length > 0) {
                 this.alienDeath();
                 enemies[ enemyNum ].destroyed = true;
                 if(level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))){
@@ -573,6 +574,8 @@ let projectile3 = {
         },
 
         GameOver(type) {
+            trigun = false;
+            shieldStrength = 0;
             let bloodSplat;
             deathX = pX;
             deathY = pY;
@@ -772,6 +775,12 @@ let projectile3 = {
                     PS.glyph(projectile.x, projectile.y, "");
                     PS.glyph(projectile2.x, projectile2.y, "");
                     PS.glyph(projectile3.x, projectile3.y, "");
+                    projectile.x = 0;
+                    projectile.y = 0;
+                    projectile2.x = 0;
+                    projectile2.y = 0;
+                    projectile3.x = 0;
+                    projectile3.y = 0;
                 }
 
         },
@@ -2117,7 +2126,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 4;
+    level = 1;
     shieldStrength = 0;
     Game.startScreen();
 
