@@ -78,6 +78,7 @@ let usedDoor, usedDoor2, usedDoor3, usedDoor4 = false;
 let invis = false;
 let trigun = false;
 let firstStart = true;
+let finalLevel = false;
 
 let rgb;
 let xMarker;
@@ -135,6 +136,11 @@ let projectile3 = {
     let boundsCount = 20;
     let startCount = 20;
     let portalCount = 20;
+    let finalCount = 300;
+    let spotNum = 196
+    let lavaX;
+    let lavaY;
+    let chosenSpot = false
 
     let wentX = false;
     let wentY = false;
@@ -363,6 +369,45 @@ let projectile3 = {
         }
         else if (!invis){
             invisCount = 500;
+        }
+        if(finalLevel &&  !isOutOfBounds && !gameover && !start){
+            if(finalCount === 290){
+                while(!chosenSpot){
+                    lavaX = PS.random(WIDTH-1);
+                    lavaY = PS.random(HEIGHT-1);
+                    if(PS.data(lavaX, lavaY) !== LAVA_COLOR){
+                        chosenSpot = true;
+                        spotNum += 1;
+                    }
+                    else if( spotNum === 196 ){
+                        chosenSpot = true;
+                    }
+                }
+                PS.bgColor(lavaX, lavaY, PS.COLOR_YELLOW);
+                PS.color(lavaX, lavaY, PS.COLOR_YELLOW);
+            }
+            else if(finalCount === 240){
+                PS.bgColor(lavaX, lavaY, PS.data(lavaX, lavaY));
+                PS.color(lavaX, lavaY, PS.data(lavaX, lavaY));
+            }
+            else if(finalCount === 180){
+                PS.bgColor(lavaX, lavaY, PS.COLOR_YELLOW);
+                PS.color(lavaX, lavaY, PS.COLOR_YELLOW);
+            }
+            else if(finalCount === 120){
+                PS.bgColor(lavaX, lavaY, PS.data(lavaX, lavaY));
+                PS.color(lavaX, lavaY, PS.data(lavaX, lavaY));
+            }
+            else if(finalCount === 60){
+                PS.bgColor(lavaX, lavaY, PS.COLOR_YELLOW);
+                PS.color(lavaX, lavaY, PS.COLOR_YELLOW);
+            }
+            else if(finalCount === 0){
+                Game.createBlock(0, 0, lavaX, lavaY, LAVA_COLOR);
+                chosenSpot = false;
+                finalCount = 300;
+            }
+            finalCount -= 1;
         }
     };
 
