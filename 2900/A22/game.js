@@ -48,7 +48,7 @@ const LAVA_ENEMY = 0xEA7401;
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY ];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
-const DOOR_COLOR = PS.COLOR_GRAY_DARK;
+const DOOR_COLOR = PS.COLOR_GRAY_LIGHT;
 const E_SHIELD_COLOR = 0x04d9ff;
 const ALTAR_COLOR_1 = 0x911717
 const ALTAR_COLOR_2 = 0xc62828
@@ -2117,7 +2117,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 4;
     shieldStrength = 0;
     Game.startScreen();
 
