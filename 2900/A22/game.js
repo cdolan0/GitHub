@@ -2220,6 +2220,31 @@ let projectile3 = {
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
                 }
             }
+            if ( level == 14 ) {
+                //finalLevel = true;
+                room = 0;
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                startX = 7;
+                startY = 12;
+                portalX = 7;
+                portalY = 7;
+                portalRoom = 0;
+                this.makeFloor( 115, 26, 26, 20, 0, 0, WIDTH, HEIGHT );
+
+                //Inner Walls
+                this.createBlock( 2, 0, 6, 11, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 3, 6, PS.COLOR_BLACK );
+                this.createBlock( 0, 2, 11, 6, PS.COLOR_BLACK );
+
+                //Outer Walls
+                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+            }
             this.drawBlood();
             PS.gridColor(0xb4c4cc);
         }
@@ -2230,7 +2255,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 13;
+    level = 14;
     shieldStrength = 0;
     Game.startScreen();
 
