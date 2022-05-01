@@ -2320,11 +2320,9 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-<<<<<<< Updated upstream
-    level = 14;
-=======
+
     level = 1;
->>>>>>> Stashed changes
+
     shieldStrength = 0;
     Game.startScreen();
 
