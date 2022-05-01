@@ -32,8 +32,9 @@
 
 const WIDTH = 15;
 const HEIGHT = 15;
-const HIDDEN_DOOR_COLOR = 0x313639;
+const HIDDEN_DOOR_COLOR = 0x030101;
 const PLAYER_COLOR = 0x238fe6;
+const REGEN_COLOR = 0x238fe5;
 const LAVA_COLOR = 0xd53e00;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
@@ -46,7 +47,7 @@ const MEGA_ENEMY = 0x014421;
 const LAVA_ENEMY = 0xEA7401;
 // 0x7DE339
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY ];
-const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR ];
+const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_LIGHT;
 const E_SHIELD_COLOR = 0x04d9ff;
@@ -76,6 +77,7 @@ let blood = [];
 let portalOpened = false;
 let usedDoor, usedDoor2, usedDoor3, usedDoor4 = false;
 let invis = false;
+let regen = false;
 let trigun = false;
 let firstStart = true;
 let finalLevel = false;
@@ -143,6 +145,7 @@ let projectile3 = {
     let lavaY;
     let chosenSpot = false
     let finishCount = 180;
+    let regenCount = 300;
 
     let bloodLength = 0;
     let bloodCount = 30;
@@ -228,10 +231,10 @@ let projectile3 = {
             if(bloodCount == 0 && bloodLength < blood.length){
                 bloodCount = 30;
                 if(blood[bloodLength].alien){
-                    Game.makeBlood(blood[bloodLength].x, blood[bloodLength].y, 190, 117, 202, 40);
+                    Game.makeBloodF(blood[bloodLength].x, blood[bloodLength].y, 190, 117, 202, 40);
                 }
                 else{
-                    Game.makeBlood(blood[bloodLength].x, blood[bloodLength].y, 220, 20, 60, 10);
+                    Game.makeBloodF(blood[bloodLength].x, blood[bloodLength].y, 220, 20, 60, 10);
                 }
                 bloodLength += 1;
             }
@@ -409,6 +412,16 @@ let projectile3 = {
         }
         else if (!invis){
             invisCount = 500;
+        }
+        if(regen && shieldStrength === 0){
+            regenCount -= 1;
+            if(regenCount === 0){
+                shieldStrength = 1
+                PS.border(pX, pY, shieldStrength);
+                PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
+                PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.10 });
+                regenCount = 300;
+            }
         }
         if(finalLevel &&  !isOutOfBounds && !gameover && !start){
             if(finalCount === 290){
@@ -740,7 +753,9 @@ let projectile3 = {
                     }
                     PS.glyph(pastProjX, pastProjY, "");
                     PS.glyphColor(pastProjX, pastProjY, PS.COLOR_BLACK);
-                    if (SHIELD_COLOR == PS.borderColor(projectile.x, projectile.y)) {
+                    target = PS.data(projectile.x, projectile.y);
+                    targetColor = PS.color(projectile.x, projectile.y);
+                    if (SHIELD_COLOR == PS.borderColor(projectile.x, projectile.y) || targetColor == REGEN_COLOR) {
                         Game.triggerEgg(projectile.x, projectile.y);
                     }
                     else {
@@ -748,8 +763,7 @@ let projectile3 = {
                         PS.glyphColor(projectile.x, projectile.y, PS.COLOR_RED);
                     }
 
-                    target = PS.data(projectile.x, projectile.y);
-                    targetColor = PS.color(projectile.x, projectile.y);
+
                     // PS.debug(targetColor);
 
 
@@ -1057,6 +1071,22 @@ let projectile3 = {
                         PS.audioPlay ( "Shield_Pickup", { volume: 0.25, path: "GameAudio/" });
                         eastereggs[i].used = true;
                     }
+                    else if( eastereggs[i].type == REGEN_COLOR && !eastereggs[i].triggered ){
+                        //PS.debug("Filled Egg ");
+                        this.alienSplatt();
+                        this.makeBlood(eastereggs[i].x, eastereggs[i].y, 220, 20, 60, 10);
+                        PS.audioPlay ( "Shield_Pickup", { volume: 0.1, path: "GameAudio/" });
+                        PS.radius(eastereggs[i].x, eastereggs[i].y, 0);
+                        shieldStrength += 1;
+                        regen = true;
+                        PS.color( pX, pY, PLAYER_COLOR );
+                        PS.border(pX, pY, shieldStrength);
+                        PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
+                        PS.bgColor( pX, pY, PS.data( pX, pY ) );
+                        PS.radius( pX, pY, 50 );
+                        eastereggs[i].triggered = true;
+                        eastereggs[i].used = true;
+                    }
                     else if( eastereggs[i].type == INVIS_COLOR){
                         invis = true;
                         PS.alpha(pX, pY, 100);
@@ -1087,6 +1117,16 @@ let projectile3 = {
                             PS.color(eastereggs[i].x, eastereggs[i].y, eastereggs[i].type);
                             PS.border(eastereggs[i].x, eastereggs[i].y, 0);
                             PS.borderColor(eastereggs[i].x, eastereggs[i].y, PS.COLOR_BLACK);
+                        }
+                    }
+                    else if(eastereggs[i].type == REGEN_COLOR){
+                        PS.radius(eastereggs[i].x, eastereggs[i].y, 50);
+                        PS.color(eastereggs[i].x, eastereggs[i].y, eastereggs[i].type);
+                        if(eastereggs[i].triggered){
+                            this.makeBlood(blood[i].x, blood[i].y, 220, 20, 60, 10);
+                            PS.radius(eastereggs[i].x, eastereggs[i].y, 0);
+                            PS.glyph(eastereggs[i].x, eastereggs[i].y, "*");
+                            PS.glphyColor(eastereggs[i].x, eastereggs[i].y, PS.COLOR_YELLOW);
                         }
                     }
                     else{
@@ -1190,7 +1230,7 @@ let projectile3 = {
         },
 
         changeRooms(x, y){
-            if(level <= 8){
+            if(level <= 8 || level === 13){
                 if(room == 0){
                     room = 1;
                 }
@@ -1254,11 +1294,12 @@ let projectile3 = {
                         usedDoor3 = false;
                     }
                 }
+
                 else{
                     room = 0;
                 }
             }
-            //PS.debug(room);
+         //   PS.debug(room);
             Game.startScreen();
         },
 
@@ -1357,8 +1398,7 @@ let projectile3 = {
                 start = true;
                 PS.audioPlay ( "Victory", { path: "GameAudio/", volume: 0.25 });
             }*/
-            if( level == 1){
-                room = 0;
+            if( level == 1) {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
@@ -1368,18 +1408,43 @@ let projectile3 = {
                 portalY = startY;
                 portalRoom = 0;
                // PS.fade(PS.ALL, PS.ALL, 10);
+                if(enemies.length == 0 && !portalOpened){
+                    this.makeEnemy(7, 3, DEFAULT_ENEMY, 0);
+                }
+                if(eastereggs.length == 0){
+                    this.makeEasterEgg(6, 8, REGEN_COLOR, 1);
+                }
+
                 this.makeFloor( 180, 198, 205, 20, 0, 0, WIDTH, HEIGHT );
-                //Enemies
-                this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
+                if(room === 0) {
+                    if (usedDoor) {
+                        startX = 7;
+                        startY = 14;
+                    } else {
+                        startX = 7;
+                        startY = 11;
+                    }
 
-                //Inner Walls
-                this.createBlock( 6, 0, 4, 7, PS.COLOR_BLACK );
 
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    //Inner Walls
+                    this.createBlock(6, 0, 4, 7, PS.COLOR_BLACK);
+
+                    //Outer Walls
+                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+
+                    this.createBlock(0, 0, 7, 14, HIDDEN_DOOR_COLOR);
+                }
+                else if( room === 1 ){
+                    startX = 7;
+                    startY = 0;
+                    this.createBlock(WIDTH-1,HEIGHT-1, 0, 0, PS.COLOR_BLACK);
+                    this.makeFloor(169,169,169,20,5,5,3,5);
+                    this.makeFloor(169,169,169,20,7,1,1,4);
+                    this.createBlock(0, 0, 7, 0, DOOR_COLOR);
+                }
 
             }
             if( level == 2){
@@ -2255,7 +2320,11 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
+<<<<<<< Updated upstream
     level = 14;
+=======
+    level = 1;
+>>>>>>> Stashed changes
     shieldStrength = 0;
     Game.startScreen();
 
@@ -2434,7 +2503,7 @@ PS.enter = function ( x, y, data, options ) {
     pX = x;
     pY = y;
     if ( !isOutOfBounds && !gameover && !start && !runComplete &&
-        !OBSTACLES.includes( nextBead ) ) {
+        !OBSTACLES.includes( nextBead ) && nextBead != REGEN_COLOR) {
         PS.color( pX, pY, PLAYER_COLOR );
         PS.border(pX, pY, shieldStrength);
         PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
@@ -2504,7 +2573,8 @@ PS.enter = function ( x, y, data, options ) {
             Game.deleteAllEggs();
             Game.startScreen();
         }
-        if( nextBead == DOOR_COLOR){
+        if( nextBead === (DOOR_COLOR) || nextBead === HIDDEN_DOOR_COLOR){
+         //   PS.debug("Entered Door");
             Game.changeRooms(pX, pY);
         }
     }
