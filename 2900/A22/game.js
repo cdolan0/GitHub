@@ -2120,6 +2120,106 @@ let projectile3 = {
                 this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
 
             }
+            if ( level == 13 ) {
+                PS.gridSize( WIDTH, HEIGHT );
+                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+                PS.border( PS.ALL, PS.ALL, 0 );
+                this.makeFloor( 105, 69, 28, 20, 0, 0, WIDTH, HEIGHT );
+                if(enemies.length == 0 && !portalOpened){
+                    this.makeEnemy( 11, 3, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 12, 9, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 7, 1, LAVA_ENEMY, 0 );
+                    this.makeEnemy( 10, 12, LAVA_ENEMY, 1 );
+                    this.makeEnemy( 12, 9, LAVA_ENEMY, 1 );
+                    this.makeEnemy( 12, 5, LAVA_ENEMY, 1 );
+                    this.makeEnemy( 10, 2, LAVA_ENEMY, 1 );
+                    this.makeEnemy( 7, 1, LAVA_ENEMY, 1 );
+                }
+                portalX = 7;
+                portalY = 7;
+                portalRoom = 1;
+                if(room == 0){
+                    if(usedDoor){
+                        startX = 14;
+                        startY = 7;
+                    }
+                    else {
+                        startX = 2;
+                        startY = 7;
+                    }
+
+                    //Inner Walls
+                    this.createBlock( 1, 1, 4, 3, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 9, 4, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 10, 5, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 8, 10, PS.COLOR_BLACK );
+                    this.createBlock( 0, 1, 6, 7, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 3, 9, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 4, 10, PS.COLOR_BLACK );
+                    this.createBlock( 1, 0, 1, 1, PS.COLOR_BLACK );
+                    this.createBlock( 2, 0, 11, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 13, 2, PS.COLOR_BLACK );
+                    this.createBlock( 1, 0, 12, 13, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 13, 12, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 1, 13, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 3, 4, LAVA_COLOR );
+                    this.createBlock( 0, 0, 5, 3, LAVA_COLOR );
+                    this.createBlock( 0, 0, 5, 8, LAVA_COLOR );
+                    this.createBlock( 0, 0, 3, 10, LAVA_COLOR );
+                    this.createBlock( 0, 0, 4, 11, LAVA_COLOR );
+                    this.createBlock( 0, 0, 7, 11, LAVA_COLOR );
+                    this.createBlock( 0, 0, 8, 10, LAVA_COLOR );
+                    this.createBlock( 0, 0, 9, 12, LAVA_COLOR );
+                    this.createBlock( 1, 0, 5, 5, LAVA_COLOR );
+                    this.createBlock( 0, 0, 9, 4, LAVA_COLOR );
+                    this.createBlock( 0, 0, 10, 6, LAVA_COLOR );
+                    this.createBlock( 0, 0, 11, 5, LAVA_COLOR );
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    //Door
+                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                }
+
+                else if(room == 1){
+                    startX = 0;
+                    startY = 7;
+
+                    //Inner Walls
+                    this.createBlock( 0, 0, 3, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 5, 3, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 7, 6, LAVA_COLOR );
+                    this.createBlock( 0, 0, 8, 9, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 4, 8, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 12, 3, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 11, 1, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 13, 12, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 5, 11, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 1, 9, LAVA_COLOR );
+                    this.createBlock( 0, 0, 1, 3, LAVA_COLOR );
+                    this.createBlock( 0, 0, 3, 5, LAVA_COLOR );
+                    this.createBlock( 0, 0, 2, 12, LAVA_COLOR );
+                    this.createBlock( 0, 0, 8, 2, LAVA_COLOR );
+                    this.createBlock( 0, 0, 10, 4, LAVA_COLOR );
+                    this.createBlock( 0, 0, 12, 7, LAVA_COLOR );
+                    this.createBlock( 0, 0, 7, 13, LAVA_COLOR );
+                    this.createBlock( 0, 0, 10, 10, LAVA_COLOR );
+                    this.createBlock( 0, 0, 9, 7, PS.COLOR_BLACK );
+
+                    //Outer Walls
+                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
+                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+
+                    //Door
+                    this.createBlock(0, 0, 0, 7, DOOR_COLOR);
+                }
+            }
             this.drawBlood();
             PS.gridColor(0xb4c4cc);
         }
@@ -2130,7 +2230,7 @@ let projectile3 = {
 
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
-    level = 1;
+    level = 13;
     shieldStrength = 0;
     Game.startScreen();
 
