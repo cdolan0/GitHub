@@ -402,7 +402,7 @@ let projectile3 = {
             }
             gameoverCounter -= 1;
         }
-        if(invis && !isOutOfBounds){
+        if(invis && !isOutOfBounds && !gameover && !start){
             invisCount -= 1;
             if(invisCount <= 0){
                 invis = false;
@@ -413,7 +413,7 @@ let projectile3 = {
         else if (!invis){
             invisCount = 500;
         }
-        if(regen && shieldStrength === 0){
+        if(regen && shieldStrength === 0 && !isOutOfBounds && !gameover && !start){
             regenCount -= 1;
             if(regenCount === 0){
                 shieldStrength = 1
