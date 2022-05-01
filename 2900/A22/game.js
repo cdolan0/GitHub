@@ -213,7 +213,7 @@ let projectile3 = {
         }
         hitting = false;
         if ( length == 0 && !portalOpened && !gameover && !start){
-           if(level === 14 && !runComplete){
+           if(level === 15 && !runComplete){
                PS.fade(PS.ALL, PS.ALL, 30);
                 PS.audioPlay ( "Victory", { volume: 0.25, path: "GameAudio/" });
                 runComplete = true;
@@ -2221,7 +2221,7 @@ let projectile3 = {
                 }
             }
             if ( level == 14 ) {
-                //finalLevel = true;
+                finalLevel = true;
                 room = 0;
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
