@@ -220,7 +220,7 @@ let projectile3 = {
         }
         hitting = false;
         if ( length == 0 && !portalOpened && !gameover && !start){
-           if(level === 15 && !runComplete){
+           if(level === 14 && !runComplete){
                PS.fade(PS.ALL, PS.ALL, 30);
                 PS.audioPlay ( "Victory", { volume: 0.25, path: "GameAudio/" });
                 runComplete = true;
