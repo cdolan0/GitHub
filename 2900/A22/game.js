@@ -407,14 +407,12 @@ let projectile3 = {
                 }
             }
             else if(lavaDeath){
-                if( gameoverCounter == 360 ){
                     PS.border(deathX, deathY, 0);
                     PS.radius(deathX, deathY, 50);
                     PS.bgColor(deathX, deathY, LAVA_COLOR);
                     PS.fade(deathX, deathY, 200);
                     PS.color(deathX, deathY, LAVA_COLOR);
-                }
-                else if ( gameoverCounter == 0 ){
+                if ( gameoverCounter == 0 ){
                     gameover = false;
                     lavaDeath = false;
                     gameoverCounter = 360;
@@ -2574,7 +2572,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 1;
+    level = 11;
 
     shieldStrength = 0;
     Game.startScreen();
