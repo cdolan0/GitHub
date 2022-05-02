@@ -44,8 +44,8 @@ const OBSTACLES = [ PS.COLOR_BLACK, LAVA_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const MEGA_ENEMY = 0x014421;
-const FINAL_BOSS_1 = 0x030102;
-const FINAL_BOSS_2 = PS.COLOR_WHITE;
+const FINAL_BOSS_1 = 0x030110;
+const FINAL_BOSS_2 = PS.COLOR_WHITE;;
 const LAVA_ENEMY = 0xEA7401;
 // 0x7DE339
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
@@ -606,6 +606,8 @@ let projectile3 = {
         },
 
         GameOver(type) {
+            room = 0;
+            usedDoor = false;
             trigun = false;
             shieldStrength = 0;
             let bloodSplat;
@@ -1298,6 +1300,7 @@ let projectile3 = {
             else if( level == 9){
                 if(room == 0){
                     room = 1;
+                    usedDoor = false;
                 }
                 else if(room == 1){
                     if(x == 0){
@@ -1444,6 +1447,7 @@ let projectile3 = {
         },
 
         makeLevel() {
+            finalLevel = false;
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
@@ -1835,7 +1839,7 @@ let projectile3 = {
                     this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 3, 11, DEFAULT_ENEMY, 1 );
-                    this.makeEnemy( 7, 11, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 7, 11, MEGA_ENEMY, 1 );
                     this.makeEnemy( 11, 11, DEFAULT_ENEMY, 1 );
                 }
                 portalX = 7;
@@ -2247,7 +2251,7 @@ let projectile3 = {
                 PS.border( PS.ALL, PS.ALL, 0 );
                 this.makeFloor( 105, 69, 28, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 11, 3, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 11, 3, MEGA_ENEMY, 0 );
                     this.makeEnemy( 12, 9, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 7, 1, LAVA_ENEMY, 0 );
                     this.makeEnemy( 10, 12, LAVA_ENEMY, 1 );
@@ -2371,7 +2375,16 @@ let projectile3 = {
 
             }
             this.drawBlood();
-            PS.gridColor(0xb4c4cc);
+            if(level <= 6){
+                PS.gridColor(0xb4c4cc);
+            }
+            else if (level >= 7 && level < 10){
+                PS.gridColor(0xd89f62);
+            }
+            else{
+                PS.gridColor(0x934338);
+            }
+
         }
 
 
