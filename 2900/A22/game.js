@@ -28,7 +28,7 @@
 
 //SOUNDS FOUND ON FREESOUND.ORG BY:
 //spookymodem, Sonicfreak, Darsycho, outroelison, StormwaveAudio, CGEffex, steveygos93, Breviceps, Blockfighter298,
-// SlykMrByches
+// SlykMrByches, roboroo, jacobalcook, NicknameLarry, distillerystudio
 
 const WIDTH = 15;
 const HEIGHT = 15;
@@ -94,6 +94,10 @@ let yMarker;
 let portalX;
 let portalY;
 let portalRoom;
+
+let music = "";
+let space = "";
+let planet = "";
 
 let projectile = {
     projDir : "right",
@@ -171,6 +175,7 @@ let projectile3 = {
     let diagonalChoice;
     let alienDeath = false;
     let lavaDeath = false;
+
 
     const tick = function () {
         length = enemies.length;
@@ -281,6 +286,8 @@ let projectile3 = {
             if(alienDeath) {
                 PS.bgColor(deathX, deathY, PS.COLOR_RED);
                 if (gameoverCounter == 300) {
+                    PS.audioFade ( space, PS.CURRENT, 0, 500);
+                    PS.audioFade ( planet, PS.CURRENT, 0, 500);
                     if (Math.floor(Math.random() * 2) == 1) {
                         if (!OBSTACLES.includes(PS.data(deathX - 1, deathY))) {
                             PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
@@ -390,6 +397,7 @@ let projectile3 = {
                     PS.alpha(deathX + 1, deathY + 1, 255);
                 }
                 if (gameoverCounter == 0) {
+                    PS.audioFade ( space, PS.CURRENT, 0.25, 30);
                     gameover = false;
                     alienDeath = false;
                     wentX = false;
@@ -477,7 +485,7 @@ let projectile3 = {
             }
             spawnerCount -= 1;
         }
-        if(finalLevel && !isOutOfBounds && !gameover && !start){
+        if(finalLevel && !isOutOfBounds && !gameover && !start && !runComplete){
             if(finalCount === 290){
                 while(!chosenSpot){
                     lavaX = PS.random(WIDTH-1);
@@ -511,6 +519,7 @@ let projectile3 = {
             }
             else if(finalCount === 0){
                 Game.createBlock(0, 0, lavaX, lavaY, LAVA_COLOR);
+                Game.lavaSizzle();
                 chosenSpot = false;
                 finalCount = 300;
             }
@@ -575,6 +584,7 @@ let projectile3 = {
             }
             if( enemies[enemyNum].shield <= 0 && enemies.length > 0 && !enemies[enemyNum].invuln) {
                 if(enemies[enemyNum].type === FINAL_BOSS_1){
+                    PS.audioPlay ( "BossChange", { path: "GameAudio/", volume: 0.25 });
                     enemies[enemyNum].shield = 12;
                     enemies[enemyNum].type = FINAL_BOSS_2;
                     PS.color(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].type);
@@ -582,7 +592,12 @@ let projectile3 = {
                     PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
                 }
                 else {
-                    this.alienDeath();
+                    if( enemies[enemyNum].type === FINAL_BOSS_2){
+                        PS.audioPlay ( "BossDeath", { path: "GameAudio/", volume: 0.25 });
+                    }
+                    else{
+                        this.alienDeath();
+                    }
                     enemies[enemyNum].destroyed = true;
                     if (level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))) {
                         this.trigunAltar();
@@ -610,6 +625,9 @@ let projectile3 = {
                 }
                 PS.audioPlay ( "EnemyShield", { path: "GameAudio/", volume: 0.25 });
                 PS.border( enemies[ enemyNum ].x, enemies[ enemyNum ].y, enemies[ enemyNum ].shield);
+            }
+            else if(enemies[enemyNum].invuln){
+                PS.audioPlay ( "Invuln", { path: "GameAudio/", volume: 0.25 });
             }
 
             PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
@@ -1507,6 +1525,17 @@ let projectile3 = {
                 PS.audioPlay("AlienSplatt2", {volume: 0.15, path: "GameAudio/"});
             } else if (randomAlien == 3) {
                 PS.audioPlay("AlienSplatt3", {volume: 0.15, path: "GameAudio/"});
+            }
+        },
+
+        lavaSizzle() {
+            var randomLava = PS.random(3);
+            if (randomLava == 1) {
+                PS.audioPlay("Lava1", {volume: 0.25, path: "GameAudio/"});
+            } else if (randomLava == 2) {
+                PS.audioPlay("Lava2", {volume: 0.25, path: "GameAudio/"});
+            } else if (randomLava == 3) {
+                PS.audioPlay("Lava3", {volume: 0.25, path: "GameAudio/"});
             }
         },
 
@@ -2470,6 +2499,20 @@ let projectile3 = {
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
 
+    const musicLoader = function ( result ) {
+        music = result.channel; // save ID
+    };
+    const spaceLoader = function ( result ) {
+            space = result.channel; // save ID
+            //PS.debug("Ambient Channel: " + ambient);
+            PS.audioPlayChannel( space, {loop: true, volume: 0.20});
+           // PS.debug("Space Channel: " + space);
+    };
+    const planetLoader = function ( result ) {
+        planet = result.channel;
+        PS.audioPlayChannel ( planet, { volume: 0, loop: true});
+    };
+
     level = 1;
 
     shieldStrength = 0;
@@ -2511,16 +2554,26 @@ PS.init = function ( system, options ) {
     PS.audioLoad ( "Victory", { path: "GameAudio/" });
     PS.audioLoad ( "Transform", { path: "GameAudio/" });
 
+    PS.audioLoad ( "Lava1", { path: "GameAudio/" });
+    PS.audioLoad ( "Lava2", { path: "GameAudio/" });
+    PS.audioLoad ( "Lava3", { path: "GameAudio/" });
+
+    PS.audioLoad ( "BossChange", { path: "GameAudio/" });
+    PS.audioLoad ( "BossDeath", { path: "GameAudio/" });
+    PS.audioLoad ( "Invuln", { path: "GameAudio/" });
+
     PS.audioLoad ( "Enemies_Defeated", { path: "GameAudio/" });
     PS.audioLoad ( "GameOver", { path: "GameAudio/" });
     PS.audioLoad ( "Invisibility", { path: "GameAudio/" });
     PS.audioLoad ( "Trigun_Pickup", { path: "GameAudio/" });
     PS.audioLoad ( "Shield_Pickup", { path: "GameAudio/" });
-    PS.audioLoad ( "Space_Ambient", { path: "GameAudio/" });
 
-    PS.audioPlay( "Space_Ambient", {path: "GameAudio/", loop: true, volume: 0.20});
+    PS.audioLoad ( "Space_Ambient", { path: "GameAudio/", onLoad: spaceLoader});
+    PS.audioLoad ( "Planet_Ambient", { path: "GameAudio/", onLoad: planetLoader});
 
 };
+
+
 
 /*
  PS.touch ( x, y, data, options )
@@ -2717,6 +2770,11 @@ PS.enter = function ( x, y, data, options ) {
             room = 0;
             usedDoor = false;
             PS.audioPlay ( "StepPortal", { path: "GameAudio/", volume: 0.25});
+            if(level === 7){
+                PS.audioFade ( space, PS.CURRENT, 0, 30);
+                PS.audioFade ( planet, PS.CURRENT, 0.25, 30);
+            }
+
             Game.deleteAllEggs();
             Game.startScreen();
         }
