@@ -2572,7 +2572,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 11;
+    level = 1;
 
     shieldStrength = 0;
     Game.startScreen();
