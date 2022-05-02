@@ -32,7 +32,7 @@
 
 const WIDTH = 15;
 const HEIGHT = 15;
-const HIDDEN_DOOR_COLOR = 0x030101;
+const HIDDEN_DOOR_COLOR = 0x030102;
 const PLAYER_COLOR = 0x238fe6;
 const REGEN_COLOR = 0x238fe5;
 const LAVA_COLOR = 0xd53e00;
@@ -44,17 +44,20 @@ const OBSTACLES = [ PS.COLOR_BLACK, LAVA_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const MEGA_ENEMY = 0x014421;
+const FINAL_BOSS_1 = 0x030102;
+const FINAL_BOSS_2 = PS.COLOR_WHITE;
 const LAVA_ENEMY = 0xEA7401;
 // 0x7DE339
-const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY ];
+const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_LIGHT;
 const E_SHIELD_COLOR = 0x04d9ff;
-const ALTAR_COLOR_1 = 0x911717
-const ALTAR_COLOR_2 = 0xc62828
-const ALTAR_COLOR_3 = 0xd74e4e
-const ALTAR_COLOR_4 = 0xe86060
+const FINAL_SHIELD = 0x8A0303;
+const ALTAR_COLOR_1 = 0x911717;
+const ALTAR_COLOR_2 = 0xc62828;
+const ALTAR_COLOR_3 = 0xd74e4e;
+const ALTAR_COLOR_4 = 0xe86060;
 const ALTAR_COLORS = [ALTAR_COLOR_1, ALTAR_COLOR_2, ALTAR_COLOR_3, ALTAR_COLOR_4];
 
 let Game;
@@ -519,26 +522,40 @@ let projectile3 = {
                 }
                 i++
             }
-            if( enemies[enemyNum].shield <= 0 && enemies.length > 0) {
-                this.alienDeath();
-                enemies[ enemyNum ].destroyed = true;
-                if(level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))){
-                    this.trigunAltar();
+            if( enemies[enemyNum].shield <= 0 && enemies.length > 0 && !enemies[enemyNum].invuln) {
+                if(enemies[enemyNum].type === FINAL_BOSS_1){
+                    enemies[enemyNum].shield = 30;
+                    enemies[enemyNum].type = FINAL_BOSS_2;
+                    PS.color(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].type);
+                    PS.border(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].shield);
+                    PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
                 }
-                this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
-                this.alienSplatt();
-                bloodSplat = {
-                    x: enemies[i].x,
-                    y: enemies[i].y,
-                    room: room,
-                    level: level,
-                    alien: true
+                else {
+                    this.alienDeath();
+                    enemies[enemyNum].destroyed = true;
+                    if (level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))) {
+                        this.trigunAltar();
+                    }
+                    this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                    this.alienSplatt();
+                    bloodSplat = {
+                        x: enemies[i].x,
+                        y: enemies[i].y,
+                        room: room,
+                        level: level,
+                        alien: true
+                    }
+                    blood.push(bloodSplat);
+                    i -= 1;
                 }
-                blood.push(bloodSplat);
-                i -= 1;
             }
-            else if( enemies[enemyNum].shield > 0 ){
-                enemies[enemyNum].shield -= 3;
+            else if( enemies[enemyNum].shield > 0 && !enemies[enemyNum].invuln){
+                if(enemies[enemyNum].type === FINAL_BOSS_1){
+                    enemies[enemyNum].shield -= 1;
+                }
+                else{
+                    enemies[enemyNum].shield -= 3;
+                }
                 PS.audioPlay ( "EnemyShield", { path: "GameAudio/", volume: 0.25 });
                 PS.border( enemies[ enemyNum ].x, enemies[ enemyNum ].y, enemies[ enemyNum ].shield);
             }
@@ -827,6 +844,22 @@ let projectile3 = {
             while ( i < length && !invis ) {
                 if ( !gameover && !enemies[i].destroyed ) {
                     if(enemies[i].room == room) {
+                        if(enemies[i].type === FINAL_BOSS_1 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
+                            enemies[i].invuln = false;
+                            PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
+                        }
+                        else if(enemies[i].type === FINAL_BOSS_1 ){
+                            enemies[i].invuln = true;
+                            PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
+                        }
+                        if(enemies[i].type === FINAL_BOSS_2 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
+                            enemies[i].invuln = true;
+                            PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
+                        }
+                        else if(enemies[i].type === FINAL_BOSS_2 ){
+                            enemies[i].invuln = false;
+                            PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
+                        }
                         //PS.debug("moving enemy");
                         path = PS.line(enemies[i].x, enemies[i].y, pX, pY);
                         if (typeof path[0] != "undefined") {
@@ -980,6 +1013,22 @@ let projectile3 = {
                             }
                         }
                     }
+                    if(enemies[i].type === FINAL_BOSS_1 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
+                        enemies[i].invuln = false;
+                        PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
+                    }
+                    else if(enemies[i].type === FINAL_BOSS_1 ){
+                        enemies[i].invuln = true;
+                        PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
+                    }
+                    if(enemies[i].type === FINAL_BOSS_2 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
+                        enemies[i].invuln = true;
+                        PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
+                    }
+                    else if(enemies[i].type === FINAL_BOSS_2 ){
+                        enemies[i].invuln = false;
+                        PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
+                    }
                     i += 1;  // increment i here
                 }
                 else if ( enemies[ i ].destroyed ) {
@@ -1012,6 +1061,7 @@ let projectile3 = {
                     type : type,
                     destroyed : false,
                     room: Room,
+                    invuln: false,
                     shield: 0
                 };
                 if( enemy.type == SHIELDED_ENEMY ){
@@ -1019,6 +1069,10 @@ let projectile3 = {
                 }
                 else if( enemy.type == MEGA_ENEMY ){
                     enemy.shield = 9;
+                }
+                else if( enemy.type == FINAL_BOSS_1 || enemy.type == FINAL_BOSS_2){
+                    enemy.shield = 30;
+                    enemy.invuln = true;
                 }
                 enemies.push( enemy );
                 if( room == enemy.room ) {
@@ -2296,6 +2350,10 @@ let projectile3 = {
                 portalX = 7;
                 portalY = 7;
                 portalRoom = 0;
+                this.makeEnemy(7,3, FINAL_BOSS_1, 0);
+                this.makeEnemy(5,5, SHIELDED_ENEMY, 0);
+                this.makeEnemy(9,5, SHIELDED_ENEMY, 0);
+
                 this.makeFloor( 115, 26, 26, 20, 0, 0, WIDTH, HEIGHT );
 
                 //Inner Walls
@@ -2321,7 +2379,7 @@ let projectile3 = {
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
 
-    level = 1;
+    level = 14;
 
     shieldStrength = 0;
     Game.startScreen();
