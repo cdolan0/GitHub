@@ -47,8 +47,9 @@ const MEGA_ENEMY = 0x014421;
 const FINAL_BOSS_1 = 0x030110;
 const FINAL_BOSS_2 = PS.COLOR_WHITE;;
 const LAVA_ENEMY = 0xEA7401;
+const SPAWNER_ENEMY = 0x6a3893;
 // 0x7DE339
-const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
+const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, SPAWNER_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
 const LAVA_IGNORE = [LAVA_ENEMY, FINAL_BOSS_2];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
@@ -150,6 +151,14 @@ let projectile3 = {
     let chosenSpot = false
     let finishCount = 180;
     let regenCount = 300;
+
+    let spawner = false;
+    let spawnX;
+    let spawnY;
+    let spawningX;
+    let spawningY;
+    let spawnerCount = 300;
+    let spawnRoom;
 
     let bloodLength = 0;
     let bloodCount = 30;
@@ -427,7 +436,48 @@ let projectile3 = {
                 regenCount = 300;
             }
         }
-        if(finalLevel &&  !isOutOfBounds && !gameover && !start){
+        if(spawner && spawnRoom === room && !isOutOfBounds && !gameover && !start){
+            if(spawnerCount === 290){
+                while(!chosenSpot){
+                    spawningX = spawnX-1 + Math.floor(Math.random() * 3);
+                    spawningY = spawnY-1 + Math.floor(Math.random() * 3);
+                    if( !ENEMY_TYPES.includes(PS.color(spawningX, spawningY)) &&
+                        !OBSTACLES.includes(PS.color(spawningX, spawningY))){
+                        chosenSpot = true;
+                        spotNum += 1;
+                    }
+                    else if( spotNum === 196 ){
+                        chosenSpot = true;
+                    }
+                }
+                PS.bgColor(spawningX, spawningY, 0xc300ff);
+                PS.color(spawningX, spawningY, 0xc300ff);
+            }
+            else if(spawnerCount === 240){
+                PS.bgColor(spawningX, spawningY, PS.data(spawningX, spawningY));
+                PS.color(spawningX, spawningY, PS.data(spawningX, spawningY));
+            }
+            else if(spawnerCount === 180){
+                PS.bgColor(spawningX, spawningY, 0xc300ff);
+                PS.color(spawningX, spawningY, 0xc300ff);
+            }
+            else if(spawnerCount === 120){
+                PS.bgColor(spawningX, spawningY,PS.data(spawningX, spawningY));
+                PS.color(spawningX, spawningY, PS.data(spawningX, spawningY));
+            }
+            else if(spawnerCount === 60){
+                PS.bgColor(spawningX, spawningY, 0xc300ff);
+                PS.color(spawningX, spawningY, 0xc300ff);
+            }
+            else if(spawnerCount === 0){
+                PS.bgColor(spawningX, spawningY,PS.data(spawningX, spawningY));
+                Game.makeEnemy(spawningX, spawningY, DEFAULT_ENEMY, room);
+                chosenSpot = false;
+                spawnerCount = 300;
+            }
+            spawnerCount -= 1;
+        }
+        if(finalLevel && !isOutOfBounds && !gameover && !start){
             if(finalCount === 290){
                 while(!chosenSpot){
                     lavaX = PS.random(WIDTH-1);
@@ -847,7 +897,7 @@ let projectile3 = {
             let i = 0;
             while ( i < length && !invis ) {
                 if ( !gameover && !enemies[i].destroyed ) {
-                    if(enemies[i].room == room) {
+                    if(enemies[i].room == room && enemies[i].type !== SPAWNER_ENEMY) {
                         if(enemies[i].type === FINAL_BOSS_1 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
                             enemies[i].invuln = false;
                             PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
@@ -1017,6 +1067,12 @@ let projectile3 = {
                             }
                         }
                     }
+                    else if(enemies[i].type === SPAWNER_ENEMY){
+                        spawner = true;
+                        spawnRoom = enemies[i].room;
+                        spawnX = enemies[i].x;
+                        spawnY = enemies[i].y;
+                    }
                     if(enemies[i].type === FINAL_BOSS_1 && (Math.abs(enemies[i].x-pX) < 4 && Math.abs(enemies[i].y-pY) < 4)){
                         enemies[i].invuln = false;
                         PS.borderColor(enemies[i].x, enemies[i].y, E_SHIELD_COLOR);
@@ -1037,6 +1093,11 @@ let projectile3 = {
                 }
                 else if ( enemies[ i ].destroyed ) {
                     //this.createBlock(0, 0, enemies[i].x, enemies[i].y, 0xb19cd8);
+                    if(enemies[i].type === SPAWNER_ENEMY){
+                        spawner = false;
+                        spawnerCount = 300;
+                        PS.color(spawningX, spawningY, PS.data(spawningX, spawningY));
+                    }
                     PS.border( enemies[ i ].x, enemies[ i ].y, 0);
                     PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
                     enemies.splice( i, 1 );
@@ -1070,6 +1131,9 @@ let projectile3 = {
                 };
                 if( enemy.type == SHIELDED_ENEMY ){
                     enemy.shield = 3;
+                }
+                else if( enemy.type == SPAWNER_ENEMY ){
+                    enemy.shield = 6;
                 }
                 else if( enemy.type == MEGA_ENEMY ){
                     enemy.shield = 9;
