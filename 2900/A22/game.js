@@ -49,6 +49,7 @@ const FINAL_BOSS_2 = PS.COLOR_WHITE;
 const LAVA_ENEMY = 0xEA7401;
 // 0x7DE339
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
+const LAVA_IGNORE = [LAVA_ENEMY, FINAL_BOSS_2];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_LIGHT;
@@ -524,7 +525,7 @@ let projectile3 = {
             }
             if( enemies[enemyNum].shield <= 0 && enemies.length > 0 && !enemies[enemyNum].invuln) {
                 if(enemies[enemyNum].type === FINAL_BOSS_1){
-                    enemies[enemyNum].shield = 30;
+                    enemies[enemyNum].shield = 12;
                     enemies[enemyNum].type = FINAL_BOSS_2;
                     PS.color(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].type);
                     PS.border(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].shield);
@@ -550,8 +551,9 @@ let projectile3 = {
                 }
             }
             else if( enemies[enemyNum].shield > 0 && !enemies[enemyNum].invuln){
-                if(enemies[enemyNum].type === FINAL_BOSS_1){
-                    enemies[enemyNum].shield -= 1;
+                if(enemies[enemyNum].type === FINAL_BOSS_1 || enemies[enemyNum].type === FINAL_BOSS_2){
+                    enemies[enemyNum].shield -= 0.5;
+                   // PS.debug(enemies[enemyNum].shield);
                 }
                 else{
                     enemies[enemyNum].shield -= 3;
@@ -911,7 +913,7 @@ let projectile3 = {
 
                             if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
                                 && (!OBSTACLES.includes(nextBead) ||
-                                    ( enemies[i].type == LAVA_ENEMY && nextBead == LAVA_COLOR ) )
+                                    ( LAVA_IGNORE.includes(enemies[i].type) && nextBead == LAVA_COLOR ) )
                                 && !POWERUPS.includes(nextColor)) {
                                 //  PS.debug("Enemy " + i + " not stuck ");
                                 PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
@@ -959,7 +961,7 @@ let projectile3 = {
                                     nextColor = PS.color(nextX, nextY);
 
                                     if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
-                                        && (!OBSTACLES.includes(nextBead) || ( enemies[i].type === LAVA_ENEMY && nextBead === LAVA_COLOR ) ) &&
+                                        && (!OBSTACLES.includes(nextBead) || ( LAVA_IGNORE.includes(enemies[i].type) && nextBead === LAVA_COLOR ) ) &&
                                         !POWERUPS.includes(nextColor) ) {
                                         PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
                                         PS.border(enemies[i].x, enemies[i].y, 0);
@@ -1071,7 +1073,7 @@ let projectile3 = {
                     enemy.shield = 9;
                 }
                 else if( enemy.type == FINAL_BOSS_1 || enemy.type == FINAL_BOSS_2){
-                    enemy.shield = 30;
+                    enemy.shield = 12;
                     enemy.invuln = true;
                 }
                 enemies.push( enemy );
@@ -2379,7 +2381,7 @@ let projectile3 = {
 PS.init = function ( system, options ) {
     PS.statusText("The Dark Side of The Mouse");
 
-    level = 14;
+    level = 1;
 
     shieldStrength = 0;
     Game.startScreen();
