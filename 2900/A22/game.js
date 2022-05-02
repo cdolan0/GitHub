@@ -1834,7 +1834,19 @@ let projectile3 = {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
                 PS.border( PS.ALL, PS.ALL, 0 );
-                this.makeFloor ( 216, 176, 98, 10, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor ( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor ( 216, 161, 98, 20, 2, 10, 6, 3 );
+                this.makeFloor ( 216, 161, 98, 20, 3, 9, 4, 5 );
+                this.makeFloor ( 216, 146, 98, 20, 3, 10, 3, 2 );
+                this.makeFloor ( 216, 161, 98, 20, 7, 2, 6, 3 );
+                this.makeFloor ( 216, 161, 98, 20, 8, 1, 4, 5 );
+                this.makeFloor ( 216, 146, 98, 20, 8, 2, 3, 2 );
+                this.makeFloor ( 216, 161, 98, 20, 1, 3, 5, 4 );
+                this.makeFloor ( 216, 161, 98, 20, 2, 2, 3, 6 );
+                this.makeFloor ( 216, 146, 98, 20, 2, 3, 2, 3 );
+                this.makeFloor ( 216, 161, 98, 20, 9, 8, 5, 4 );
+                this.makeFloor ( 216, 161, 98, 20, 10, 7, 3, 6 );
+                this.makeFloor ( 216, 146, 98, 20, 10, 8, 2, 3 );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
