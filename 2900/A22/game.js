@@ -175,6 +175,7 @@ let projectile3 = {
     let diagonalChoice;
     let alienDeath = false;
     let lavaDeath = false;
+    let takingDamage = false;
 
 
     const tick = function () {
@@ -1066,29 +1067,8 @@ let projectile3 = {
                             Game.hitEnemy();
                         }
                         if ((enemies[i].x === pX) && (enemies[i].y === pY) && enemies[i].room == room) {
-                            if (shieldStrength > 0) {
-                                shieldStrength -= 1;
-                                PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.25 });
-                                this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
-                                this.alienSplatt();
-                                let bloodSplat = {
-                                    x: enemies[i].x,
-                                    y: enemies[i].y,
-                                    room: room,
-                                    level: level,
-                                    alien: true
-                                }
-                                blood.push(bloodSplat);
-                                PS.border(pX, pY, shieldStrength);
-                                PS.color(pX, pY, PLAYER_COLOR);
-                                enemies[i].destroyed = true;
-                                enemies.splice(i, 1);
-                                break;
-                            } else {
-                                Game.GameOver("Alien");
-                                gameover = true;
-                                break;
-                            }
+                            this.playerDamage(enemies[i].x, enemies[i].y);
+                            break;
                         }
                     }
                     else if(enemies[i].type === SPAWNER_ENEMY){
@@ -1127,6 +1107,40 @@ let projectile3 = {
                     enemies.splice( i, 1 );
                     length -= 1; // *BM* NOTE: i is NOT incremented! It now points to next entry due to splice.
                     break;
+                }
+            }
+        },
+
+        playerDamage(x, y){
+            let i = 0;
+            if(!takingDamage) {
+                if (shieldStrength > 0) {
+                    shieldStrength -= 1;
+                    PS.audioPlay("PlayerShield", {path: "GameAudio/", volume: 0.25});
+                    this.makeBlood(x, y, 190, 117, 202, 40);
+                    this.alienSplatt();
+                    let bloodSplat = {
+                        x: x,
+                        y: y,
+                        room: room,
+                        level: level,
+                        alien: true
+                    }
+                    blood.push(bloodSplat);
+                    PS.border(pX, pY, shieldStrength);
+                    PS.color(pX, pY, PLAYER_COLOR);
+                    while (i < length) {
+                        if (enemies[i].x === pX && enemies[i].y === pY) {
+                            enemies[i].destroyed = true;
+                            break;
+                        }
+                        i += 1;
+                    }
+
+                 //   enemies.splice(i,1);
+                } else {
+                    Game.GameOver("Alien");
+                    gameover = true;
                 }
             }
         },
@@ -2794,29 +2808,11 @@ PS.enter = function ( x, y, data, options ) {
             PS.glyph( pX, pY, "^" );
             PS.glyphColor( pX, pY, PS.COLOR_WHITE );
         }
-        if(invis){
+        if(invis) {
             PS.alpha(pX, pY, 100);
         }
         if( ENEMY_TYPES.includes(nextBeadColor) && !isOutOfBounds && !gameover && !start ){
-            if(shieldStrength <= 0) {
-                Game.GameOver("Alien");
-            }
-            else{
-                shieldStrength -= 1;
-                PS.border(pX, pY, shieldStrength);
-                PS.borderColor(pX, pY, SHIELD_COLOR);
-                PS.audioPlay ( "PlayerShield", { path: "GameAudio/", volume: 0.25 });
-                Game.makeBlood(pX, pY, 190, 117, 202, 40);
-                this.alienSplatt();
-                let bloodSplat = {
-                    x: pX,
-                    y: pY,
-                    room: room,
-                    level: level,
-                    alien: true
-                }
-                blood.push(bloodSplat);
-            }
+            Game.playerDamage(pX, pY);
         }
         PS.glyph( pastX, pastY, "" );
         if( POWERUPS.includes(nextBeadColor) ){
