@@ -538,39 +538,49 @@ let projectile3 = {
 
         hitEnemy() {
             let i = 0;
-            let enemyNum = 0;
+            let enemyNum;
+            let enemyNumLength;
             let bloodSplat;
             length = enemies.length;
-            while (i < length)  {
-                if (( enemies[ i ].x === projectile.x && enemies[ i ].y === projectile.y )){
+            while (i < length) {
+                if ((enemies[i].x === projectile.x && enemies[i].y === projectile.y)) {
                     enemyNum = i;
                     projectile.x = 0;
                     projectile.y = 0;
                     projectile.destroyed = true;
                     projectile.fired = false;
                     PS.glyph(projectile.x, projectile.y, "");
+                    this.damageTarget(enemyNum);
                     break;
                 }
-                if( enemies[ i ].x === projectile2.x && enemies[ i ].y === projectile2.y ){
+                if (enemies[i].x === projectile2.x && enemies[i].y === projectile2.y) {
                     enemyNum = i;
                     projectile2.x = 0;
                     projectile2.y = 0;
                     projectile2.destroyed = true;
                     projectile2.fired = false;
                     PS.glyph(projectile2.x, projectile2.y, "");
+                    this.damageTarget(enemyNum);
                     break;
                 }
-                if( enemies[ i ].x === projectile3.x && enemies[ i ].y === projectile3.y ){
+                if (enemies[i].x === projectile3.x && enemies[i].y === projectile3.y) {
                     enemyNum = i;
                     projectile3.x = 0;
                     projectile3.y = 0;
                     projectile3.destroyed = true;
                     projectile3.fired = false;
                     PS.glyph(projectile3.x, projectile3.y, "");
+                    this.damageTarget(enemyNum);
                     break;
                 }
                 i++
             }
+            PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
+            PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
+        },
+
+        damageTarget(enemyNum){
+            let bloodSplat;
             if( enemies[enemyNum].shield <= 0 && enemies.length > 0 && !enemies[enemyNum].invuln) {
                 if(enemies[enemyNum].type === FINAL_BOSS_1){
                     PS.audioPlay ( "BossChange", { path: "GameAudio/", volume: 0.25 });
@@ -588,26 +598,36 @@ let projectile3 = {
                         this.alienDeath();
                     }
                     enemies[enemyNum].destroyed = true;
-                    if (level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[i].x, enemies[i].y))) {
+                    if (level == 9 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[enemyNum].x, enemies[enemyNum].y))) {
                         this.trigunAltar();
                     }
-                    this.makeBlood(enemies[i].x, enemies[i].y, 190, 117, 202, 40);
+                    this.makeBlood(enemies[enemyNum].x, enemies[enemyNum].y, 190, 117, 202, 40);
                     this.alienSplatt();
                     bloodSplat = {
-                        x: enemies[i].x,
-                        y: enemies[i].y,
+                        x: enemies[enemyNum].x,
+                        y: enemies[enemyNum].y,
                         room: room,
                         level: level,
                         alien: true
                     }
                     blood.push(bloodSplat);
-                    i -= 1;
+                    if(enemies[enemyNum].type === SPAWNER_ENEMY){
+                        spawner = false;
+                        spawnerCount = 300;
+                        PS.color(spawningX, spawningY, PS.data(spawningX, spawningY));
+                    }
+                    /*  PS.border( enemies[ i ].x, enemies[ i ].y, 0);
+                      PS.borderColor( enemies[ i ].x, enemies[ i ].y, PS.COLOR_BLACK);
+                      enemies.splice( i, 1 );
+                      length -= 1; // *BM* NOTE: i is NOT incremented! It now points to next entry due to splice.
+                      //break;
+                   ;*/
                 }
             }
             else if( enemies[enemyNum].shield > 0 && !enemies[enemyNum].invuln){
                 if(enemies[enemyNum].type === FINAL_BOSS_1 || enemies[enemyNum].type === FINAL_BOSS_2){
                     enemies[enemyNum].shield -= 0.5;
-                   // PS.debug(enemies[enemyNum].shield);
+                    // PS.debug(enemies[enemyNum].shield);
                 }
                 else{
                     enemies[enemyNum].shield -= 3;
@@ -618,9 +638,6 @@ let projectile3 = {
             else if(enemies[enemyNum].invuln){
                 PS.audioPlay ( "Invuln", { path: "GameAudio/", volume: 0.25 });
             }
-
-            PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
-            PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
         },
 
         drawBlood(){
@@ -663,6 +680,8 @@ let projectile3 = {
         },
 
         GameOver(type) {
+            spawner = false;
+            finalLevel = false;
             room = 0;
             usedDoor = false;
             trigun = false;
