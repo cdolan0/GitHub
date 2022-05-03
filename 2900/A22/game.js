@@ -287,8 +287,8 @@ let projectile3 = {
             if(alienDeath) {
                 PS.bgColor(deathX, deathY, PS.COLOR_RED);
                 if (gameoverCounter == 300) {
-                    PS.audioFade ( space, PS.CURRENT, 0, 500);
-                    PS.audioFade ( planet, PS.CURRENT, 0, 500);
+                    PS.audioFade ( space, PS.CURRENT, 0, 300);
+                    PS.audioFade ( planet, PS.CURRENT, 0, 300);
                     if (Math.floor(Math.random() * 2) == 1) {
                         if (!OBSTACLES.includes(PS.data(deathX - 1, deathY))) {
                             PS.bgColor(deathX - 1, deathY, PS.COLOR_RED);
@@ -474,6 +474,7 @@ let projectile3 = {
             spawnerCount -= 1;
         }
         if(finalLevel && !isOutOfBounds && !gameover && !start && !runComplete){
+            chosenSpot = false;
             if(finalCount === 290){
                 while(!chosenSpot){
                     lavaX = PS.random(WIDTH-1);
@@ -574,8 +575,6 @@ let projectile3 = {
                 }
                 i++
             }
-            PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
-            PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
         },
 
         damageTarget(enemyNum){
@@ -587,7 +586,7 @@ let projectile3 = {
                     enemies[enemyNum].type = FINAL_BOSS_2;
                     PS.color(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].type);
                     PS.border(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].shield);
-                    PS.borderColor(enemies[i].x, enemies[i].y, FINAL_SHIELD);
+                    PS.borderColor(enemies[enemyNum].x, enemies[enemyNum].y, FINAL_SHIELD);
                 }
                 else {
                     if( enemies[enemyNum].type === FINAL_BOSS_2){
@@ -637,6 +636,8 @@ let projectile3 = {
             else if(enemies[enemyNum].invuln){
                 PS.audioPlay ( "Invuln", { path: "GameAudio/", volume: 0.25 });
             }
+            PS.glyph( enemies[ enemyNum ].x, enemies[ enemyNum ].y, "" );
+            PS.glyphColor( enemies[ enemyNum ].x, enemies[ enemyNum ].y, PS.COLOR_BLACK );
         },
 
         drawBlood(){
@@ -1113,8 +1114,14 @@ let projectile3 = {
 
         playerDamage(x, y){
             let i = 0;
+            while (i < length) {
+                if (enemies[i].x === pX && enemies[i].y === pY) {
+                    break;
+                }
+                i += 1;
+            }
             if(!takingDamage) {
-                if (shieldStrength > 0) {
+                if (shieldStrength > 0 && enemies[i].type !== FINAL_BOSS_1 && enemies[i].type !== FINAL_BOSS_2 ) {
                     shieldStrength -= 1;
                     PS.audioPlay("PlayerShield", {path: "GameAudio/", volume: 0.25});
                     this.makeBlood(x, y, 190, 117, 202, 40);
@@ -1129,16 +1136,13 @@ let projectile3 = {
                     blood.push(bloodSplat);
                     PS.border(pX, pY, shieldStrength);
                     PS.color(pX, pY, PLAYER_COLOR);
-                    while (i < length) {
-                        if (enemies[i].x === pX && enemies[i].y === pY) {
-                            enemies[i].destroyed = true;
-                            break;
-                        }
-                        i += 1;
-                    }
+                    enemies[i].destroyed = true;
 
                  //   enemies.splice(i,1);
                 } else {
+                    if(shieldStrength > 0 ){
+                        PS.audioPlay("PlayerShield", {path: "GameAudio/", volume: 0.5});
+                    }
                     Game.GameOver("Alien");
                     gameover = true;
                 }
@@ -2588,6 +2592,10 @@ PS.init = function ( system, options ) {
 
     level = 1;
 
+    trigun = false;
+
+    regen = false;
+
     shieldStrength = 0;
     Game.startScreen();
 
@@ -2879,6 +2887,9 @@ PS.enter = function ( x, y, data, options ) {
         if(level == 1 && firstStart){
             firstStart = false;
            // PS.audioPlay ( "Alarm", { volume: 0.5, path: "GameAudio/" });
+        }
+        if(finalLevel){
+            PS.audioPlay ( "BossChange", { path: "GameAudio/", volume: 0.5 });
         }
         PS.audioPlay ( "Start", { path: "GameAudio/", volume: 0.25 });
         PS.border(pX, pY, shieldStrength);
