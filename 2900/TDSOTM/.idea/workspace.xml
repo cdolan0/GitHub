@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="523722af-1b54-4146-91a2-17a23e0bdd77" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../A22/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../A22/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,6 +35,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -60,6 +61,7 @@
       <workItem from="1651238458517" duration="3032000" />
       <workItem from="1651349821894" duration="26140000" />
       <workItem from="1652047122308" duration="97000" />
+      <workItem from="1652047525472" duration="4000" />
     </task>
     <servers />
   </component>
