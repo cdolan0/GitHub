@@ -19,12 +19,7 @@
  */
 
 // TODO:
-// Trigun powerup
-// Sounds
-// Levels 10, 11, 12, 13, 14, 15
-// Regen shield powerup
-// Victory Screen
-// Improve floor for levels 4, 5, 8, 9
+
 
 //SOUNDS FOUND ON FREESOUND.ORG BY:
 //spookymodem, Sonicfreak, Darsycho, outroelison, StormwaveAudio, CGEffex, steveygos93, Breviceps, Blockfighter298,
