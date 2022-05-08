@@ -2585,7 +2585,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 2;
+    level = 3;
 
     trigun = false;
 
