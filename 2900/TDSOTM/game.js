@@ -573,6 +573,10 @@ let projectile3 = {
                     PS.color(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].type);
                     PS.border(enemies[enemyNum].x, enemies[enemyNum].y, enemies[enemyNum].shield);
                     PS.borderColor(enemies[enemyNum].x, enemies[enemyNum].y, FINAL_SHIELD);
+                    this.makeEnemy( 1, 1, LAVA_ENEMY, 0 );
+                    this.makeEnemy( 15, 1, LAVA_ENEMY, 0 );
+                    this.makeEnemy( 1, 15, LAVA_ENEMY, 0 );
+                    this.makeEnemy( 15, 15, LAVA_ENEMY, 0 );
                 }
                 else {
                     if( enemies[enemyNum].type === FINAL_BOSS_2){
@@ -2466,7 +2470,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 8;
+    level = 1;
 
     trigun = false;
 
