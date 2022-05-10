@@ -20,13 +20,14 @@ const REGEN_COLOR = 0x238fe5;
 const MOON_COLOR = 0x54475b;
 const VENUS_COLOR = 0x82482c;
 const JUNGLE_COLOR = 0x2b4127;
+const HELL_COLOR = 0x3e0000;
 const LAVA_COLOR = 0xd53e00;
 const QUICKSAND_COLOR = 0xe0c78e;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
-const OBSTACLES = [ PS.COLOR_BLACK, MOON_COLOR, VENUS_COLOR, JUNGLE_COLOR, LAVA_COLOR, QUICKSAND_COLOR ];
+const OBSTACLES = [ PS.COLOR_BLACK, MOON_COLOR, VENUS_COLOR, JUNGLE_COLOR, HELL_COLOR, LAVA_COLOR, QUICKSAND_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const MEGA_ENEMY = 0x014421;
@@ -657,10 +658,10 @@ let projectile3 = {
             PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
             PS.bgColor( pX, pY, PS.data( pX, pY ) );
             //Outer Walls
-            this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-            this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-            this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-            this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+            this.createBlock( 14, 0, 0, 0, HELL_COLOR );
+            this.createBlock( 14, 0, 0, 14, HELL_COLOR );
+            this.createBlock( 0, 14, 0, 0, HELL_COLOR );
+            this.createBlock( 0, 14, 14, 0, HELL_COLOR );
             this.createBlock(0, 0, 14, 7, DOOR_COLOR);
         },
 
@@ -2067,14 +2068,26 @@ let projectile3 = {
                     }
 
                     //Inner Walls
-                    this.createBlock( 1, 1, 4, 4, JUNGLE_COLOR );
-                    this.createBlock( 1, 1, 4, 10, JUNGLE_COLOR );
+                    if( trigun ) {
+                        this.createBlock( 1, 1, 4, 4, HELL_COLOR );
+                        this.createBlock( 1, 1, 4, 10, HELL_COLOR );
+                    } else {
+                        this.createBlock( 1, 1, 4, 4, JUNGLE_COLOR );
+                        this.createBlock( 1, 1, 4, 10, JUNGLE_COLOR );
+                    }
 
                     //Outer Walls
-                    this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
-                    this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
-                    this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
-                    this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                    if( trigun ) {
+                        this.createBlock(14, 0, 0, 0, HELL_COLOR );
+                        this.createBlock(14, 0, 0, 14, HELL_COLOR );
+                        this.createBlock(0, 14, 0, 0, HELL_COLOR );
+                        this.createBlock(0, 14, 14, 0, HELL_COLOR );
+                    } else {
+                        this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
+                        this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
+                        this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
+                        this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                    }
 
                     //Door
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
@@ -2085,15 +2098,28 @@ let projectile3 = {
                     startY = 7;
 
                     //Inner Walls
-                    this.createBlock( 0, 2, 10, 1, JUNGLE_COLOR );
-                    this.createBlock( 0, 2, 10, 11, JUNGLE_COLOR );
-                    this.createBlock( 0, 2, 4, 6, JUNGLE_COLOR );
+                    if( trigun ) {
+                        this.createBlock( 0, 2, 10, 1, HELL_COLOR );
+                        this.createBlock( 0, 2, 10, 11, HELL_COLOR );
+                        this.createBlock( 0, 2, 4, 6, HELL_COLOR );
+                    } else {
+                        this.createBlock( 0, 2, 10, 1, JUNGLE_COLOR );
+                        this.createBlock( 0, 2, 10, 11, JUNGLE_COLOR );
+                        this.createBlock( 0, 2, 4, 6, JUNGLE_COLOR );
+                    }
 
                     //Outer Walls
-                    this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
-                    this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
-                    this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
-                    this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                    if( trigun ) {
+                        this.createBlock(14, 0, 0, 0, HELL_COLOR );
+                        this.createBlock(14, 0, 0, 14, HELL_COLOR );
+                        this.createBlock(0, 14, 0, 0, HELL_COLOR );
+                        this.createBlock(0, 14, 14, 0, HELL_COLOR );
+                    } else {
+                        this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
+                        this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
+                        this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
+                        this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                    }
 
                     //Door
                     this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
@@ -2558,7 +2584,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 1;
+    level = 9;
 
     trigun = false;
 
