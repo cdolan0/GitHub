@@ -1629,13 +1629,13 @@ let projectile3 = {
             }
             if( level == 3 ) {
                 room = 0;
-                WIDTH = 15;
-                HEIGHT = 15;
+                WIDTH = 17;
+                HEIGHT = 17;
                 this.setupLevel( WIDTH, HEIGHT );
-                startX = 7;
-                startY = 7;
-                portalX = startX;
-                portalY = startY;
+                startX = 8;
+                startY = 8;
+                portalX = 8;
+                portalY = 8;
                 portalRoom = 0;
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor( 143, 140, 160, 20, 4, 4, 7, 7 );
@@ -1644,27 +1644,27 @@ let projectile3 = {
                 this.makeFloor( 135, 130, 154, 20, 5, 3, 5, 9 );
                 this.makeFloor( 127, 120, 149, 20, 6, 6, 3, 3 );
                 //Enemies
-                this.makeEnemy( 7, 3, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 11, 7, SHIELDED_ENEMY, 0 );
+                this.makeEnemy( 8, 3, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 8, 13, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 13, 8, SHIELDED_ENEMY, 0 );
 
                 //Walls
                 this.outerWalls( MOON_COLOR );
                 this.createBlock( 3, 0, 1, 1, MOON_COLOR );
                 this.createBlock( 0, 3, 1, 1, MOON_COLOR );
-                this.createBlock( 0, 3, 1, 10, MOON_COLOR );
-                this.createBlock( 3, 0, 1, 13, MOON_COLOR );
-                this.createBlock( 3, 0, 10, 1, MOON_COLOR );
-                this.createBlock( 0, 3, 13, 1, MOON_COLOR );
-                this.createBlock( 0, 3, 13, 10, MOON_COLOR );
-                this.createBlock( 3, 0, 10, 13, MOON_COLOR );
+                this.createBlock( 0, 3, 1, 12, MOON_COLOR );
+                this.createBlock( 3, 0, 1, 15, MOON_COLOR );
+                this.createBlock( 3, 0, 12, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 15, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 15, 12, MOON_COLOR );
+                this.createBlock( 3, 0, 12, 15, MOON_COLOR );
                 this.createBlock( 0, 0, 2, 2, MOON_COLOR );
-                this.createBlock( 0, 0, 12, 2, MOON_COLOR );
-                this.createBlock( 0, 0, 2, 12, MOON_COLOR );
-                this.createBlock( 0, 0, 12, 12, MOON_COLOR );
-                this.createBlock( 4, 0, 5, 5, MOON_COLOR );
-                this.createBlock( 4, 0, 5, 9, MOON_COLOR );
-                this.createBlock( 0, 4, 9, 5, MOON_COLOR );
+                this.createBlock( 0, 0, 14, 2, MOON_COLOR );
+                this.createBlock( 0, 0, 2, 14, MOON_COLOR );
+                this.createBlock( 0, 0, 14, 14, MOON_COLOR );
+                this.createBlock( 4, 0, 6, 6, MOON_COLOR );
+                this.createBlock( 4, 0, 6, 10, MOON_COLOR );
+                this.createBlock( 0, 4, 10, 6, MOON_COLOR );
             }
             if( level == 4){
                 WIDTH = 15;
@@ -2470,7 +2470,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 1;
+    level = 3;
 
     trigun = false;
 
