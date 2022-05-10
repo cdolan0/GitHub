@@ -12,8 +12,6 @@
 //spookymodem, Sonicfreak, Darsycho, outroelison, StormwaveAudio, CGEffex, steveygos93, Breviceps, Blockfighter298,
 // SlykMrByches, roboroo, jacobalcook, NicknameLarry, distillerystudio
 
-const WIDTH = 15;
-const HEIGHT = 15;
 const HIDDEN_DOOR_COLOR = 0x514657;
 const PLAYER_COLOR = 0x238fe6;
 const REGEN_COLOR = 0x238fe5;
@@ -49,6 +47,8 @@ const ALTAR_COLOR_4 = 0xe86060;
 const ALTAR_COLORS = [ALTAR_COLOR_1, ALTAR_COLOR_2, ALTAR_COLOR_3, ALTAR_COLOR_4];
 
 let Game;
+let WIDTH;
+let HEIGHT;
 let isOutOfBounds = false;
 let level = 0;
 let room = 0;
@@ -657,11 +657,7 @@ let projectile3 = {
             PS.border(pX, pY, shieldStrength);
             PS.borderColor(pX, pY, PLAYER_SHIELD_COLOR);
             PS.bgColor( pX, pY, PS.data( pX, pY ) );
-            //Outer Walls
-            this.createBlock( 14, 0, 0, 0, HELL_COLOR );
-            this.createBlock( 14, 0, 0, 14, HELL_COLOR );
-            this.createBlock( 0, 14, 0, 0, HELL_COLOR );
-            this.createBlock( 0, 14, 14, 0, HELL_COLOR );
+            this.outerWalls( HELL_COLOR );
             this.createBlock(0, 0, 14, 7, DOOR_COLOR);
         },
 
@@ -1544,6 +1540,19 @@ let projectile3 = {
             }
         },
 
+        setupLevel( width, height ) {
+            PS.gridSize( width, height );
+            PS.bgAlpha( PS.ALL, PS.ALL, 255 );
+            PS.border( PS.ALL, PS.ALL, 0 );
+        },
+
+        outerWalls( color ) {
+            this.createBlock(WIDTH - 1, 0, 0, 0, color );
+            this.createBlock(WIDTH - 1, 0, 0, HEIGHT - 1, color );
+            this.createBlock(0, HEIGHT - 1, 0, 0, color );
+            this.createBlock(0, HEIGHT - 1, WIDTH - 1, 0, color );
+        },
+
         makeLevel() {
             finalLevel = false;
             if ( !timer ) {
@@ -1551,15 +1560,14 @@ let projectile3 = {
             }
 
             if( level == 1) {
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 11;
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-               // PS.fade(PS.ALL, PS.ALL, 10);
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy(7, 3, DEFAULT_ENEMY, 0);
                 }
@@ -1577,15 +1585,9 @@ let projectile3 = {
                         startY = 11;
                     }
 
-
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( MOON_COLOR );
                     this.createBlock(6, 0, 4, 7, MOON_COLOR );
-
-                    //Outer Walls
-                    this.createBlock(14, 0, 0, 0, MOON_COLOR );
-                    this.createBlock(14, 0, 0, 14, MOON_COLOR );
-                    this.createBlock(0, 14, 0, 0, MOON_COLOR );
-                    this.createBlock(0, 14, 14, 0, MOON_COLOR );
 
                     this.createBlock(0, 0, 7, 14, HIDDEN_DOOR_COLOR);
                 }
@@ -1601,43 +1603,36 @@ let projectile3 = {
             }
             if( level == 2){
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 7;
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
 
-                //Inner Walls
+                //Walls
+                this.outerWalls( MOON_COLOR );
                 this.createBlock( 0, 1, 4, 7, MOON_COLOR );
                 this.createBlock( 0, 0, 8, 10, MOON_COLOR );
                 this.createBlock( 0, 1, 10, 6, MOON_COLOR );
                 this.createBlock( 1, 0, 7, 4, MOON_COLOR );
-
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
-                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
-                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
-                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
             if( level == 3 ) {
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 7;
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor( 143, 140, 160, 20, 4, 4, 7, 7 );
                 this.makeFloor( 143, 140, 160, 20, 3, 5, 9, 5 );
@@ -1649,7 +1644,8 @@ let projectile3 = {
                 this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 11, 7, SHIELDED_ENEMY, 0 );
 
-                //Inner Walls
+                //Walls
+                this.outerWalls( MOON_COLOR );
                 this.createBlock( 3, 0, 1, 1, MOON_COLOR );
                 this.createBlock( 0, 3, 1, 1, MOON_COLOR );
                 this.createBlock( 0, 3, 1, 10, MOON_COLOR );
@@ -1665,19 +1661,11 @@ let projectile3 = {
                 this.createBlock( 4, 0, 5, 5, MOON_COLOR );
                 this.createBlock( 4, 0, 5, 9, MOON_COLOR );
                 this.createBlock( 0, 4, 9, 5, MOON_COLOR );
-
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
-                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
-                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
-                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
-            //has rooms
             if( level == 4){
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
-                // (PS.ALL, PS.ALL, 10);
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor( 185, 185, 185, 20, 0, 0, WIDTH, HEIGHT );
                 const xFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
                 const yFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
@@ -1719,17 +1707,12 @@ let projectile3 = {
                         startY = 12;
                     }
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( MOON_COLOR );
                     this.createBlock( 0, 2, 6, 1, PS.COLOR_BLACK );
                     this.createBlock( 0, 8, 6, 6, PS.COLOR_BLACK );
                     this.createBlock( 1, 0, 7, 8, PS.COLOR_BLACK );
                     this.createBlock( 2, 0, 11, 8, PS.COLOR_BLACK );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
                     //Door
                     this.createBlock(0, 0, 14, 10, DOOR_COLOR);
@@ -1739,34 +1722,26 @@ let projectile3 = {
                     startY = 10;
 
                     //Inner Walls
+                    this.outerWalls( MOON_COLOR );
                     this.createBlock( 0, 0, 1, 6, PS.COLOR_BLACK );
                     this.createBlock( 1, 0, 3, 6, PS.COLOR_BLACK );
                     this.createBlock( 7, 0,  7, 6, PS.COLOR_BLACK );
                     this.createBlock( 0, 5, 4, 1, PS.COLOR_BLACK );
                     this.createBlock( 0, 1, 10, 1, PS.COLOR_BLACK );
                     this.createBlock( 0, 1, 10, 4, PS.COLOR_BLACK );
-                    // this.createBlock( 0, 0, 10, 3, PS.COLOR_GRAY_LIGHT );
 
                     this.createBlock( 2, 0, 1, 9, PS.COLOR_BLACK );
                     this.createBlock( 2, 0, 5, 9, PS.COLOR_BLACK );
                     this.createBlock( 0, 6, 8, 8, PS.COLOR_BLACK );
 
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
-
                     //Door
                     this.createBlock(0, 0, 0, 10, DOOR_COLOR);
                 }
             }
-            //has rooms
             if( level == 5 ) {
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
-             //   PS.fade(PS.ALL, PS.ALL, 10);
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor( 150, 150, 150, 25, 0, 0, WIDTH, HEIGHT );
                 for ( yMarker = 2; yMarker < 13; yMarker++ ) {
                     for ( xMarker = 2; xMarker < 13; xMarker ++ ) {
@@ -1802,17 +1777,12 @@ let projectile3 = {
                         startX = 3;
                         startY = 8;
                     }
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( MOON_COLOR );
                     this.createBlock( 1, 1, 3, 4, PS.COLOR_BLACK );
                     this.createBlock( 1, 1, 9, 3, PS.COLOR_BLACK );
                     this.createBlock( 1, 1, 10, 9, PS.COLOR_BLACK );
                     this.createBlock( 1, 1, 4, 10, PS.COLOR_BLACK );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
 
                     //Door
                     this.createBlock(0, 0, 1, 0, DOOR_COLOR);
@@ -1821,14 +1791,9 @@ let projectile3 = {
                     startX = 1;
                     startY = 14;
 
-                    //Inner Walls
                     PS.border( 7, 4, 1 );
                     PS.borderColor( 7, 4, PS.COLOR_WHITE );
-                    //Outer Walls
-                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+                    this.outerWalls( MOON_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 1, 14, DOOR_COLOR);
@@ -1836,9 +1801,9 @@ let projectile3 = {
             }
             if ( level == 6 ) {
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 1;
                 startY = 13;
                 portalX = 7;
@@ -1854,6 +1819,7 @@ let projectile3 = {
                 this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
+                this.outerWalls( MOON_COLOR );
                 this.createBlock( 2, 0, 2, 2, MOON_COLOR );
                 this.createBlock( 0, 2, 2, 2, MOON_COLOR );
                 this.createBlock( 0, 4, 4, 2, MOON_COLOR );
@@ -1877,18 +1843,12 @@ let projectile3 = {
                 this.createBlock( 0, 2, 12, 8, MOON_COLOR );
                 this.createBlock( 0, 0, 13, 10, MOON_COLOR );
                 this.createBlock( 0, 2, 12, 12, MOON_COLOR );
-
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
-                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
-                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
-                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
             if ( level == 7 ) {
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 12;
                 portalX = startX;
@@ -1910,22 +1870,17 @@ let projectile3 = {
                 this.makeEnemy( 9, 2, SHIELDED_ENEMY, 0 );
                 this.makeEnemy( 12, 5, DEFAULT_ENEMY, 0);
 
-                //Inner Walls
+                //Walls
+                this.outerWalls( VENUS_COLOR );
                 this.createBlock( 1, 0, 6, 4, LAVA_COLOR );
                 this.createBlock( 1, 0, 3, 9, LAVA_COLOR );
                 this.createBlock( 1, 0, 10, 7, LAVA_COLOR );
 
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
-                this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
-                this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
-                this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
             }
-            //has rooms
             if( level == 8 ) {
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor ( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor ( 216, 161, 98, 20, 2, 10, 6, 3 );
                 this.makeFloor ( 216, 161, 98, 20, 3, 9, 4, 5 );
@@ -1942,9 +1897,11 @@ let projectile3 = {
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 12, 5, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 2, 9, SHIELDED_ENEMY, 0 );
-                    this.makeEnemy( 3, 11, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 5, 2, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 9, 12, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 3, 11, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 7, 11, MEGA_ENEMY, 1 );
-                    this.makeEnemy( 11, 11, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 11, 11, SHIELDED_ENEMY, 1 );
                 }
                 portalX = 7;
                 portalY = 7;
@@ -1959,17 +1916,12 @@ let projectile3 = {
                         startY = 7;
                     }
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( VENUS_COLOR );
                     this.createBlock( 1, 0, 9, 3, LAVA_COLOR );
                     this.createBlock( 1, 0, 4, 11, LAVA_COLOR );
                     this.createBlock( 0, 1, 3, 4, LAVA_COLOR );
                     this.createBlock( 0, 1, 11, 9, LAVA_COLOR );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
-                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
-                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
-                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
 
                     this.createBlock( 0, 1, 0, 0, LAVA_COLOR );
                     this.createBlock( 0, 1, 14, 0, LAVA_COLOR );
@@ -1989,23 +1941,17 @@ let projectile3 = {
                     startY = 0;
 
                     //Inner Walls
+                    this.outerWalls( LAVA_COLOR );
                     this.createBlock( 2, 2, 6, 6, LAVA_COLOR );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
-                    this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
-                    this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
-                    this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 7, 0, DOOR_COLOR);
                 }
             }
-            //hass rooms
             if( level == 9 ) {
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 if(trigun){
                     this.makeFloor( 145, 23, 23, 30, 0, 0, WIDTH, HEIGHT );
                 }
@@ -2019,10 +1965,10 @@ let projectile3 = {
                     this.makeEnemy( 8, 3, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 8, 11, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 13, 2, DEFAULT_ENEMY, 2 );
-                    this.makeEnemy( 13, 4, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 4, SHIELDED_ENEMY, 2 );
                     this.makeEnemy( 13, 6, DEFAULT_ENEMY, 2 );
                     this.makeEnemy( 13, 8, DEFAULT_ENEMY, 2 );
-                    this.makeEnemy( 13, 10, DEFAULT_ENEMY, 2 );
+                    this.makeEnemy( 13, 10, SHIELDED_ENEMY, 2 );
                     this.makeEnemy( 13, 12, DEFAULT_ENEMY, 2 );
                 }
 
@@ -2038,6 +1984,8 @@ let projectile3 = {
                         startY = 12;
                     }
 
+                    this.outerWalls( JUNGLE_COLOR );
+
                     //Trigun Altar
                     this.createBlock( 0, 0, 7, 7, ALTAR_COLOR_1 );
                     this.createBlock( 0, 0, 6, 7, ALTAR_COLOR_2 );
@@ -2048,12 +1996,6 @@ let projectile3 = {
                     this.createBlock( 0, 0, 6, 9, ALTAR_COLOR_4 );
                     this.createBlock( 0, 0, 5, 7, ALTAR_COLOR_4 );
                     this.createBlock( 0, 0, 7, 5, ALTAR_COLOR_4 );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, JUNGLE_COLOR );
-                    this.createBlock( 14, 0, 0, 14, JUNGLE_COLOR );
-                    this.createBlock( 0, 14, 0, 0, JUNGLE_COLOR );
-                    this.createBlock( 0, 14, 14, 0, JUNGLE_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 14, 7, DOOR_COLOR);
@@ -2067,7 +2009,7 @@ let projectile3 = {
                         startY = 7;
                     }
 
-                    //Inner Walls
+                    //Walls
                     if( trigun ) {
                         this.createBlock( 1, 1, 4, 4, HELL_COLOR );
                         this.createBlock( 1, 1, 4, 10, HELL_COLOR );
@@ -2076,17 +2018,10 @@ let projectile3 = {
                         this.createBlock( 1, 1, 4, 10, JUNGLE_COLOR );
                     }
 
-                    //Outer Walls
                     if( trigun ) {
-                        this.createBlock(14, 0, 0, 0, HELL_COLOR );
-                        this.createBlock(14, 0, 0, 14, HELL_COLOR );
-                        this.createBlock(0, 14, 0, 0, HELL_COLOR );
-                        this.createBlock(0, 14, 14, 0, HELL_COLOR );
+                        this.outerWalls( HELL_COLOR );
                     } else {
-                        this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
-                        this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
-                        this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
-                        this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                        this.outerWalls( JUNGLE_COLOR );
                     }
 
                     //Door
@@ -2097,7 +2032,7 @@ let projectile3 = {
                     startX = 0;
                     startY = 7;
 
-                    //Inner Walls
+                    //Walls
                     if( trigun ) {
                         this.createBlock( 0, 2, 10, 1, HELL_COLOR );
                         this.createBlock( 0, 2, 10, 11, HELL_COLOR );
@@ -2108,17 +2043,10 @@ let projectile3 = {
                         this.createBlock( 0, 2, 4, 6, JUNGLE_COLOR );
                     }
 
-                    //Outer Walls
                     if( trigun ) {
-                        this.createBlock(14, 0, 0, 0, HELL_COLOR );
-                        this.createBlock(14, 0, 0, 14, HELL_COLOR );
-                        this.createBlock(0, 14, 0, 0, HELL_COLOR );
-                        this.createBlock(0, 14, 14, 0, HELL_COLOR );
+                        this.outerWalls( HELL_COLOR );
                     } else {
-                        this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
-                        this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
-                        this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
-                        this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
+                        this.outerWalls( JUNGLE_COLOR );
                     }
 
                     //Door
@@ -2127,9 +2055,9 @@ let projectile3 = {
             }
             if (level == 10 ) {
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 3;
                 startY = 3;
                 portalX = startX;
@@ -2141,7 +2069,7 @@ let projectile3 = {
                 this.makeEnemy( 13, 1, LAVA_ENEMY, 0 );
                 this.makeEnemy( 13, 13, LAVA_ENEMY, 0 );
 
-                //Inner Walls
+                //Walls
                 this.createBlock( 2, 0, 6, 7, LAVA_COLOR );
                 this.createBlock( 0, 2, 7, 6, LAVA_COLOR );
                 this.createBlock( 0, 2, 11, 1, LAVA_COLOR );
@@ -2151,19 +2079,15 @@ let projectile3 = {
                 this.createBlock( 2, 0, 11, 11, LAVA_COLOR );
                 this.createBlock( 2, 0, 1, 11, LAVA_COLOR );
 
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
-                this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
-                this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
-                this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
+                //Walls
+                this.outerWalls( VENUS_COLOR );
                 this.createBlock( 3, 0, 0, 0, LAVA_COLOR );
                 this.createBlock( 0, 3, 0, 0, LAVA_COLOR );
             }
-            //Has multiple rooms
             if( level == 11 ) {
-                PS.gridSize(WIDTH, HEIGHT);
-                PS.bgAlpha(PS.ALL, PS.ALL, 255);
-                PS.border(PS.ALL, PS.ALL, 0);
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor(147, 72, 56, 20, 0, 0, WIDTH, HEIGHT);
                 if (enemies.length == 0 && !portalOpened) {
 
@@ -2182,7 +2106,6 @@ let projectile3 = {
                 portalX = 7;
                 portalY = 7;
                 portalRoom = 0;
-                //PS.debug(room);
                 if (room === 0) {
                     if(usedDoor){
                         startX = 0;
@@ -2242,17 +2165,12 @@ let projectile3 = {
                     startX = 14;
                     startY = 7;
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( LAVA_COLOR );
                     this.createBlock( 0, 1, 4, 7, LAVA_COLOR);
                     this.createBlock( 0, 0, 8, 10, LAVA_COLOR );
                     this.createBlock( 0, 1, 10, 6, LAVA_COLOR );
                     this.createBlock( 1, 0, 7, 4, LAVA_COLOR );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
-                    this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
-                    this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
-                    this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 14, 7, DOOR_COLOR)
@@ -2262,14 +2180,9 @@ let projectile3 = {
                     startX = 7;
                     startY = 14;
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( LAVA_COLOR );
                     this.createBlock( 6, 0, 4, 7, LAVA_COLOR );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
-                    this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
-                    this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
-                    this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 7, 14, DOOR_COLOR);
@@ -2284,7 +2197,8 @@ let projectile3 = {
                     this.makeFloor( 125, 52, 30, 20, 5, 3, 5, 9 );
                     this.makeFloor( 119, 42, 25, 20, 6, 6, 3, 3 );
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( LAVA_COLOR );
                     this.createBlock( 3, 0, 1, 1, LAVA_COLOR );
                     this.createBlock( 0, 3, 1, 1, LAVA_COLOR );
                     this.createBlock( 0, 3, 1, 10, LAVA_COLOR );
@@ -2300,12 +2214,6 @@ let projectile3 = {
                     this.createBlock( 4, 0, 5, 5, LAVA_COLOR );
                     this.createBlock( 4, 0, 5, 9, LAVA_COLOR );
                     this.createBlock( 0, 4, 9, 5, LAVA_COLOR );
-
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
-                    this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
-                    this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
-                    this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
@@ -2324,9 +2232,9 @@ let projectile3 = {
             }
             if( level == 12 ) {
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 1;
                 startY = 1;
                 portalX = 13;
@@ -2338,7 +2246,8 @@ let projectile3 = {
                 this.makeEnemy( 5, 9, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 9, 11, DEFAULT_ENEMY, 0 );
 
-                //Inner Walls
+                //Walls
+                this.outerWalls( LAVA_COLOR );
                 this.createBlock ( 0, 5, 2, 1, LAVA_COLOR );
                 this.createBlock ( 0, 2, 2, 8, LAVA_COLOR );
                 this.createBlock ( 0, 0, 1, 10, LAVA_COLOR );
@@ -2361,17 +2270,11 @@ let projectile3 = {
                 this.createBlock ( 2, 0, 2, 12, LAVA_COLOR );
                 this.createBlock ( 0, 1, 6, 12, LAVA_COLOR );
 
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
-                this.createBlock( 14, 0, 0, 14, LAVA_COLOR );
-                this.createBlock( 0, 14, 0, 0, LAVA_COLOR );
-                this.createBlock( 0, 14, 14, 0, LAVA_COLOR );
-
             }
             if ( level == 13 ) {
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor( 105, 69, 28, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 11, 3, MEGA_ENEMY, 0 );
@@ -2396,7 +2299,8 @@ let projectile3 = {
                         startY = 7;
                     }
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( VENUS_COLOR );
                     this.createBlock( 1, 1, 4, 3, VENUS_COLOR );
                     this.createBlock( 1, 1, 9, 4, VENUS_COLOR );
                     this.createBlock( 1, 1, 10, 5, VENUS_COLOR );
@@ -2423,12 +2327,6 @@ let projectile3 = {
                     this.createBlock( 0, 0, 10, 6, LAVA_COLOR );
                     this.createBlock( 0, 0, 11, 5, LAVA_COLOR );
 
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
-                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
-                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
-                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
-
                     //Door
                     this.createBlock(0, 0, 14, 7, DOOR_COLOR);
                 }
@@ -2437,7 +2335,8 @@ let projectile3 = {
                     startX = 0;
                     startY = 7;
 
-                    //Inner Walls
+                    //Walls
+                    this.outerWalls( VENUS_COLOR );
                     this.createBlock( 0, 0, 3, 1, VENUS_COLOR );
                     this.createBlock( 0, 0, 5, 3, VENUS_COLOR );
                     this.createBlock( 0, 0, 7, 6, LAVA_COLOR );
@@ -2458,21 +2357,15 @@ let projectile3 = {
                     this.createBlock( 0, 0, 10, 10, LAVA_COLOR );
                     this.createBlock( 0, 0, 9, 7, VENUS_COLOR );
 
-                    //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
-                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
-                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
-                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
-
                     //Door
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
                 }
             }
             if ( level == 14 ){
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
+                WIDTH = 15;
+                HEIGHT = 15;
+                this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 12;
                 portalX = 7;
@@ -2485,7 +2378,8 @@ let projectile3 = {
 
                 this.makeFloor( 89, 38, 11, 20, 0, 0, WIDTH, HEIGHT );
 
-                //Inner Walls
+                //Walls
+                this.outerWalls( JUNGLE_COLOR );
                 this.createBlock( 4, 0, 5, 4, JUNGLE_COLOR );
                 this.createBlock( 4, 0, 5, 10, JUNGLE_COLOR );
                 this.createBlock( 0, 4, 4, 5, JUNGLE_COLOR );
@@ -2516,38 +2410,26 @@ let projectile3 = {
                 this.makeFloor( 89, 38, 11, 20, 4, 6, 1, 1 );
                 this.makeFloor( 89, 38, 11, 20, 10, 6, 1, 1 );
 
-
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, JUNGLE_COLOR );
-                this.createBlock( 14, 0, 0, 14, JUNGLE_COLOR );
-                this.createBlock( 0, 14, 0, 0, JUNGLE_COLOR );
-                this.createBlock( 0, 14, 14, 0, JUNGLE_COLOR );
-
             }
             if ( level == 15 ) {
                 finalLevel = true;
                 room = 0;
-                PS.gridSize( WIDTH, HEIGHT );
-                PS.bgAlpha( PS.ALL, PS.ALL, 255 );
-                PS.border( PS.ALL, PS.ALL, 0 );
-                startX = 7;
-                startY = 12;
-                this.makeEnemy(7,3, FINAL_BOSS_1, 0);
-                this.makeEnemy(5,5, SHIELDED_ENEMY, 0);
-                this.makeEnemy(9,5, SHIELDED_ENEMY, 0);
+                WIDTH = 17;
+                HEIGHT = 17;
+                this.setupLevel( WIDTH, HEIGHT );
+                startX = 8;
+                startY = 14;
+                this.makeEnemy(8,2, FINAL_BOSS_1, 0);
+                this.makeEnemy(6,4, MEGA_ENEMY, 0);
+                this.makeEnemy(10,4, MEGA_ENEMY, 0);
 
                 this.makeFloor( 115, 26, 26, 20, 0, 0, WIDTH, HEIGHT );
 
-                //Inner Walls
-                this.createBlock( 2, 0, 6, 11, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 3, 6, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 11, 6, PS.COLOR_BLACK );
-
-                //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                //Walls
+                this.outerWalls( HELL_COLOR );
+                this.createBlock( 2, 0, 7, 12, HELL_COLOR );
+                this.createBlock( 0, 2, 4, 6, HELL_COLOR );
+                this.createBlock( 0, 2, 12, 6, HELL_COLOR );
 
             }
             this.drawBlood();
@@ -2584,7 +2466,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 9;
+    level = 8;
 
     trigun = false;
 
