@@ -8,34 +8,25 @@
 
 "use strict"; // Do NOT remove this directive!
 
-/*
- PS.init( system, options )
- Called once after engine is initialized but before event-polling begins.
- This function doesn't have to do anything, although initializing the grid dimensions with PS.gridSize() is recommended.
- If PS.grid() is not called, the default grid dimensions (8 x 8 beads) are applied.
- Any value returned is ignored.
- [system : Object] = A JavaScript object containing engine and host platform information properties; see API documentation for details.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
-
-// TODO:
-
-
 //SOUNDS FOUND ON FREESOUND.ORG BY:
 //spookymodem, Sonicfreak, Darsycho, outroelison, StormwaveAudio, CGEffex, steveygos93, Breviceps, Blockfighter298,
 // SlykMrByches, roboroo, jacobalcook, NicknameLarry, distillerystudio
 
 const WIDTH = 15;
 const HEIGHT = 15;
-const HIDDEN_DOOR_COLOR = 0x030102;
+const HIDDEN_DOOR_COLOR = 0x514657;
 const PLAYER_COLOR = 0x238fe6;
 const REGEN_COLOR = 0x238fe5;
+const MOON_COLOR = 0x54475b;
+const VENUS_COLOR = 0x82482c;
+const JUNGLE_COLOR = 0x2b4127;
 const LAVA_COLOR = 0xd53e00;
+const QUICKSAND_COLOR = 0xe0c78e;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
-const OBSTACLES = [ PS.COLOR_BLACK, LAVA_COLOR ];
+const OBSTACLES = [ PS.COLOR_BLACK, MOON_COLOR, VENUS_COLOR, JUNGLE_COLOR, LAVA_COLOR, QUICKSAND_COLOR ];
 const SHIELDED_ENEMY = 0x2FC819;
 const DEFAULT_ENEMY = 0x80E81D;
 const MEGA_ENEMY = 0x014421;
@@ -43,7 +34,6 @@ const FINAL_BOSS_1 = 0x030110;
 const FINAL_BOSS_2 = PS.COLOR_WHITE;;
 const LAVA_ENEMY = 0xEA7401;
 const SPAWNER_ENEMY = 0x6a3893;
-// 0x7DE339
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, SPAWNER_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
 const LAVA_IGNORE = [LAVA_ENEMY, FINAL_BOSS_2];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
@@ -1364,11 +1354,6 @@ let projectile3 = {
             var gValRandom = 20 - PS.random(randomValue);
             var bValRandom = 141 - PS.random(randomValue);
 
-          /*  //Burgundy
-            var rValRandom = 128 - PS.random(randomValue);
-            var gValRandom = 0 + PS.random(randomValue);
-            var bValRandom = 22 - PS.random(randomValue);*/
-
             rgb = PS.makeRGB(rValRandom, gValRandom, bValRandom);
             if(room == portalRoom){
                 PS.border(portalX, portalY, PS.random(10));
@@ -1563,13 +1548,7 @@ let projectile3 = {
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
-           /* if (level > 12){
-                PS.gridSize( WIDTH, HEIGHT );
-                this.createBlock(WIDTH-1, HEIGHT-1, 0,0, PS.COLOR_GREEN);
-                PS.border( PS.ALL, PS.ALL, 0 );
-                start = true;
-                PS.audioPlay ( "Victory", { path: "GameAudio/", volume: 0.25 });
-            }*/
+
             if( level == 1) {
                 PS.gridSize( WIDTH, HEIGHT );
                 PS.bgAlpha( PS.ALL, PS.ALL, 255 );
@@ -1599,20 +1578,20 @@ let projectile3 = {
 
 
                     //Inner Walls
-                    this.createBlock(6, 0, 4, 7, PS.COLOR_BLACK);
+                    this.createBlock(6, 0, 4, 7, MOON_COLOR );
 
                     //Outer Walls
-                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 0, MOON_COLOR );
+                    this.createBlock(14, 0, 0, 14, MOON_COLOR );
+                    this.createBlock(0, 14, 0, 0, MOON_COLOR );
+                    this.createBlock(0, 14, 14, 0, MOON_COLOR );
 
                     this.createBlock(0, 0, 7, 14, HIDDEN_DOOR_COLOR);
                 }
                 else if( room === 1 ){
                     startX = 7;
                     startY = 0;
-                    this.createBlock(WIDTH-1,HEIGHT-1, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(WIDTH-1,HEIGHT-1, 0, 0, MOON_COLOR );
                     this.makeFloor(169,169,169,20,5,5,3,5);
                     this.makeFloor(169,169,169,20,7,1,1,4);
                     this.createBlock(0, 0, 7, 0, DOOR_COLOR);
@@ -1636,16 +1615,16 @@ let projectile3 = {
                 this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
 
                 //Inner Walls
-                this.createBlock( 0, 1, 4, 7, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 8, 10, PS.COLOR_BLACK );
-                this.createBlock( 0, 1, 10, 6, PS.COLOR_BLACK );
-                this.createBlock( 1, 0, 7, 4, PS.COLOR_BLACK );
+                this.createBlock( 0, 1, 4, 7, MOON_COLOR );
+                this.createBlock( 0, 0, 8, 10, MOON_COLOR );
+                this.createBlock( 0, 1, 10, 6, MOON_COLOR );
+                this.createBlock( 1, 0, 7, 4, MOON_COLOR );
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
+                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
+                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
+                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
             if( level == 3 ) {
                 room = 0;
@@ -1670,27 +1649,27 @@ let projectile3 = {
                 this.makeEnemy( 11, 7, SHIELDED_ENEMY, 0 );
 
                 //Inner Walls
-                this.createBlock( 3, 0, 1, 1, PS.COLOR_BLACK );
-                this.createBlock( 0, 3, 1, 1, PS.COLOR_BLACK );
-                this.createBlock( 0, 3, 1, 10, PS.COLOR_BLACK );
-                this.createBlock( 3, 0, 1, 13, PS.COLOR_BLACK );
-                this.createBlock( 3, 0, 10, 1, PS.COLOR_BLACK );
-                this.createBlock( 0, 3, 13, 1, PS.COLOR_BLACK );
-                this.createBlock( 0, 3, 13, 10, PS.COLOR_BLACK );
-                this.createBlock( 3, 0, 10, 13, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 2, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 12, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 2, 12, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 12, 12, PS.COLOR_BLACK );
-                this.createBlock( 4, 0, 5, 5, PS.COLOR_BLACK );
-                this.createBlock( 4, 0, 5, 9, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 9, 5, PS.COLOR_BLACK );
+                this.createBlock( 3, 0, 1, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 1, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 1, 10, MOON_COLOR );
+                this.createBlock( 3, 0, 1, 13, MOON_COLOR );
+                this.createBlock( 3, 0, 10, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 13, 1, MOON_COLOR );
+                this.createBlock( 0, 3, 13, 10, MOON_COLOR );
+                this.createBlock( 3, 0, 10, 13, MOON_COLOR );
+                this.createBlock( 0, 0, 2, 2, MOON_COLOR );
+                this.createBlock( 0, 0, 12, 2, MOON_COLOR );
+                this.createBlock( 0, 0, 2, 12, MOON_COLOR );
+                this.createBlock( 0, 0, 12, 12, MOON_COLOR );
+                this.createBlock( 4, 0, 5, 5, MOON_COLOR );
+                this.createBlock( 4, 0, 5, 9, MOON_COLOR );
+                this.createBlock( 0, 4, 9, 5, MOON_COLOR );
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
+                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
+                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
+                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
             //has rooms
             if( level == 4){
@@ -1874,35 +1853,35 @@ let projectile3 = {
                 this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
 
                 //Inner Walls
-                this.createBlock( 2, 0, 2, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 2, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 4, 2, PS.COLOR_BLACK );
-                this.createBlock( 2, 0, 2, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 1, 6, 1, PS.COLOR_BLACK );
-                this.createBlock( 2, 0, 1, 6, PS.COLOR_BLACK );
-                this.createBlock( 4, 0, 2, 8, PS.COLOR_BLACK );
-                this.createBlock( 0, 7, 6, 6, PS.COLOR_BLACK );
-                this.createBlock( 3, 0, 1, 10, PS.COLOR_BLACK );
-                this.createBlock( 0, 1, 2, 12, PS.COLOR_BLACK );
-                this.createBlock( 0, 1, 4, 11, PS.COLOR_BLACK );
-                this.createBlock( 2, 0, 6, 4, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 8, 2, PS.COLOR_BLACK );
-                this.createBlock( 4, 0, 8, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 8, 8, PS.COLOR_BLACK );
-                this.createBlock( 2, 0, 8, 8, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 12, 2, PS.COLOR_BLACK );
-                this.createBlock( 0, 8, 10, 4, PS.COLOR_BLACK );
-                this.createBlock( 2, 0, 7, 12, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 11, 6, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 12, 8, PS.COLOR_BLACK );
-                this.createBlock( 0, 0, 13, 10, PS.COLOR_BLACK );
-                this.createBlock( 0, 2, 12, 12, PS.COLOR_BLACK );
+                this.createBlock( 2, 0, 2, 2, MOON_COLOR );
+                this.createBlock( 0, 2, 2, 2, MOON_COLOR );
+                this.createBlock( 0, 4, 4, 2, MOON_COLOR );
+                this.createBlock( 2, 0, 2, 2, MOON_COLOR );
+                this.createBlock( 0, 1, 6, 1, MOON_COLOR );
+                this.createBlock( 2, 0, 1, 6, MOON_COLOR );
+                this.createBlock( 4, 0, 2, 8, MOON_COLOR );
+                this.createBlock( 0, 7, 6, 6, MOON_COLOR );
+                this.createBlock( 3, 0, 1, 10, MOON_COLOR );
+                this.createBlock( 0, 1, 2, 12, MOON_COLOR );
+                this.createBlock( 0, 1, 4, 11, MOON_COLOR );
+                this.createBlock( 2, 0, 6, 4, MOON_COLOR );
+                this.createBlock( 0, 4, 8, 2, MOON_COLOR );
+                this.createBlock( 4, 0, 8, 2, MOON_COLOR );
+                this.createBlock( 0, 2, 8, 8, MOON_COLOR );
+                this.createBlock( 2, 0, 8, 8, MOON_COLOR );
+                this.createBlock( 0, 4, 12, 2, MOON_COLOR );
+                this.createBlock( 0, 8, 10, 4, MOON_COLOR );
+                this.createBlock( 2, 0, 7, 12, MOON_COLOR );
+                this.createBlock( 0, 0, 11, 6, MOON_COLOR );
+                this.createBlock( 0, 2, 12, 8, MOON_COLOR );
+                this.createBlock( 0, 0, 13, 10, MOON_COLOR );
+                this.createBlock( 0, 2, 12, 12, MOON_COLOR );
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, MOON_COLOR );
+                this.createBlock( 14, 0, 0, 14, MOON_COLOR );
+                this.createBlock( 0, 14, 0, 0, MOON_COLOR );
+                this.createBlock( 0, 14, 14, 0, MOON_COLOR );
             }
             if ( level == 7 ) {
                 room = 0;
@@ -1936,10 +1915,10 @@ let projectile3 = {
                 this.createBlock( 1, 0, 10, 7, LAVA_COLOR );
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
+                this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
+                this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
+                this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
             }
             //has rooms
             if( level == 8 ) {
@@ -1986,10 +1965,10 @@ let projectile3 = {
                     this.createBlock( 0, 1, 11, 9, LAVA_COLOR );
 
                     //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
+                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
+                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
+                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
 
                     this.createBlock( 0, 1, 0, 0, LAVA_COLOR );
                     this.createBlock( 0, 1, 14, 0, LAVA_COLOR );
@@ -2009,7 +1988,7 @@ let projectile3 = {
                     startY = 0;
 
                     //Inner Walls
-                    this.createBlock( 2, 2, 6, 6, PS.COLOR_BLACK );
+                    this.createBlock( 2, 2, 6, 6, LAVA_COLOR );
 
                     //Outer Walls
                     this.createBlock( 14, 0, 0, 0, LAVA_COLOR );
@@ -2045,9 +2024,7 @@ let projectile3 = {
                     this.makeEnemy( 13, 10, DEFAULT_ENEMY, 2 );
                     this.makeEnemy( 13, 12, DEFAULT_ENEMY, 2 );
                 }
-                if(eastereggs.length == 0) {
-                    //this.makeEasterEgg(7, 7, TRIGUN_COLOR, 0);
-                }
+
                 portalX = 7;
                 portalY = 7;
                 portalRoom = 2;
@@ -2072,10 +2049,10 @@ let projectile3 = {
                     this.createBlock( 0, 0, 7, 5, ALTAR_COLOR_4 );
 
                     //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 0, JUNGLE_COLOR );
+                    this.createBlock( 14, 0, 0, 14, JUNGLE_COLOR );
+                    this.createBlock( 0, 14, 0, 0, JUNGLE_COLOR );
+                    this.createBlock( 0, 14, 14, 0, JUNGLE_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 14, 7, DOOR_COLOR);
@@ -2090,14 +2067,14 @@ let projectile3 = {
                     }
 
                     //Inner Walls
-                    this.createBlock( 1, 1, 4, 4, PS.COLOR_BLACK);
-                    this.createBlock( 1, 1, 4, 10, PS.COLOR_BLACK);
+                    this.createBlock( 1, 1, 4, 4, JUNGLE_COLOR );
+                    this.createBlock( 1, 1, 4, 10, JUNGLE_COLOR );
 
                     //Outer Walls
-                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
+                    this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
+                    this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
+                    this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
@@ -2107,18 +2084,16 @@ let projectile3 = {
                     startX = 0;
                     startY = 7;
 
-                    //make floor red if trigun powerup is active
-
                     //Inner Walls
-                    this.createBlock( 0, 2, 10, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 2, 10, 11, PS.COLOR_BLACK );
-                    this.createBlock( 0, 2, 4, 6, PS.COLOR_BLACK );
+                    this.createBlock( 0, 2, 10, 1, JUNGLE_COLOR );
+                    this.createBlock( 0, 2, 10, 11, JUNGLE_COLOR );
+                    this.createBlock( 0, 2, 4, 6, JUNGLE_COLOR );
 
                     //Outer Walls
-                    this.createBlock(14, 0, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 0, 0, PS.COLOR_BLACK);
-                    this.createBlock(0, 14, 14, 0, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 0, JUNGLE_COLOR );
+                    this.createBlock(14, 0, 0, 14, JUNGLE_COLOR );
+                    this.createBlock(0, 14, 0, 0, JUNGLE_COLOR );
+                    this.createBlock(0, 14, 14, 0, JUNGLE_COLOR );
 
                     //Door
                     this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
@@ -2134,7 +2109,6 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-               // PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 1, 13, LAVA_ENEMY, 0 );
@@ -2152,10 +2126,10 @@ let projectile3 = {
                 this.createBlock( 2, 0, 1, 11, LAVA_COLOR );
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
+                this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
+                this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
+                this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
                 this.createBlock( 3, 0, 0, 0, LAVA_COLOR );
                 this.createBlock( 0, 3, 0, 0, LAVA_COLOR );
             }
@@ -2217,7 +2191,7 @@ let projectile3 = {
                     this.createBlock(0, 14, 1, 0, LAVA_COLOR);
                     this.createBlock(0, 14, 13, 0, LAVA_COLOR);
 
-                    this.createBlock(14, 0, 0, 14, PS.COLOR_BLACK);
+                    this.createBlock(14, 0, 0, 14, VENUS_COLOR);
                     this.createBlock(5, 0, 0, 14, LAVA_COLOR);
                     this.createBlock(5, 0, 9, 14, LAVA_COLOR);
 
@@ -2314,7 +2288,7 @@ let projectile3 = {
                 else if (room === 4) {
                     startX = 7;
                     startY = 0;
-                    this.createBlock(WIDTH-1,HEIGHT-1, 0, 0, PS.COLOR_BLACK);
+                    this.createBlock(WIDTH-1,HEIGHT-1, 0, 0, VENUS_COLOR );
                     this.makeFloor(169,169,169,20,5,5,3,5);
                     this.makeFloor(169,169,169,20,7,1,1,4);
                     this.createBlock(0, 0, 7, 0, DOOR_COLOR);
@@ -2332,7 +2306,6 @@ let projectile3 = {
                 portalX = 13;
                 portalY = 9;
                 portalRoom = 0;
-              //  PS.fade(PS.ALL, PS.ALL, 10);
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 13, 13, LAVA_ENEMY, 0 );
@@ -2398,19 +2371,19 @@ let projectile3 = {
                     }
 
                     //Inner Walls
-                    this.createBlock( 1, 1, 4, 3, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 9, 4, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 10, 5, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 8, 10, PS.COLOR_BLACK );
-                    this.createBlock( 0, 1, 6, 7, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 3, 9, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 4, 10, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 1, 1, PS.COLOR_BLACK );
-                    this.createBlock( 2, 0, 11, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 13, 2, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 12, 13, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 13, 12, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 1, 13, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 4, 3, VENUS_COLOR );
+                    this.createBlock( 1, 1, 9, 4, VENUS_COLOR );
+                    this.createBlock( 1, 1, 10, 5, VENUS_COLOR );
+                    this.createBlock( 1, 1, 8, 10, VENUS_COLOR );
+                    this.createBlock( 0, 1, 6, 7, VENUS_COLOR );
+                    this.createBlock( 0, 0, 3, 9, VENUS_COLOR );
+                    this.createBlock( 0, 0, 4, 10, VENUS_COLOR );
+                    this.createBlock( 1, 0, 1, 1, VENUS_COLOR );
+                    this.createBlock( 2, 0, 11, 1, VENUS_COLOR );
+                    this.createBlock( 0, 0, 13, 2, VENUS_COLOR );
+                    this.createBlock( 1, 0, 12, 13, VENUS_COLOR );
+                    this.createBlock( 0, 0, 13, 12, VENUS_COLOR );
+                    this.createBlock( 0, 0, 1, 13, VENUS_COLOR );
                     this.createBlock( 0, 0, 3, 4, LAVA_COLOR );
                     this.createBlock( 0, 0, 5, 3, LAVA_COLOR );
                     this.createBlock( 0, 0, 5, 8, LAVA_COLOR );
@@ -2425,10 +2398,10 @@ let projectile3 = {
                     this.createBlock( 0, 0, 11, 5, LAVA_COLOR );
 
                     //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
+                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
+                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
+                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 14, 7, DOOR_COLOR);
@@ -2439,15 +2412,15 @@ let projectile3 = {
                     startY = 7;
 
                     //Inner Walls
-                    this.createBlock( 0, 0, 3, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 5, 3, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 3, 1, VENUS_COLOR );
+                    this.createBlock( 0, 0, 5, 3, VENUS_COLOR );
                     this.createBlock( 0, 0, 7, 6, LAVA_COLOR );
-                    this.createBlock( 0, 0, 8, 9, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 4, 8, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 12, 3, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 11, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 13, 12, PS.COLOR_BLACK );
-                    this.createBlock( 0, 0, 5, 11, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 8, 9, VENUS_COLOR );
+                    this.createBlock( 0, 0, 4, 8, VENUS_COLOR );
+                    this.createBlock( 0, 0, 12, 3, VENUS_COLOR );
+                    this.createBlock( 0, 0, 11, 1, VENUS_COLOR );
+                    this.createBlock( 0, 0, 13, 12, VENUS_COLOR );
+                    this.createBlock( 0, 0, 5, 11, VENUS_COLOR );
                     this.createBlock( 0, 0, 1, 9, LAVA_COLOR );
                     this.createBlock( 0, 0, 1, 3, LAVA_COLOR );
                     this.createBlock( 0, 0, 3, 5, LAVA_COLOR );
@@ -2457,13 +2430,13 @@ let projectile3 = {
                     this.createBlock( 0, 0, 12, 7, LAVA_COLOR );
                     this.createBlock( 0, 0, 7, 13, LAVA_COLOR );
                     this.createBlock( 0, 0, 10, 10, LAVA_COLOR );
-                    this.createBlock( 0, 0, 9, 7, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 9, 7, VENUS_COLOR );
 
                     //Outer Walls
-                    this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                    this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                    this.createBlock( 14, 0, 0, 0, VENUS_COLOR );
+                    this.createBlock( 14, 0, 0, 14, VENUS_COLOR );
+                    this.createBlock( 0, 14, 0, 0, VENUS_COLOR );
+                    this.createBlock( 0, 14, 14, 0, VENUS_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 0, 7, DOOR_COLOR);
@@ -2487,25 +2460,25 @@ let projectile3 = {
                 this.makeFloor( 89, 38, 11, 20, 0, 0, WIDTH, HEIGHT );
 
                 //Inner Walls
-                this.createBlock( 4, 0, 5, 4, PS.COLOR_BLACK );
-                this.createBlock( 4, 0, 5, 10, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 4, 5, PS.COLOR_BLACK );
-                this.createBlock( 0, 4, 10, 5, PS.COLOR_BLACK );
+                this.createBlock( 4, 0, 5, 4, JUNGLE_COLOR );
+                this.createBlock( 4, 0, 5, 10, JUNGLE_COLOR );
+                this.createBlock( 0, 4, 4, 5, JUNGLE_COLOR );
+                this.createBlock( 0, 4, 10, 5, JUNGLE_COLOR );
 
-                this.createBlock( 0, 0, 5, 9, LAVA_COLOR );
-                this.createBlock( 0, 0, 9, 9, LAVA_COLOR );
-                this.createBlock( 0, 0, 5, 5, LAVA_COLOR );
-                this.createBlock( 0, 0, 9, 5, LAVA_COLOR );
+                this.createBlock( 0, 0, 5, 9, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 9, 9, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 5, 5, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 9, 5, QUICKSAND_COLOR );
 
-                this.createBlock( 0, 0, 4, 10, LAVA_COLOR );
-                this.createBlock( 0, 0, 10, 10, LAVA_COLOR );
-                this.createBlock( 0, 0, 4, 4, LAVA_COLOR );
-                this.createBlock( 0, 0, 10, 4, LAVA_COLOR );
+                this.createBlock( 0, 0, 4, 10, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 10, 10, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 4, 4, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 10, 4, QUICKSAND_COLOR );
 
-                this.createBlock( 0, 0, 3, 11, LAVA_COLOR );
-                this.createBlock( 0, 0, 11, 11, LAVA_COLOR );
-                this.createBlock( 0, 0, 3, 3, LAVA_COLOR );
-                this.createBlock( 0, 0, 11, 3, LAVA_COLOR );
+                this.createBlock( 0, 0, 3, 11, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 11, 11, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 3, 3, QUICKSAND_COLOR );
+                this.createBlock( 0, 0, 11, 3, QUICKSAND_COLOR );
 
                 this.makeFloor( 89, 38, 11, 20, 6, 10, 1, 1 );
                 this.makeFloor( 89, 38, 11, 20, 8, 10, 1, 1 );
@@ -2519,10 +2492,10 @@ let projectile3 = {
 
 
                 //Outer Walls
-                this.createBlock( 14, 0, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 14, 0, 0, 14, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 0, 0, PS.COLOR_BLACK );
-                this.createBlock( 0, 14, 14, 0, PS.COLOR_BLACK );
+                this.createBlock( 14, 0, 0, 0, JUNGLE_COLOR );
+                this.createBlock( 14, 0, 0, 14, JUNGLE_COLOR );
+                this.createBlock( 0, 14, 0, 0, JUNGLE_COLOR );
+                this.createBlock( 0, 14, 14, 0, JUNGLE_COLOR );
 
             }
             if ( level == 15 ) {
@@ -2649,18 +2622,6 @@ PS.init = function ( system, options ) {
 
 };
 
-
-
-/*
- PS.touch ( x, y, data, options )
- Called when the left mouse button is clicked over bead(x, y), or when bead(x, y) is touched.
- This function doesn't have to do anything. Any value returned is ignored.
- [x : Number] = zero-based x-position (column) of the bead on the grid.
- [y : Number] = zero-based y-position (row) of the bead on the grid.
- [data : *] = The JavaScript value previously associated with bead(x, y) using PS.data(); default = 0.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
-
 PS.touch = function ( x, y, data, options ) {
     if ( !firing && !isOutOfBounds && !gameover && !start && !runComplete) {
         projectile.projDir =  direction;
@@ -2743,33 +2704,9 @@ PS.touch = function ( x, y, data, options ) {
     }
 };
 
-/*
- PS.release ( x, y, data, options )
- Called when the left mouse button is released, or when a touch is lifted, over bead(x, y).
- This function doesn't have to do anything. Any value returned is ignored.
- [x : Number] = zero-based x-position (column) of the bead on the grid.
- [y : Number] = zero-based y-position (row) of the bead on the grid.
- [data : *] = The JavaScript value previously associated with bead(x, y) using PS.data(); default = 0.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
-
 PS.release = function ( x, y, data, options ) {
-    // Uncomment the following code line to inspect x/y parameters:
 
-    // PS.debug( "PS.release() @ " + x + ", " + y + "\n" );
-
-    // Add code here for when the mouse button/touch is released over a bead.
 };
-
-/*
- PS.enter ( x, y, button, data, options )
- Called when the mouse cursor/touch enters bead(x, y).
- This function doesn't have to do anything. Any value returned is ignored.
- [x : Number] = zero-based x-position (column) of the bead on the grid.
- [y : Number] = zero-based y-position (row) of the bead on the grid.
- [data : *] = The JavaScript value previously associated with bead(x, y) using PS.data(); default = 0.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
 
 PS.enter = function ( x, y, data, options ) {
     let nextBead = data; // *BM* This info is passed in the data parameter! No need for PS.data( x, y );
@@ -2897,93 +2834,23 @@ PS.enter = function ( x, y, data, options ) {
     }
 };
 
-/*
- PS.exit ( x, y, data, options )
- Called when the mouse cursor/touch exits bead(x, y).
- This function doesn't have to do anything. Any value returned is ignored.
- [x : Number] = zero-based x-position (column) of the bead on the grid.
- [y : Number] = zero-based y-position (row) of the bead on the grid.
- [data : *] = The JavaScript value previously associated with bead(x, y) using PS.data(); default = 0.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
-
 PS.exit = function ( x, y, data, options ) {
-    // Uncomment the following code line to inspect x/y parameters:
 
-    // PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
-
-    // Add code here for when the mouse cursor/touch exits a bead.
 };
-
-/*
- PS.exitGrid ( options )
- Called when the mouse cursor/touch exits the grid perimeter.
- This function doesn't have to do anything. Any value returned is ignored.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
 
 PS.exitGrid = function ( options ) {
-    // Uncomment the following code line to verify operation:
 
-    // PS.debug( "PS.exitGrid() called\n" );
-
-    // Add code here for when the mouse cursor/touch moves off the grid.
 };
-
-/*
- PS.keyDown ( key, shift, ctrl, options )
- Called when a key on the keyboard is pressed.
- This function doesn't have to do anything. Any value returned is ignored.
- [key : Number] = ASCII code of the released key, or one of the PS.KEY_* constants documented in the API.
- [shift : Boolean] = true if shift key is held down, else false.
- [ctrl : Boolean] = true if control key is held down, else false.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
 
 PS.keyDown = function ( key, shift, ctrl, options ) {
-    // Uncomment the following code line to inspect first three parameters:
 
-    // PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
-
-    // Add code here for when a key is pressed.
 };
-
-/*
- PS.keyUp ( key, shift, ctrl, options )
- Called when a key on the keyboard is released.
- This function doesn't have to do anything. Any value returned is ignored.
- [key : Number] = ASCII code of the released key, or one of the PS.KEY_* constants documented in the API.
- [shift : Boolean] = true if shift key is held down, else false.
- [ctrl : Boolean] = true if control key is held down, else false.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- */
 
 PS.keyUp = function ( key, shift, ctrl, options ) {
-    // Uncomment the following code line to inspect first three parameters:
 
-    // PS.debug( "PS.keyUp(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
-
-    // Add code here for when a key is released.
 };
 
-/*
- PS.input ( sensors, options )
- Called when a supported input device event (other than those above) is detected.
- This function doesn't have to do anything. Any value returned is ignored.
- [sensors : Object] = A JavaScript object with properties indicating sensor status; see API documentation for details.
- [options : Object] = A JavaScript object with optional data properties; see API documentation for details.
- NOTE: Currently, only mouse wheel events are reported, and only when the mouse cursor is positioned directly over the grid.
- */
-
 PS.input = function ( sensors, options ) {
-    // Uncomment the following code lines to inspect first parameter:
 
-//	 var device = sensors.wheel; // check for scroll wheel
-//
-//	 if ( device ) {
-//	   PS.debug( "PS.input(): " + device + "\n" );
-//	 }
-
-    // Add code here for when an input event is detected.
 };
 
