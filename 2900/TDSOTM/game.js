@@ -1638,11 +1638,11 @@ let projectile3 = {
                 portalY = 8;
                 portalRoom = 0;
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
-                this.makeFloor( 143, 140, 160, 20, 4, 4, 7, 7 );
-                this.makeFloor( 143, 140, 160, 20, 3, 5, 9, 5 );
-                this.makeFloor( 143, 140, 160, 20, 5, 3, 5, 9 );
-                this.makeFloor( 135, 130, 154, 20, 5, 3, 5, 9 );
-                this.makeFloor( 127, 120, 149, 20, 6, 6, 3, 3 );
+                this.makeFloor( 143, 140, 160, 20, 5, 5, 7, 7 );
+                this.makeFloor( 143, 140, 160, 20, 4, 6, 9, 5 );
+                this.makeFloor( 143, 140, 160, 20, 6, 4, 5, 9 );
+                this.makeFloor( 135, 130, 154, 20, 6, 4, 5, 9 );
+                this.makeFloor( 127, 120, 149, 20, 7, 7, 3, 3 );
                 //Enemies
                 this.makeEnemy( 8, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 8, 13, DEFAULT_ENEMY, 0 );
@@ -2470,7 +2470,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 3;
+    level = 1;
 
     trigun = false;
 
