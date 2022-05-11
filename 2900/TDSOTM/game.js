@@ -1544,7 +1544,7 @@ let projectile3 = {
             }
         },
 
-        setupLevel( width, height, startx, starty ) {
+        setupLevel( width, height ) {
             PS.gridSize( width, height );
             PS.bgAlpha( PS.ALL, PS.ALL, 255 );
             PS.border( PS.ALL, PS.ALL, 0 );
@@ -1906,6 +1906,7 @@ let projectile3 = {
                     //Inner Walls
                     this.outerWalls( LAVA_COLOR );
                     this.createBlock( 2, 2, 6, 6, LAVA_COLOR );
+                    this.createBlock( 0, 0, 7, 7, VENUS_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 7, 0, DOOR_COLOR);
@@ -2422,7 +2423,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 1;
+    level = 8;
 
     trigun = false;
 
