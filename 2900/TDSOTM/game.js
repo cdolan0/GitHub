@@ -1544,10 +1544,16 @@ let projectile3 = {
             }
         },
 
-        setupLevel( width, height ) {
+        setupLevel( width, height, startx, starty ) {
             PS.gridSize( width, height );
             PS.bgAlpha( PS.ALL, PS.ALL, 255 );
             PS.border( PS.ALL, PS.ALL, 0 );
+        },
+
+        setupPortal( x, y, room ) {
+            portalX = x;
+            portalY = y;
+            portalRoom = room;
         },
 
         outerWalls( color ) {
@@ -1569,9 +1575,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 11;
-                portalX = startX;
-                portalY = startY;
-                portalRoom = 0;
+                this.setupPortal( 7, 11, 0 );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy(7, 3, DEFAULT_ENEMY, 0);
                 }
@@ -1612,9 +1616,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 7;
-                portalX = startX;
-                portalY = startY;
-                portalRoom = 0;
+                this.setupPortal( 7, 7, 0 );
                 this.makeFloor( 168, 176, 192, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
@@ -1634,9 +1636,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 8;
                 startY = 8;
-                portalX = 8;
-                portalY = 8;
-                portalRoom = 0;
+                this.setupPortal( 8, 8, 0 );
                 this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor( 143, 140, 160, 20, 5, 5, 7, 7 );
                 this.makeFloor( 143, 140, 160, 20, 4, 6, 9, 5 );
@@ -1681,9 +1681,7 @@ let projectile3 = {
                 if(eastereggs.length == 0){
                     this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
                 }
-                portalX = 2;
-                portalY = 3;
-                portalRoom = 1;
+                this.setupPortal( 2, 3, 1 );
                 if(room == 0){
                     if(usedDoor){
                         startX = 14;
@@ -1741,9 +1739,7 @@ let projectile3 = {
                 if(eastereggs.length == 0) {
                     this.makeEasterEgg(7, 4, INVIS_COLOR, 1);
                 }
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 0;
+                this.setupPortal( 7, 7, 0 );
                 if(room == 0) {
                     if (usedDoor) {
                         startX = 1;
@@ -1781,9 +1777,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 1;
                 startY = 13;
-                portalX = 7;
-                portalY = 13;
-                portalRoom = 0;
+                this.setupPortal( 7, 13, 0 );
                 this.makeFloor( 119, 110, 135, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
@@ -1825,10 +1819,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 12;
-                portalX = startX;
-                portalY = 7;
-                portalRoom = 0;
-             //   PS.fade(PS.ALL, PS.ALL, 5);
+                this.setupPortal( 7, 7, 0 );
                 this.makeFloor( 216, 176, 98, 20, 0, 0, WIDTH, HEIGHT );
                 this.makeFloor ( 216, 161, 98, 20, 5, 2, 4, 5 );
                 this.makeFloor ( 216, 161, 98, 20, 2, 7, 4, 5 );
@@ -1877,9 +1868,7 @@ let projectile3 = {
                     this.makeEnemy( 7, 11, MEGA_ENEMY, 1 );
                     this.makeEnemy( 11, 11, SHIELDED_ENEMY, 1 );
                 }
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 0;
+                this.setupPortal( 7, 11, 1 );
                 if(room == 0){
                     if(usedDoor){
                         startX = 7;
@@ -1946,9 +1935,7 @@ let projectile3 = {
                     this.makeEnemy( 13, 12, DEFAULT_ENEMY, 2 );
                 }
 
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 2;
+                this.setupPortal( 7, 7, 2 );
                 if(room == 0) {
                     if (usedDoor) {
                         startX = 14;
@@ -2034,9 +2021,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 3;
                 startY = 3;
-                portalX = startX;
-                portalY = startY;
-                portalRoom = 0;
+                this.setupPortal( 3, 3, 0 );
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 1, 13, LAVA_ENEMY, 0 );
@@ -2077,9 +2062,7 @@ let projectile3 = {
                 if (eastereggs.length == 0) {
                     this.makeEasterEgg(6, 8, SHIELD_COLOR, 4);
                 }
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 0;
+                this.setupPortal( 7, 7, 0 );
                 if (room === 0) {
                     if(usedDoor){
                         startX = 0;
@@ -2211,9 +2194,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 1;
                 startY = 1;
-                portalX = 13;
-                portalY = 9;
-                portalRoom = 0;
+                this.setupPortal( 13, 9, 0 );
                 this.makeFloor( 200, 105, 68, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 13, 13, LAVA_ENEMY, 0 );
@@ -2260,9 +2241,7 @@ let projectile3 = {
                     this.makeEnemy( 10, 2, LAVA_ENEMY, 1 );
                     this.makeEnemy( 7, 1, LAVA_ENEMY, 1 );
                 }
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 1;
+                this.setupPortal( 7, 7, 1 );
                 if(room == 0){
                     if(usedDoor){
                         startX = 14;
@@ -2342,9 +2321,7 @@ let projectile3 = {
                 this.setupLevel( WIDTH, HEIGHT );
                 startX = 7;
                 startY = 12;
-                portalX = 7;
-                portalY = 7;
-                portalRoom = 0;
+                this.setupPortal( 7, 7, 0 );
 
                 LAVA_COLOR = QUICKSAND_COLOR;
 
