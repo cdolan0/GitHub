@@ -19,7 +19,7 @@ const MOON_COLOR = 0x54475b;
 const VENUS_COLOR = 0x82482c;
 const JUNGLE_COLOR = 0x2b4127;
 const HELL_COLOR = 0x3e0000;
-const LAVA_COLOR = 0xd53e00;
+let LAVA_COLOR = 0xd53e00;
 const QUICKSAND_COLOR = 0xe0c78e;
 const SHIELD_COLOR = PS.COLOR_RED;
 const INVIS_COLOR = PS.COLOR_GRAY;
@@ -31,7 +31,7 @@ const DEFAULT_ENEMY = 0x80E81D;
 const MEGA_ENEMY = 0x014421;
 const FINAL_BOSS_1 = 0x030110;
 const FINAL_BOSS_2 = PS.COLOR_WHITE;;
-const LAVA_ENEMY = 0xEA7401;
+let LAVA_ENEMY = 0xEA7401;
 const SPAWNER_ENEMY = 0x6a3893;
 const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, SPAWNER_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
 const LAVA_IGNORE = [LAVA_ENEMY, FINAL_BOSS_2];
@@ -1615,7 +1615,7 @@ let projectile3 = {
                 portalX = startX;
                 portalY = startY;
                 portalRoom = 0;
-                this.makeFloor( 157, 160, 180, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor( 168, 176, 192, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 3, 11, SHIELDED_ENEMY, 0 );
@@ -1670,24 +1670,7 @@ let projectile3 = {
                 WIDTH = 15;
                 HEIGHT = 15;
                 this.setupLevel( WIDTH, HEIGHT );
-                this.makeFloor( 185, 185, 185, 20, 0, 0, WIDTH, HEIGHT );
-                const xFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
-                const yFloorValues = [ 2, 3, 5, 6, 8, 9, 11, 12 ];
-                var i;
-                for ( yMarker = 0; yMarker < HEIGHT; yMarker++ ) {
-                    for (xMarker = 0; xMarker < WIDTH; xMarker++) {
-                        for (i = 0; i < 14; i++) {
-                            if ( xMarker == xFloorValues[i] ) {
-                                rgb = this.makeColor(155, 155, 155, 20);
-                                this.createBlock(0, 0, xMarker, yMarker, rgb);
-                            }
-                            if ( yMarker == yFloorValues[i] ) {
-                                rgb = this.makeColor(155, 155, 155, 20);
-                                this.createBlock(0, 0, xMarker, yMarker, rgb);
-                            }
-                        }
-                    }
-                }
+                this.makeFloor( 135, 130, 150, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
                     this.makeEnemy( 11, 2, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 12, 11, DEFAULT_ENEMY, 0 );
@@ -1713,10 +1696,10 @@ let projectile3 = {
 
                     //Walls
                     this.outerWalls( MOON_COLOR );
-                    this.createBlock( 0, 2, 6, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 8, 6, 6, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 7, 8, PS.COLOR_BLACK );
-                    this.createBlock( 2, 0, 11, 8, PS.COLOR_BLACK );
+                    this.createBlock( 0, 2, 6, 1, MOON_COLOR );
+                    this.createBlock( 0, 8, 6, 6, MOON_COLOR );
+                    this.createBlock( 1, 0, 7, 8, MOON_COLOR );
+                    this.createBlock( 2, 0, 11, 8, MOON_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 14, 10, DOOR_COLOR);
@@ -1727,16 +1710,16 @@ let projectile3 = {
 
                     //Inner Walls
                     this.outerWalls( MOON_COLOR );
-                    this.createBlock( 0, 0, 1, 6, PS.COLOR_BLACK );
-                    this.createBlock( 1, 0, 3, 6, PS.COLOR_BLACK );
-                    this.createBlock( 7, 0,  7, 6, PS.COLOR_BLACK );
-                    this.createBlock( 0, 5, 4, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 1, 10, 1, PS.COLOR_BLACK );
-                    this.createBlock( 0, 1, 10, 4, PS.COLOR_BLACK );
+                    this.createBlock( 0, 0, 1, 6, MOON_COLOR );
+                    this.createBlock( 1, 0, 3, 6, MOON_COLOR );
+                    this.createBlock( 7, 0,  7, 6, MOON_COLOR );
+                    this.createBlock( 0, 5, 4, 1, MOON_COLOR );
+                    this.createBlock( 0, 1, 10, 1, MOON_COLOR );
+                    this.createBlock( 0, 1, 10, 4, MOON_COLOR );
 
-                    this.createBlock( 2, 0, 1, 9, PS.COLOR_BLACK );
-                    this.createBlock( 2, 0, 5, 9, PS.COLOR_BLACK );
-                    this.createBlock( 0, 6, 8, 8, PS.COLOR_BLACK );
+                    this.createBlock( 2, 0, 1, 9, MOON_COLOR );
+                    this.createBlock( 2, 0, 5, 9, MOON_COLOR );
+                    this.createBlock( 0, 6, 8, 8, MOON_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 0, 10, DOOR_COLOR);
@@ -1746,19 +1729,7 @@ let projectile3 = {
                 WIDTH = 15;
                 HEIGHT = 15;
                 this.setupLevel( WIDTH, HEIGHT );
-                this.makeFloor( 150, 150, 150, 25, 0, 0, WIDTH, HEIGHT );
-                for ( yMarker = 2; yMarker < 13; yMarker++ ) {
-                    for ( xMarker = 2; xMarker < 13; xMarker ++ ) {
-                        if ( xMarker % 2 == 0 && yMarker % 2 == 0 ) {
-                            rgb = this.makeColor(80, 80, 80, 15 );
-                            this.createBlock(0, 0, xMarker, yMarker, rgb);
-                        }
-                        if ( xMarker % 2 !== 0 && yMarker % 2 !== 0 ) {
-                            rgb = this.makeColor(80, 80, 80, 15 );
-                            this.createBlock(0, 0, xMarker, yMarker, rgb);
-                        }
-                    }
-                }
+                this.makeFloor( 127, 120, 149, 25, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened) {
                     this.makeEnemy( 7, 2, DEFAULT_ENEMY, 0 );
                     this.makeEnemy( 12, 2, SHIELDED_ENEMY, 0 );
@@ -1783,10 +1754,10 @@ let projectile3 = {
                     }
                     //Walls
                     this.outerWalls( MOON_COLOR );
-                    this.createBlock( 1, 1, 3, 4, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 9, 3, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 10, 9, PS.COLOR_BLACK );
-                    this.createBlock( 1, 1, 4, 10, PS.COLOR_BLACK );
+                    this.createBlock( 1, 1, 3, 4, MOON_COLOR );
+                    this.createBlock( 1, 1, 9, 3, MOON_COLOR );
+                    this.createBlock( 1, 1, 10, 9, MOON_COLOR );
+                    this.createBlock( 1, 1, 4, 10, MOON_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 1, 0, DOOR_COLOR);
@@ -1813,8 +1784,7 @@ let projectile3 = {
                 portalX = 7;
                 portalY = 13;
                 portalRoom = 0;
-             //   PS.fade(PS.ALL, PS.ALL, 10);
-                this.makeFloor( 100, 100, 100, 20, 0, 0, WIDTH, HEIGHT );
+                this.makeFloor( 119, 110, 135, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 13, 9, SHIELDED_ENEMY, 0 );
@@ -2376,6 +2346,8 @@ let projectile3 = {
                 portalY = 7;
                 portalRoom = 0;
 
+                LAVA_COLOR = QUICKSAND_COLOR;
+
                 this.makeEnemy(7,7, SPAWNER_ENEMY, 0);
                 this.makeEnemy(5,7, LAVA_ENEMY, 0);
                 this.makeEnemy(9,7, LAVA_ENEMY, 0);
@@ -2416,6 +2388,9 @@ let projectile3 = {
 
             }
             if ( level == 15 ) {
+
+                LAVA_COLOR = 0xd53e00;
+
                 finalLevel = true;
                 room = 0;
                 WIDTH = 17;
