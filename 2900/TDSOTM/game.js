@@ -22,7 +22,7 @@ const HELL_COLOR = 0x3e0000;
 let LAVA_COLOR = 0xd53e00;
 const QUICKSAND_COLOR = 0xe0c78e;
 const SHIELD_COLOR = PS.COLOR_RED;
-const INVIS_COLOR = PS.COLOR_GRAY;
+const INVIS_COLOR = 0x777777;
 const TRIGUN_COLOR = PS.COLOR_VIOLET;
 const PLAYER_SHIELD_COLOR = PS.COLOR_ORANGE
 const OBSTACLES = [ PS.COLOR_BLACK, MOON_COLOR, VENUS_COLOR, JUNGLE_COLOR, HELL_COLOR, LAVA_COLOR, QUICKSAND_COLOR ];
@@ -211,10 +211,13 @@ let projectile3 = {
             }
             if ( enemyMoveCounter < 0 ) {
                 Game.moveEnemies();
-                if(level < 5) {
+                if(level < 8) {
                     enemyMoveCounter = 22;
                 }
-                else{
+                else if (level < 15) {
+                    enemyMoveCounter = 19;
+                }
+                else {
                     enemyMoveCounter = 16;
                 }
             }
@@ -1738,13 +1741,16 @@ let projectile3 = {
                     this.makeEnemy( 12, 2, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 12, 7, SHIELDED_ENEMY, 0 );
                     this.makeEnemy( 10, 12, DEFAULT_ENEMY, 0 );
-                    this.makeEnemy( 4, 7, SHIELDED_ENEMY, 1 );
-                    this.makeEnemy( 10, 7, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 5, 4, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 7, 4, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 9, 4, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 6, 8, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 8, 8, DEFAULT_ENEMY, 1 );
                 }
                 if(eastereggs.length == 0) {
-                    this.makeEasterEgg(7, 4, INVIS_COLOR, 1);
+                    this.makeEasterEgg(7, 10, INVIS_COLOR, 1);
                 }
-                this.setupPortal( 7, 7, 0 );
+                this.setupPortal( 7, 3, 1 );
                 if(room == 0) {
                     if (usedDoor) {
                         startX = 1;
@@ -1767,9 +1773,17 @@ let projectile3 = {
                     startX = 1;
                     startY = 14;
 
-                    PS.border( 7, 4, 1 );
-                    PS.borderColor( 7, 4, PS.COLOR_WHITE );
+                    //Invisibility Powerup
+                    PS.border( 7, 10, 2 );
+                    PS.borderColor( 7, 10, 0x777777 );
+                    PS.glyph( 7, 10, "?" );
+                    PS.glyphColor( 7, 10, 0x777777 );
+
+                    //Walls
                     this.outerWalls( MOON_COLOR );
+                    this.createBlock( 6, 0, 4, 6, MOON_COLOR );
+                    this.createBlock( 0, 0, 1, 6, MOON_COLOR );
+                    this.createBlock( 0, 0, 13, 6, MOON_COLOR );
 
                     //Door
                     this.createBlock(0, 0, 1, 14, DOOR_COLOR);
@@ -2430,7 +2444,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 4;
+    level = 1;
 
     trigun = false;
 
