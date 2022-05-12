@@ -1667,60 +1667,65 @@ let projectile3 = {
                 this.createBlock( 0, 4, 10, 6, MOON_COLOR );
             }
             if( level == 4){
-                WIDTH = 15;
-                HEIGHT = 15;
+                WIDTH = 17;
+                HEIGHT = 17;
                 this.setupLevel( WIDTH, HEIGHT );
                 this.makeFloor( 135, 130, 150, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened){
-                    this.makeEnemy( 11, 2, SHIELDED_ENEMY, 0 );
-                    this.makeEnemy( 12, 11, DEFAULT_ENEMY, 0 );
-                    this.makeEnemy( 8, 3, SHIELDED_ENEMY, 1 );
-                    this.makeEnemy( 12, 8, DEFAULT_ENEMY, 1 );
-                    this.makeEnemy( 10, 12, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 15, 1, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 7, 15, SHIELDED_ENEMY, 0 );
+                    this.makeEnemy( 1, 1, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 6, 3, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 12, 11, SHIELDED_ENEMY, 1 );
+                    this.makeEnemy( 15, 15, SHIELDED_ENEMY, 1 );
                 }
                 if(eastereggs.length == 0){
-                    this.makeEasterEgg(13, 1, SHIELD_COLOR, 1);
+                    this.makeEasterEgg(15, 1, SHIELD_COLOR, 1);
                 }
                 this.setupPortal( 2, 3, 1 );
                 if(room == 0){
                     if(usedDoor){
-                        startX = 14;
-                        startY = 10;
+                        startX = 16;
+                        startY = 11;
                     }
                     else {
-                        startX = 2;
-                        startY = 12;
+                        startX = 3;
+                        startY = 13;
                     }
 
                     //Walls
                     this.outerWalls( MOON_COLOR );
                     this.createBlock( 0, 2, 6, 1, MOON_COLOR );
-                    this.createBlock( 0, 8, 6, 6, MOON_COLOR );
+                    this.createBlock( 0, 10, 6, 5, MOON_COLOR );
                     this.createBlock( 1, 0, 7, 8, MOON_COLOR );
-                    this.createBlock( 2, 0, 11, 8, MOON_COLOR );
+                    this.createBlock( 5, 0, 10, 8, MOON_COLOR );
+                    this.createBlock( 2, 0, 1, 6, MOON_COLOR );
+                    this.createBlock( 2, 0, 3, 10, MOON_COLOR );
+                    this.createBlock( 2, 0, 7, 12, MOON_COLOR );
+                    this.createBlock( 0, 2, 12, 1, MOON_COLOR );
 
                     //Door
-                    this.createBlock(0, 0, 14, 10, DOOR_COLOR);
+                    this.createBlock(0, 0, 16, 11, DOOR_COLOR);
                 }
                 else if(room == 1){
                     startX = 0;
-                    startY = 10;
+                    startY = 11;
 
-                    //Inner Walls
+                    //Walls
                     this.outerWalls( MOON_COLOR );
                     this.createBlock( 0, 0, 1, 6, MOON_COLOR );
                     this.createBlock( 1, 0, 3, 6, MOON_COLOR );
-                    this.createBlock( 7, 0,  7, 6, MOON_COLOR );
+                    this.createBlock( 8, 0,  7, 6, MOON_COLOR );
                     this.createBlock( 0, 5, 4, 1, MOON_COLOR );
                     this.createBlock( 0, 1, 10, 1, MOON_COLOR );
                     this.createBlock( 0, 1, 10, 4, MOON_COLOR );
-
                     this.createBlock( 2, 0, 1, 9, MOON_COLOR );
                     this.createBlock( 2, 0, 5, 9, MOON_COLOR );
-                    this.createBlock( 0, 6, 8, 8, MOON_COLOR );
+                    this.createBlock( 0, 7, 8, 8, MOON_COLOR );
 
                     //Door
-                    this.createBlock(0, 0, 0, 10, DOOR_COLOR);
+                    this.createBlock(0, 0, 0, 11, DOOR_COLOR);
                 }
             }
             if( level == 5 ) {
@@ -1783,10 +1788,12 @@ let projectile3 = {
                 this.makeEnemy( 5, 1, DEFAULT_ENEMY, 0 );
                 this.makeEnemy( 13, 9, SHIELDED_ENEMY, 0 );
                 this.makeEnemy( 8, 13, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 13, 5, DEFAULT_ENEMY, 0 );
-                this.makeEnemy( 7, 11, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 13, 3, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 11, 5, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 9, 9, DEFAULT_ENEMY, 0 );
+                this.makeEnemy( 3, 3, DEFAULT_ENEMY, 0 );
 
-                //Inner Walls
+                //Walls
                 this.outerWalls( MOON_COLOR );
                 this.createBlock( 2, 0, 2, 2, MOON_COLOR );
                 this.createBlock( 0, 2, 2, 2, MOON_COLOR );
@@ -1903,7 +1910,7 @@ let projectile3 = {
                     startX = 7;
                     startY = 0;
 
-                    //Inner Walls
+                    //Walls
                     this.outerWalls( LAVA_COLOR );
                     this.createBlock( 2, 2, 6, 6, LAVA_COLOR );
                     this.createBlock( 0, 0, 7, 7, VENUS_COLOR );
@@ -2423,7 +2430,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 8;
+    level = 4;
 
     trigun = false;
 
