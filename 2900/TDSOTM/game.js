@@ -72,6 +72,7 @@ let regen = false;
 let trigun = false;
 let firstStart = true;
 let finalLevel = false;
+let timedLevel = false;
 let runComplete = false;
 
 let rgb;
@@ -135,6 +136,7 @@ let projectile3 = {
     let startCount = 20;
     let portalCount = 20;
     let finalCount = 300;
+    let timedCount = 1700;
     let spotNum = 196
     let lavaX;
     let lavaY;
@@ -503,6 +505,28 @@ let projectile3 = {
             }
             finalCount -= 1;
         }
+        if(timedLevel && !isOutOfBounds && !gameover && !start && !runComplete){
+            if( timedCount === 1600 ) {
+                Game.lavaWalls( 0, 16 );
+            } else if( timedCount === 1400 ) {
+                Game.lavaWalls( 1, 15 );
+            } else if( timedCount === 1200 ) {
+                Game.lavaWalls( 2, 14 );
+            } else if( timedCount === 1000 ) {
+                Game.lavaWalls( 3, 13 );
+            } else if( timedCount === 800 ) {
+                Game.lavaWalls( 4, 12 );
+            } else if( timedCount === 600 ) {
+                Game.lavaWalls ( 5, 11 );
+            } else if( timedCount === 400 ) {
+                Game.lavaWalls ( 6, 10 );
+            } else if( timedCount === 200 ) {
+                Game.lavaWalls( 7, 9 );
+            } else if( timedCount === 0 ) {
+                Game.lavaWalls( 8, 8, );
+            }
+            timedCount -= 1;
+        }
     };
 
     Game = {
@@ -589,7 +613,7 @@ let projectile3 = {
                         this.alienDeath();
                     }
                     enemies[enemyNum].destroyed = true;
-                    if (level == 10 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[enemyNum].x, enemies[enemyNum].y))) {
+                    if (level == 18 && room == 0 && ALTAR_COLORS.includes(PS.data(enemies[enemyNum].x, enemies[enemyNum].y))) {
                         this.trigunAltar();
                     }
                     this.makeBlood(enemies[enemyNum].x, enemies[enemyNum].y, 190, 117, 202, 40);
@@ -671,6 +695,7 @@ let projectile3 = {
         GameOver(type) {
             spawner = false;
             finalLevel = false;
+            timedLevel = false;
             room = 0;
             usedDoor = false;
             trigun = false;
@@ -1561,8 +1586,17 @@ let projectile3 = {
             this.createBlock(0, HEIGHT - 1, WIDTH - 1, 0, color );
         },
 
+        lavaWalls( min, max ) {
+            Game.createBlock( max, 0, min, min, LAVA_COLOR );
+            Game.createBlock( 0, max, min, min, LAVA_COLOR );
+            Game.createBlock( max, 0, min, max, LAVA_COLOR );
+            Game.createBlock( 0, max, max, min, LAVA_COLOR );
+            Game.lavaSizzle();
+        },
+
         makeLevel() {
             finalLevel = false;
+            timedLevel = false;
             if ( !timer ) {
                 timer = PS.timerStart( 1, tick );
             }
@@ -1677,9 +1711,6 @@ let projectile3 = {
                     this.makeEnemy( 6, 3, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 12, 11, SHIELDED_ENEMY, 1 );
                     this.makeEnemy( 15, 15, SHIELDED_ENEMY, 1 );
-                }
-                if(eastereggs.length == 0){
-                    this.makeEasterEgg(15, 1, SHIELD_COLOR, 1);
                 }
                 this.setupPortal( 2, 3, 1 );
                 if(room == 0){
@@ -1835,7 +1866,12 @@ let projectile3 = {
                 this.setupPortal( 7, 7, 2 );
                 this.makeFloor( 119, 110, 135, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened) {
-
+                    this.makeEnemy ( 11, 7, MEGA_ENEMY, 2 );
+                    this.makeEnemy( 9, 5, SHIELDED_ENEMY, 2 );
+                    this.makeEnemy( 9, 9, SHIELDED_ENEMY, 2 );
+                }
+                if(eastereggs.length == 0){
+                    this.makeEasterEgg(13, 7, SHIELD_COLOR, 2);
                 }
                 if(room == 0) {
                     if (usedDoor) {
@@ -1876,6 +1912,9 @@ let projectile3 = {
 
                     //Door
                     this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
+
+                    PS.glyph( 13, 7, "o" );
+                    PS.glyphColor( 13, 7, PS.COLOR_RED );
                 }
             }
             if ( level == 8 ) {
@@ -1985,47 +2024,49 @@ let projectile3 = {
                 this.setupPortal( 13, 8, 2 );
                 this.makeFloor( 119, 110, 135, 20, 0, 0, WIDTH, HEIGHT );
                 if(enemies.length == 0 && !portalOpened) {
-
+                    this.makeEnemy( 10, 10, DEFAULT_ENEMY, 0 );
+                    this.makeEnemy( 10, 10, DEFAULT_ENEMY, 1 );
+                    this.makeEnemy( 10, 10, DEFAULT_ENEMY, 2 );
                 }
                 if(room == 0) {
                     if (usedDoor) {
-                        startX = 14;
-                        startY = 7;
+                        startX = 16;
+                        startY = 8;
                     } else {
-                        startX = 7
-                        startY = 7;
+                        startX = 8
+                        startY = 8;
                     }
 
                     //Walls
                     this.outerWalls( VENUS_COLOR );
 
                     //Door
-                    this.createBlock(0, 0, 14, 7, DOOR_COLOR);
+                    this.createBlock(0, 0, 16, 8, DOOR_COLOR);
                 }
                 else if(room == 1) {
                     if (usedDoor) {
-                        startX = 14;
-                        startY = 7;
+                        startX = 16;
+                        startY = 8;
                     } else {
                         startX = 0;
-                        startY = 7;
+                        startY = 8;
                     }
 
                     this.outerWalls( VENUS_COLOR );
 
                     //Door
-                    this.createBlock(0, 0, 0, 7, DOOR_COLOR);
-                    this.createBlock( 0, 0, 14, 7, DOOR_COLOR );
+                    this.createBlock(0, 0, 0, 8, DOOR_COLOR);
+                    this.createBlock( 0, 0, 16, 8, DOOR_COLOR );
                 }
                 else if (room == 2) {
                     startX = 0;
-                    startY = 7;
+                    startY = 8;
 
                     //Walls
                     this.outerWalls( VENUS_COLOR );
 
                     //Door
-                    this.createBlock( 0, 0, 0, 7, DOOR_COLOR );
+                    this.createBlock( 0, 0, 0, 8, DOOR_COLOR );
                 }
             }
             if ( level == 11 ) {
@@ -2615,18 +2656,28 @@ let projectile3 = {
                 this.outerWalls( HELL_COLOR );
             }
             if  ( level == 23 ) {
+                timedLevel = true;
                 room = 0;
                 WIDTH = 17;
                 HEIGHT = 17;
                 this.setupLevel( WIDTH, HEIGHT );
-                startX = 7;
-                startY = 7;
-                this.setupPortal( 7, 7, 0 );
+                startX = 8;
+                startY = 8;
+                this.setupPortal( 8, 8, 0 );
                 this.makeFloor( 115, 26, 26, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
-
+                this.makeEnemy( 1, 1, LAVA_ENEMY, 0 );
+                this.makeEnemy( 15, 15, LAVA_ENEMY, 0 );
+                this.makeEnemy( 8, 1, LAVA_ENEMY, 0 );
+                this.makeEnemy( 1, 8, LAVA_ENEMY, 0 );
+                this.makeEnemy( 8, 15, LAVA_ENEMY, 0 );
+                this.makeEnemy( 15, 8, LAVA_ENEMY, 0 );
                 //Walls
                 this.outerWalls( HELL_COLOR );
+                this.createBlock( 2, 0, 4, 4, HELL_COLOR );
+                this.createBlock( 0, 2, 4, 4, HELL_COLOR );
+                this.createBlock( 2, 0, 10, 12, HELL_COLOR );
+                this.createBlock( 0, 2, 12, 10, HELL_COLOR );
             }
             if ( level == 24 ) {
                 room = 0;
@@ -2663,11 +2714,14 @@ let projectile3 = {
                 this.createBlock( 0, 2, 12, 6, HELL_COLOR );
             }
             this.drawBlood();
-            if(level <= 6){
+            if( level < 8 ) {
                 PS.gridColor(0xb4c4cc);
             }
-            else if (level >= 7 && level < 10){
+            else if ( level < 15 ) {
                 PS.gridColor(0xd89f62);
+            }
+            else if ( level < 22 ) {
+                PS.gridColor(0x56995b);
             }
             else{
                 PS.gridColor(0x934338);
@@ -2696,7 +2750,7 @@ PS.init = function ( system, options ) {
         PS.audioPlayChannel ( planet, { volume: 0, loop: true});
     };
 
-    level = 1;
+    level = 22;
 
     trigun = false;
 
