@@ -32,9 +32,11 @@ const MEGA_ENEMY = 0x014421;
 const FINAL_BOSS_1 = 0x030110;
 const FINAL_BOSS_2 = PS.COLOR_WHITE;;
 let LAVA_ENEMY = 0xEA7401;
+const GHOST_ENEMY = 0xd9ddc2;
 const SPAWNER_ENEMY = 0x6a3893;
-const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, SPAWNER_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
-const LAVA_IGNORE = [LAVA_ENEMY, FINAL_BOSS_2];
+const ENEMY_TYPES = [ DEFAULT_ENEMY, SHIELDED_ENEMY, MEGA_ENEMY, LAVA_ENEMY, GHOST_ENEMY, SPAWNER_ENEMY, FINAL_BOSS_1, FINAL_BOSS_2 ];
+const LAVA_IGNORE = [LAVA_ENEMY, GHOST_ENEMY, FINAL_BOSS_2];
+const WALLS_IGNORE = [GHOST_ENEMY];
 const POWERUPS = [ SHIELD_COLOR, INVIS_COLOR, TRIGUN_COLOR, REGEN_COLOR ];
 const PORTAL_COLOR = 0xff148d;
 const DOOR_COLOR = PS.COLOR_GRAY_LIGHT;
@@ -998,6 +1000,9 @@ let projectile3 = {
                                 }
                             }
                             nextBead = PS.data(nextX, nextY);
+                            if (WALLS_IGNORE.includes(enemies[i].type)) {
+                                PS.alpha(nextX, nextY, 100);
+                            }
                             nextColor = PS.color(nextX, nextY);
 
                           /*      || nextY == enemies[i].y-1) )
@@ -1005,7 +1010,9 @@ let projectile3 = {
 
                             if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
                                 && (!OBSTACLES.includes(nextBead) ||
-                                    ( LAVA_IGNORE.includes(enemies[i].type) && nextBead == LAVA_COLOR ) )
+                                    ( LAVA_IGNORE.includes(enemies[i].type) && nextBead == LAVA_COLOR ) ) ||
+                                    ( WALLS_IGNORE.includes(enemies[i].type) && nextBead == HELL_COLOR ) ||
+                                    ( WALLS_IGNORE.includes(enemies[i].type) && nextBead == JUNGLE_COLOR )
                                 && !POWERUPS.includes(nextColor)) {
                                 //  PS.debug("Enemy " + i + " not stuck ");
                                 PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
@@ -1053,7 +1060,9 @@ let projectile3 = {
                                     nextColor = PS.color(nextX, nextY);
 
                                     if ((!ENEMY_TYPES.includes(nextColor) || (nextY === enemies[i].y && nextX === enemies[i].x))
-                                        && (!OBSTACLES.includes(nextBead) || ( LAVA_IGNORE.includes(enemies[i].type) && nextBead === LAVA_COLOR ) ) &&
+                                        && (!OBSTACLES.includes(nextBead) || ( LAVA_IGNORE.includes(enemies[i].type) && nextBead === LAVA_COLOR ) )
+                                        && (!OBSTACLES.includes(nextBead) || ( WALLS_IGNORE.includes(enemies[i].type) && nextBead === HELL_COLOR ) )
+                                        && (!OBSTACLES.includes(nextBead) || ( WALLS_IGNORE.includes(enemies[i].type) && nextBead === JUNGLE_COLOR ) ) &&
                                         !POWERUPS.includes(nextColor) ) {
                                         PS.color(enemies[i].x, enemies[i].y, PS.data(enemies[i].x, enemies[i].y));
                                         PS.border(enemies[i].x, enemies[i].y, 0);
@@ -2651,7 +2660,7 @@ let projectile3 = {
                 this.setupPortal( 7, 7, 0 );
                 this.makeFloor( 115, 26, 26, 20, 0, 0, WIDTH, HEIGHT );
                 //Enemies
-
+                this.makeEnemy( 15, 15, GHOST_ENEMY, 0 );
                 //Walls
                 this.outerWalls( HELL_COLOR );
             }
@@ -2916,6 +2925,7 @@ PS.enter = function ( x, y, data, options ) {
         PS.radius( pX, pY, 50 );
 
         PS.alpha(pastX, pastY, 255);
+        PS.alpha(pX, pY, 255);
         PS.color( pastX, pastY, PS.data( pastX, pastY ) );
         PS.radius( pastX, pastY, 0 );
         PS.border( pastX, pastY, 0 );
